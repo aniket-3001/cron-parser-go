@@ -29,11 +29,16 @@ var (
 type fieldErrorKind int
 
 const (
-	errKindNotSlice fieldErrorKind = iota
-	errKindEmpty
+	errKindEmpty fieldErrorKind = iota
 	errKindRange
 	errKindDuplicate
 )
+
+// The original also reports "values is not an array" when handed a non-array.
+// That check has no counterpart here: the signature accepts []Value, so the
+// failure is unrepresentable and the message is unreachable. The reference test
+// that exercises it passes a bad type from JavaScript, which the test bridge
+// rejects before it reaches this package.
 
 // FieldError reports an invalid value in a cron field.
 //
@@ -58,8 +63,6 @@ type FieldError struct {
 
 func (e *FieldError) Error() string {
 	switch e.Kind {
-	case errKindNotSlice:
-		return fmt.Sprintf("%s Validation error, values is not an array", e.Field)
 	case errKindEmpty:
 		return fmt.Sprintf("%s Validation error, values contains no values", e.Field)
 	case errKindDuplicate:

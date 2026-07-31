@@ -169,8 +169,6 @@ type fieldOptions struct {
 	// raw is the field's text as written, before expansion. It decides
 	// wildcard-ness and the L/? flags.
 	raw string
-	// wildcard overrides the derived value when non-nil.
-	wildcard *bool
 	// nthDayOfWeek is the N of a `#N` suffix, or 0 when absent.
 	nthDayOfWeek int
 }
@@ -213,11 +211,10 @@ func newField(spec *fieldSpec, values []Value, opts fieldOptions) (*Field, error
 	f.hasLast = strings.Contains(opts.raw, "L") || slices.Contains(values, text("L"))
 	f.hasQuestion = strings.Contains(opts.raw, "?") || slices.Contains(values, text("?"))
 
-	if opts.wildcard != nil {
-		f.wildcard = *opts.wildcard
-	} else {
-		f.wildcard = f.derivedWildcard()
-	}
+	// The original lets the caller override wildcard-ness, but nothing in it
+	// ever does; the flag is always derived. The override is omitted here rather
+	// than carried as an unreachable branch.
+	f.wildcard = f.derivedWildcard()
 
 	if err := f.validate(); err != nil {
 		return nil, err

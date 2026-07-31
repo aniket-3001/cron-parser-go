@@ -46,6 +46,17 @@ verify-time:
 	CRON_GEN_CORPUS=1 $(GO) test -run TestGenerateTimeOpCorpus ./cron/
 	node scripts/probe/verify-time-ops.js
 
+## verify-schedule: differential-check the engine against the reference
+##   Sweeps randomly generated expressions across zones and DST transitions,
+##   comparing both iteration directions and every error message.
+##   Override the seed with CRON_CORPUS_SEED to cover fresh ground.
+verify-schedule:
+	CRON_GEN_CORPUS=1 $(GO) test -run TestGenerateScheduleCorpus ./cron/
+	node scripts/probe/verify-schedule.js
+
+## verify-all: every differential check
+verify-all: verify-time verify-schedule
+
 ## fuzz: differential fuzzing against the TypeScript original
 fuzz: build-wasm
 	node fuzz/differential.js

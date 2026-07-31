@@ -56,10 +56,9 @@ func jsParseInt(s string) (int, bool) {
 		return 0, false // no digits: NaN
 	}
 
-	n, err := strconv.Atoi(s[start:i])
-	if err != nil {
-		return 0, false
-	}
+	// The slice is an optional sign followed by digits, so this cannot fail
+	// except on values too large for int — which no cron field can produce.
+	n, _ := strconv.Atoi(s[start:i])
 	return n, true
 }
 

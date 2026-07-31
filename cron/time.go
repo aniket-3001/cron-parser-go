@@ -205,16 +205,15 @@ func (c *cronTime) clone() *cronTime {
 	return &cp
 }
 
-func (c *cronTime) Year() int                { return c.t.Year() }
-func (c *cronTime) Month() time.Month        { return c.t.Month() }
-func (c *cronTime) Day() int                 { return c.t.Day() }
-func (c *cronTime) Hour() int                { return c.t.Hour() }
-func (c *cronTime) Minute() int              { return c.t.Minute() }
-func (c *cronTime) Second() int              { return c.t.Second() }
-func (c *cronTime) Millisecond() int         { return c.t.Nanosecond() / int(time.Millisecond) }
-func (c *cronTime) UnixMilli() int64         { return c.t.UnixMilli() }
-func (c *cronTime) Time() time.Time          { return c.t }
-func (c *cronTime) Location() *time.Location { return c.loc }
+func (c *cronTime) Year() int         { return c.t.Year() }
+func (c *cronTime) Month() time.Month { return c.t.Month() }
+func (c *cronTime) Day() int          { return c.t.Day() }
+func (c *cronTime) Hour() int         { return c.t.Hour() }
+func (c *cronTime) Minute() int       { return c.t.Minute() }
+func (c *cronTime) Second() int       { return c.t.Second() }
+func (c *cronTime) Millisecond() int  { return c.t.Nanosecond() / int(time.Millisecond) }
+func (c *cronTime) UnixMilli() int64  { return c.t.UnixMilli() }
+func (c *cronTime) Time() time.Time   { return c.t }
 
 // Weekday reports the day of the week with Sunday as 0, matching the original's
 // getDay rather than Go's time.Weekday ordering, which also starts at Sunday but
@@ -245,6 +244,10 @@ func (c *cronTime) setWall(y int, mo time.Month, d, h, mi, s, ms int) {
 // which is how luxon defines it. Deriving it from components instead would give
 // the wrong answer whenever the final second of the period does not exist.
 
+// startOfMonth is not used by the engine, which reaches the first of a month
+// through addMonth. It exists because the differential corpus exercises every
+// luxon startOf/endOf pairing, and dropping it would leave that comparison
+// incomplete.
 func (c *cronTime) startOfMonth() {
 	y, mo, _, _, _, _, _ := c.wall()
 	c.setWall(y, mo, 1, 0, 0, 0, 0)
