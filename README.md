@@ -66,7 +66,7 @@ original Jest suite can execute unmodified.
 
 ## Bugs found in the original
 
-Four latent bugs were reproduced against v5.6.2 during this port:
+Five latent bugs were reproduced against v5.6.2 during this port:
 
 1. **DST compensation assumes every transition is exactly one hour** (`CronDate.ts:559`) — the
    `diff === 2` check never fires for `Antarctica/Troll`'s two-hour gap.
@@ -74,9 +74,13 @@ Four latent bugs were reproduced against v5.6.2 during this port:
 3. **Unintended regex range** (`CronExpressionParser.ts:444`) — `/([,-/])/` is the character
    range `0x2C–0x2F`, so `.` matches by accident.
 4. **Bare `L` in day-of-week parses but throws at iteration time** (`CronExpression.ts:209`).
+5. **Duplicate `0` escapes validation** (`CronField.ts:245`) — `if (duplicate)` is falsy when the
+   duplicated value is `0`, so `[0,0]` is accepted while `[1,1]` throws.
 
 Plus a design inconsistency: **`W` is a phantom feature** — the stringify path handles it, the
 parser rejects it.
+
+Reports are drafted in [`upstream-issues/`](upstream-issues/) with runnable reproductions.
 
 ---
 

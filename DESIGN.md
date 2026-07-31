@@ -6,6 +6,12 @@ Port Mortem · Track C (TypeScript → Go) · source: `harrisiirak/cron-parser` 
 Every claim in this document about luxon or Go behaviour was **measured**, not assumed. The probe
 scripts and their raw output are reproducible via `scripts/probe/`.
 
+**Companion documents.** This file says *how* the port is built.
+[`SEMANTICS.md`](SEMANTICS.md) says *what* it must do — a line-level behavioural specification of
+v5.6.2 including the complete error catalogue and the non-obvious quirks (day-of-week `7`
+handling, field padding, PRNG threading). Read it before writing any of `cron/`.
+[`DECISIONS.md`](DECISIONS.md) records the architectural divergences.
+
 ---
 ---
 
@@ -369,6 +375,22 @@ forwards the message rather than maintaining a translation table that could drif
 deliberate compat choice in `DECISIONS.md` — Go style would normally prefer lowercase,
 non-punctuated error strings.
 
+## 6.5 Dual-track testing
+
+The organizer Q&A confirmed that rewriting the tests 1:1 as **native** tests is an accepted path,
+penalised only if the originals are edited. Writing *additional* tests has always been unrestricted
+under Rule 2. So the port runs two tracks:
+
+| Track | What | Runs with | Value |
+|---|---|---|---|
+| **A — primary** | The 280 originals, byte-unmodified, through the adapter | Node + Jest + WASM | The strongest proof. Full 40% credit. |
+| **B — insurance** | Native Go tests covering the same behaviour | `go test` alone | Accepted on its own terms; reproducible by a judge with no Node at all. |
+
+**Why both.** Track A is worth more but has a single point of failure — the bridge. Track B is
+built incrementally as a by-product of M2–M5 (each milestone's table tests *are* Track B), so it
+costs almost nothing, and it is what makes the Go library reviewable on its own terms for the
+Code Quality 20%. Track B is never a substitute for Track A.
+
 ---
 ---
 
@@ -483,10 +505,12 @@ honestly if any appear.
 cron-parser-go/
 ├── go.mod                     module github.com/aniket-3001/cron-parser-go
 ├── README.md                  one-command build, results summary
-├── DESIGN.md                  this document
+├── DESIGN.md                  this document — how the port is built
+├── SEMANTICS.md               what it must do — behavioural spec of v5.6.2
 ├── DECISIONS.md               scored deliverable — architectural divergences
 ├── LICENSE                    MIT, preserving upstream attribution
 ├── .gitattributes             * text=auto eol=lf   ← protects the kickoff hashes
+├── upstream-issues/           Bug Catcher: 5 drafted reports + filing tracker
 │
 ├── cron/                      ARTIFACT 1 — the port. zero unsafe.
 │   ├── time.go       field.go       parse.go

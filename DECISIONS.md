@@ -268,6 +268,7 @@ cron.Parse(expr, cron.WithLuxonCompat())  // bug-compatible — what the adapter
 | #1 DST `diff == 2` assumes 1-hour transitions | reproduced | offsets compared directly; correct for 2 h, 30 min, 45 min zones |
 | #3 `/([,-/])/` is the range `0x2C–0x2F`, so `.` matches unintentionally | reproduced | `[,\-/]` |
 | #4 bare `L` in day-of-week throws at `next()`, not at parse | reproduced | rejected at parse time |
+| #5 duplicate `0` escapes validation (`if (duplicate)` is falsy for `0`) | reproduced | all duplicates rejected consistently |
 
 **Why.** Shipping known-buggy behaviour as a Go library's default is indefensible; failing the
 original suite forfeits the 40% criterion. A documented compatibility flag serves both, and makes
@@ -316,6 +317,25 @@ produce; `W` is reachable only by hand-constructing field objects.
 **Why.** Four pinned tests depend on `compactField` handling `W`, so it cannot be dropped. Adding
 `W` to the parser would be a *feature addition*, diverging from the reference and breaking
 differential equivalence. The dead branch is preserved with a comment pointing here.
+
+---
+
+## D16 — Two test tracks, not one 🟡
+
+**Decision.** Ship both the original suite through the adapter (Track A) *and* native Go tests
+covering the same behaviour (Track B).
+
+**Why.** The organizer Q&A confirmed that native 1:1 tests are an accepted substitute, penalised
+only if the originals are edited — and Rule 2 has always left *additional* tests unrestricted.
+Track A is worth more, but it depends entirely on the WASM bridge; a single integration failure at
+M6/M7 would leave no equivalence evidence at all. Track B removes that single point of failure and
+is the only evidence a reviewer can reproduce with nothing but `go test`.
+
+**Why it's nearly free.** Track B is a by-product of M2–M5 — the table tests those milestones need
+in order to be correct *are* Track B. The marginal cost is organising them, not writing them.
+
+**Explicitly not a substitute.** If Track B is ever used to justify skipping Track A, this decision
+has been misapplied. The original suite unchanged is the primary deliverable.
 
 ---
 
