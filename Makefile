@@ -32,6 +32,14 @@ verify-hashes:
 test-original: verify-hashes build-wasm
 	npx cross-env TZ=UTC npx jest
 
+## verify-time: differential-check the time layer against luxon
+##   Generates a corpus of every CronDate operation applied to tens of thousands
+##   of instants, weighted toward DST transitions, and compares against luxon.
+##   Requires the reference clone at ../cron-parser with node_modules installed.
+verify-time:
+	CRON_GEN_CORPUS=1 $(GO) test -run TestGenerateTimeOpCorpus ./cron/
+	node scripts/probe/verify-time-ops.js
+
 ## fuzz: differential fuzzing against the TypeScript original
 fuzz: build-wasm
 	node fuzz/differential.js

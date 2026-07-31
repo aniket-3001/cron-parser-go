@@ -5,3 +5,6 @@ coverage/
 adapter/wasm_exec.js
 fuzz/divergences/*.json
 scripts/probe/node_modules/
+
+# Differential corpora are regenerated on demand and run to tens of megabytes.
+scripts/probe/*-corpus.json
