@@ -1,0 +1,4 @@
+# The original test files are hash-pinned at kickoff. CRLF normalisation would
+# change their sha256 and break the contract with the judges. Force LF everywhere.
+* text=auto eol=lf
+*.wasm binary

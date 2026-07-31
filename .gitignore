@@ -1,0 +1,7 @@
+node_modules/
+dist/
+coverage/
+*.wasm
+adapter/wasm_exec.js
+fuzz/divergences/*.json
+scripts/probe/node_modules/

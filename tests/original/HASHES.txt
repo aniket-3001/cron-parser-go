@@ -1,0 +1,12 @@
+# Kickoff SHA-256 of the original cron-parser test suite.
+# Source: harrisiirak/cron-parser @ aeb2a1513fd33365a6414f4137516c9482f831ed (v5.6.2)
+# These files are byte-identical to upstream and MUST NOT be edited.
+# Verify with:  bash scripts/verify-hashes.sh
+88b58f13bdf969849de7e1ce3d1f95434adb32ffec620979e9c9a95789786c60 *CronDate.test.ts
+0d765c9ca08e02fd39b8b66d39b099fa708a711da78448a1b825a82cf125e792 *CronExpression.test.ts
+bdb6c2e037fd8ac7e9bac754aa22a6f05dfe02ff1cdc348d3a46a46d1ff2575f *CronExpressionParser.test.ts
+87d04884c7b5af61fb36d711220eaadbbe12bf9cbc170c1d0fb8e22d5015d49a *CronField.test.ts
+4335de308d67cdde9efb167397410fa4dc0a19ca06f3b7b7f8d221c52347fe9a *CronFieldCollection.test.ts
+077ee02e02cb9510fdbc475a3591165b05b4fc9cc48d95dd14a29594d90c8506 *CronFileParser.test.ts
+5bc929f12ac84bc2b15c8c7aed2e8a0fd998b03b08160541edbfe79c265d0dc9 *random.test.ts
+6eb38e70ca26309d85102acb92be0a73f5a2c22a18280184082c8e66865a3606 *types.d.ts
