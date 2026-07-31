@@ -32,6 +32,12 @@ verify-hashes:
 test-original: verify-hashes build-wasm
 	npx cross-env TZ=UTC npx jest
 
+## gen-fixtures: recapture parser fixtures from the reference implementation
+##   The committed fixtures let `go test` verify the parser with no Node
+##   present. Regenerate only when the reference version changes.
+gen-fixtures:
+	node scripts/probe/gen-parse-fixtures.js
+
 ## verify-time: differential-check the time layer against luxon
 ##   Generates a corpus of every CronDate operation applied to tens of thousands
 ##   of instants, weighted toward DST transitions, and compares against luxon.
