@@ -93,7 +93,7 @@ func Parse(expression string, opts ...Option) (*Expression, error) {
 	if err != nil {
 		return nil, err
 	}
-	return newExpression(fields, cfg, expression), nil
+	return newExpression(fields, cfg, expandPredefined(expression)), nil
 }
 
 // FromFields builds an Expression from fields assembled directly, without
@@ -146,11 +146,22 @@ func newExpression(fields *Fields, cfg config, raw string) *Expression {
 // Fields returns the parsed fields.
 func (e *Expression) Fields() *Fields { return e.fields }
 
-// String returns the expression as written.
+// String returns the expression as written, falling back to a rendering of the
+// fields for expressions assembled without text.
 //
-// Expressions assembled through FromFields carry no text and render as empty
-// until the field-rendering layer lands.
-func (e *Expression) String() string { return e.raw }
+// Rendering can fail for a field holding repeated zeros; String reports the
+// empty string in that case, since a Stringer cannot return an error. Callers
+// that need to know should use Format.
+func (e *Expression) String() string {
+	if e.raw != "" {
+		return e.raw
+	}
+	s, err := e.fields.Format(true)
+	if err != nil {
+		return ""
+	}
+	return s
+}
 
 // Next advances the cursor and returns the next matching instant.
 //

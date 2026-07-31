@@ -101,9 +101,10 @@ func TestFromFieldsBuildsAWorkingExpression(t *testing.T) {
 		t.Errorf("Next() = %s, want %s", toISO(got), want)
 	}
 
-	// An expression built from fields carries no source text.
-	if s := e.String(); s != "" {
-		t.Errorf("String() = %q, want empty for a field-built expression", s)
+	// With no source text to return, String falls back to rendering the fields,
+	// which is what the original's toString does.
+	if s := e.String(); s != "0 0 12 * * *" {
+		t.Errorf("String() = %q, want the rendered form", s)
 	}
 }
 

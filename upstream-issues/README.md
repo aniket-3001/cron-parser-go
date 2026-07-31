@@ -9,11 +9,24 @@ tracks what has actually been filed.
 
 | # | Bug | Severity | Filed |
 |---|---|---|---|
+| 6 | [`stringify()` round trip changes the schedule](06-stringify-round-trip-changes-schedule.md) | **High — silently reschedules a job** | ☐ |
 | 1 | [DST compensation assumes 1-hour transitions](01-dst-two-hour-transitions.md) | High — wrong results in `Antarctica/Troll` | ☐ |
 | 2 | [In-place `sort()` mutates the caller's array](02-in-place-sort-mutates-caller.md) | Medium — silent caller data corruption | ☐ |
-| 3 | [`[,-/]` is an unintended character range](03-regex-character-range.md) | Low — wrong rejection reason | ☐ |
 | 4 | [Bare `L` in day-of-week throws at `next()`, not `parse()`](04-bare-L-day-of-week-throws-late.md) | Medium — validation boundary is wrong | ☐ |
+| 7 | [Repeated zeros make `stringify()` throw an internal error](07-repeated-zeros-break-stringify.md) | Medium — accepted input cannot be rendered | ☐ |
+| 8 | [`stringify()` is not idempotent](08-stringify-not-idempotent.md) | Low — rendered text is not canonical | ☐ |
+| 3 | [`[,-/]` is an unintended character range](03-regex-character-range.md) | Low — wrong rejection reason | ☐ |
 | 5 | [Duplicate `0` escapes the duplicate check](05-duplicate-zero-escapes-validation.md) | Low — inconsistent validation | ☐ |
+
+Listed by severity rather than by number. Bugs 6 to 8 were found later than the
+others and by a different method: 1 to 5 came from reading the source and
+confirming by execution, while 6 to 8 were found by checking a property over
+randomly generated expressions — that an expression and its rendering describe
+the same schedule. None of the three would have been found by reading.
+
+Bugs 5, 7 and 8 form a chain worth mentioning together when filing: the
+duplicate-zero gap (5) is what lets a field of repeated zeros exist, which is
+what makes rendering fail (7).
 
 ## Filing notes
 

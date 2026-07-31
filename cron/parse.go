@@ -48,6 +48,19 @@ var (
 	nthIncompatibleRe = regexp.MustCompile(`[,\-./]`)
 )
 
+// expandPredefined resolves an @-alias to its six-field form, leaving anything
+// else untouched.
+//
+// The expansion happens before the text is retained, so an expression parsed
+// from "@yearly" reports itself as "0 0 0 1 1 *" rather than as the alias. That
+// is what the original does: it reassigns its local before passing it on.
+func expandPredefined(expression string) string {
+	if expanded, ok := PredefinedExpressions[expression]; ok {
+		return expanded
+	}
+	return expression
+}
+
 // rawFields holds the six field strings before expansion.
 type rawFields struct {
 	second, minute, hour, dayOfMonth, month, dayOfWeek string
@@ -79,10 +92,7 @@ type parseOptions struct {
 // changing it would change every hashed expression's output.
 func parseFields(expression string, opts parseOptions) (*Fields, error) {
 	rand := seededRandom(opts.hashSeed)
-
-	if expanded, ok := PredefinedExpressions[expression]; ok {
-		expression = expanded
-	}
+	expression = expandPredefined(expression)
 
 	raw, err := getRawFields(expression, opts.strict)
 	if err != nil {
