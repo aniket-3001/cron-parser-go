@@ -169,6 +169,11 @@ type fieldOptions struct {
 	// raw is the field's text as written, before expansion. It decides
 	// wildcard-ness and the L/? flags.
 	raw string
+	// wildcard overrides the derived flag when non-nil.
+	//
+	// The parser never sets it, but the field constructors are public API and
+	// callers may, so the override has to be honoured rather than derived away.
+	wildcard *bool
 	// nthDayOfWeek is the N of a `#N` suffix, or 0 when absent.
 	nthDayOfWeek int
 }
@@ -211,10 +216,11 @@ func newField(spec *fieldSpec, values []Value, opts fieldOptions) (*Field, error
 	f.hasLast = strings.Contains(opts.raw, "L") || slices.Contains(values, text("L"))
 	f.hasQuestion = strings.Contains(opts.raw, "?") || slices.Contains(values, text("?"))
 
-	// The original lets the caller override wildcard-ness, but nothing in it
-	// ever does; the flag is always derived. The override is omitted here rather
-	// than carried as an unreachable branch.
-	f.wildcard = f.derivedWildcard()
+	if opts.wildcard != nil {
+		f.wildcard = *opts.wildcard
+	} else {
+		f.wildcard = f.derivedWildcard()
+	}
 
 	if err := f.validate(); err != nil {
 		return nil, err
@@ -302,24 +308,29 @@ func (f *Field) contains(n int) bool {
 	return slices.Contains(f.values, num(n))
 }
 
-// findNearestValue returns the next permitted value strictly after current, or
+// findNearestInValues returns the next value strictly after current, or
 // strictly before it when reverse is set. Token values are skipped: in the
 // original they compare as NaN, which is never greater or less than anything.
-func (f *Field) findNearestValue(current int, reverse bool) (int, bool) {
+func findNearestInValues(values []Value, current int, reverse bool) (int, bool) {
 	if reverse {
-		for i := len(f.values) - 1; i >= 0; i-- {
-			if v := f.values[i]; v.IsNumeric() && v.N < current {
+		for i := len(values) - 1; i >= 0; i-- {
+			if v := values[i]; v.IsNumeric() && v.N < current {
 				return v.N, true
 			}
 		}
 		return 0, false
 	}
-	for _, v := range f.values {
+	for _, v := range values {
 		if v.IsNumeric() && v.N > current {
 			return v.N, true
 		}
 	}
 	return 0, false
+}
+
+// findNearestValue is findNearestInValues over this field's own values.
+func (f *Field) findNearestValue(current int, reverse bool) (int, bool) {
+	return findNearestInValues(f.values, current, reverse)
 }
 
 // minOrMax returns the field's smallest permitted value, or its largest when

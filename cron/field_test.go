@@ -290,3 +290,35 @@ func TestSpecTokenMatching(t *testing.T) {
 		}
 	}
 }
+
+// TestWildcardOverride covers the option that lets a caller declare a field a
+// wildcard regardless of its values.
+//
+// The parser never sets it, but the original's field constructors accept it and
+// its own tests exercise it, so the branch is reachable through public API and
+// must be honoured rather than derived away.
+func TestWildcardOverride(t *testing.T) {
+	yes, no := true, false
+
+	tests := []struct {
+		name string
+		opts fieldOptions
+		want bool
+	}{
+		{"declared a wildcard despite partial values", fieldOptions{wildcard: &yes}, true},
+		{"declared not a wildcard despite full coverage", fieldOptions{raw: "*", wildcard: &no}, false},
+		{"derived when unset", fieldOptions{raw: "*"}, true},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			f, err := newField(specDayOfWeek, Nums(0, 1, 2, 3, 4, 5, 6), tc.opts)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got := f.IsWildcard(); got != tc.want {
+				t.Errorf("IsWildcard() = %v, want %v", got, tc.want)
+			}
+		})
+	}
+}
