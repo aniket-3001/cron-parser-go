@@ -3,10 +3,18 @@ dist/
 coverage/
 *.wasm
 adapter/wasm_exec.js
-fuzz/divergences/*.json
 scripts/probe/node_modules/
 
 # Differential corpora are regenerated on demand and run to tens of megabytes.
 scripts/probe/*-corpus.json
 adapter/wasm-bytes.js
-fuzz/last-run.json
+
+# The fuzz log and the CLI diff are published evidence, so they are tracked.
+# Only the regenerable corpora are ignored.
+
+# Built artifacts. Anchored with a leading slash: an unanchored "cron-parser"
+# also matches the cmd/cron-parser/ source directory.
+/cron-parser
+/cron-parser.exe
+/bench-port
+/bench-port.exe
