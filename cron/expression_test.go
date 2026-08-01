@@ -497,3 +497,104 @@ func TestSpringForwardCompensation(t *testing.T) {
 		}
 	}
 }
+
+// TestOperationTrace covers the recording the test bridge relies on.
+//
+// The original's tests spy on its date-arithmetic method to check that
+// iteration jumps to the next matching value rather than stepping towards it.
+// The search runs here rather than in JavaScript, so the bridge replays this
+// recording to make the same question answerable across the boundary. The
+// recording is only worth anything if it reflects what the engine did, which is
+// what these cases pin.
+func TestOperationTrace(t *testing.T) {
+	tests := []struct {
+		name    string
+		expr    string
+		start   time.Time
+		want    []traceOp
+		wantISO string
+	}{
+		{
+			// No later minute in the hour, so the search rolls forward an hour
+			// and then sets the minute directly. One operation, not sixty.
+			name:  "rolling into the next hour costs one operation",
+			expr:  "0 10 * * * *",
+			start: time.Date(2023, time.January, 1, 0, 59, 30, 0, time.UTC),
+			want: []traceOp{
+				{op: opAdd, unit: unitHour, hoursLen: 24},
+			},
+			wantISO: "2023-01-01T01:10:00.000Z",
+		},
+		{
+			// Past the last scheduled hour, so the search skips a whole day
+			// rather than stepping through the remaining hours.
+			name:  "skipping to the next day costs one operation",
+			expr:  "0 0 9 * * *",
+			start: time.Date(2023, time.January, 1, 10, 0, 0, 0, time.UTC),
+			want: []traceOp{
+				{op: opAdd, unit: unitDay, hoursLen: 1},
+			},
+			wantISO: "2023-01-02T09:00:00.000Z",
+		},
+		{
+			// A later matching second exists, so the search sets it directly and
+			// performs no date operation at all.
+			name:    "jumping within the minute costs nothing",
+			expr:    "10,20 * * * * *",
+			start:   time.Date(2023, time.January, 1, 0, 0, 12, 0, time.UTC),
+			want:    nil,
+			wantISO: "2023-01-01T00:00:20.000Z",
+		},
+		{
+			name:    "jumping to a later hour costs nothing",
+			expr:    "0 0 5,10 * * *",
+			start:   time.Date(2023, time.January, 1, 6, 0, 0, 0, time.UTC),
+			want:    nil,
+			wantISO: "2023-01-01T10:00:00.000Z",
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			e, err := Parse(tc.expr, WithLocation(time.UTC), WithCurrent(tc.start))
+			if err != nil {
+				t.Fatal(err)
+			}
+			e.tracing = true
+
+			got, err := e.Next()
+			if err != nil {
+				t.Fatal(err)
+			}
+			if toISO(got) != tc.wantISO {
+				t.Fatalf("Next() = %s, want %s", toISO(got), tc.wantISO)
+			}
+
+			if len(e.trace) != len(tc.want) {
+				t.Fatalf("recorded %d operations, want %d\n  got %+v", len(e.trace), len(tc.want), e.trace)
+			}
+			for i, w := range tc.want {
+				if e.trace[i] != w {
+					t.Errorf("operation %d = %+v, want %+v", i, e.trace[i], w)
+				}
+			}
+		})
+	}
+}
+
+// TestTracingIsOffByDefault records that the recording costs nothing unless it
+// is asked for.
+func TestTracingIsOffByDefault(t *testing.T) {
+	e, err := Parse("0 10 * * * *",
+		WithLocation(time.UTC),
+		WithCurrent(time.Date(2023, time.January, 1, 0, 59, 30, 0, time.UTC)))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := e.Next(); err != nil {
+		t.Fatal(err)
+	}
+	if len(e.trace) != 0 {
+		t.Errorf("recorded %d operations with tracing off", len(e.trace))
+	}
+}

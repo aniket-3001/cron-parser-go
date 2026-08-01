@@ -197,6 +197,7 @@ func dispatch(op string, args []js.Value) any {
 		if err != nil {
 			return failErr(err)
 		}
+		cron.EnableTrace(e)
 		return ok(store(e))
 	}
 
@@ -548,7 +549,9 @@ func dispatchFields(op string, args []js.Value) any {
 		if err != nil {
 			return failErr(err)
 		}
-		return ok(store(cron.NewExpressionForBridge(f, cfg)))
+		e := cron.NewExpressionForBridge(f, cfg)
+		cron.EnableTrace(e)
+		return ok(store(e))
 	}
 
 	return fail("unknown bridge operation: " + op)
@@ -616,6 +619,18 @@ func dispatchExpression(op string, args []js.Value) any {
 
 	case "expr.fields":
 		return ok(store(e.Fields()))
+
+	case "expr.enableTrace":
+		cron.EnableTrace(e)
+		return ok(nil)
+
+	case "expr.takeTrace":
+		entries := cron.TakeTrace(e)
+		out := make([]any, len(entries))
+		for i, t := range entries {
+			out[i] = map[string]any{"verb": t.Verb, "unit": t.Unit, "hoursLength": t.HoursLength}
+		}
+		return ok(out)
 	}
 
 	return fail("unknown bridge operation: " + op)

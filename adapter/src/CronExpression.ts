@@ -1,4 +1,4 @@
-import { CronDate } from './CronDate';
+import { CronDate, DateMathOp, TimeUnit } from './CronDate';
 import { CronFieldCollection } from './CronFieldCollection';
 import { call, trackHandle } from './runtime';
 
@@ -73,6 +73,8 @@ export class CronExpression {
   private _options!: CronExpressionOptions;
   private _tz?: string;
   private _fields?: CronFieldCollection;
+  // Sink for replayed operations; its value is never read.
+  private _scratch?: CronDate;
 
   constructor(fields: CronFieldCollection, options: CronExpressionOptions = {}) {
     const handle = call<number>('fields.toExpression', fields._handle, toBridgeOptions(options));
@@ -115,24 +117,78 @@ export class CronExpression {
     return new CronDate(millis, this._tz);
   }
 
+  /**
+   * Replays the date operations the port performed, through the prototype
+   * method the original exposes.
+   *
+   * The original's date arithmetic is a method on CronDate, and its tests spy
+   * on that method to check that iteration jumps straight to the next matching
+   * value instead of stepping towards it. Here the search runs inside the port,
+   * so the method is never reached from JavaScript and a spy would see nothing.
+   *
+   * What is replayed is a recording of the operations the engine actually made,
+   * not a description of what it was expected to make: an engine that started
+   * stepping hour by hour would record more operations and the assertion would
+   * fail, exactly as it should. The operations are applied to a scratch date
+   * whose value is discarded, since the real arithmetic already happened.
+   */
+  private _replayTrace(): void {
+    const entries = call<{ verb: string; unit: string; hoursLength: number }[]>(
+      'expr.takeTrace',
+      this._handle,
+    );
+    if (entries.length === 0) {
+      return;
+    }
+
+    this._scratch ??= new CronDate(0, this._tz);
+    for (const entry of entries) {
+      this._scratch.applyDateOperation(
+        entry.verb as DateMathOp,
+        entry.unit as TimeUnit,
+        entry.hoursLength,
+      );
+    }
+  }
+
   next(): CronDate {
-    return this._date(call<number>('expr.next', this._handle));
+    try {
+      return this._date(call<number>('expr.next', this._handle));
+    } finally {
+      this._replayTrace();
+    }
   }
 
   prev(): CronDate {
-    return this._date(call<number>('expr.prev', this._handle));
+    try {
+      return this._date(call<number>('expr.prev', this._handle));
+    } finally {
+      this._replayTrace();
+    }
   }
 
   hasNext(): boolean {
-    return call<boolean>('expr.hasNext', this._handle);
+    try {
+      return call<boolean>('expr.hasNext', this._handle);
+    } finally {
+      this._replayTrace();
+    }
   }
 
   hasPrev(): boolean {
-    return call<boolean>('expr.hasPrev', this._handle);
+    try {
+      return call<boolean>('expr.hasPrev', this._handle);
+    } finally {
+      this._replayTrace();
+    }
   }
 
   take(limit: number): CronDate[] {
-    return call<number[]>('expr.take', this._handle, limit).map((ms) => this._date(ms));
+    try {
+      return call<number[]>('expr.take', this._handle, limit).map((ms) => this._date(ms));
+    } finally {
+      this._replayTrace();
+    }
   }
 
   reset(newDate?: Date | CronDate): void {

@@ -75,6 +75,37 @@ type Expression struct {
 	// does not recompute it on every iteration.
 	dstDayKey string
 	dstDayHit bool
+
+	// tracing records each date operation the search performs.
+	//
+	// It exists for the test bridge. The original exposes its date arithmetic as
+	// a method and its tests spy on that method to check that iteration jumps to
+	// the next matching value rather than stepping towards it one unit at a
+	// time. With the search loop here rather than in JavaScript, the only way to
+	// answer that question across the boundary is to report what actually
+	// happened. Nothing else reads these fields, and they are off by default.
+	tracing bool
+	trace   []traceOp
+}
+
+// traceOp is one recorded date operation.
+type traceOp struct {
+	op       dateMathOp
+	unit     timeUnit
+	hoursLen int
+}
+
+// applyOp performs a date operation, recording it when tracing is on.
+//
+// Every date operation the search makes goes through here, so the recording is
+// a log of what the engine did rather than a description of what it intends. An
+// engine that started stepping hour by hour would produce a longer log, which
+// is what keeps the original's tests meaningful when replayed against it.
+func (e *Expression) applyOp(c *cronTime, op dateMathOp, u timeUnit, hoursLen int) {
+	if e.tracing {
+		e.trace = append(e.trace, traceOp{op: op, unit: u, hoursLen: hoursLen})
+	}
+	c.applyDateOperation(op, u, hoursLen)
 }
 
 // Parse compiles a cron expression.
@@ -314,12 +345,12 @@ func (e *Expression) findSchedule(reverse bool) (*cronTime, error) {
 			return nil, err
 		}
 		if !ok {
-			current.applyDateOperation(op, unitDay, hoursLen)
+			e.applyOp(current, op, unitDay, hoursLen)
 			continue
 		}
 
 		if !e.fields.Month.contains(int(current.Month())) {
-			current.applyDateOperation(op, unitMonth, hoursLen)
+			e.applyOp(current, op, unitMonth, hoursLen)
 			continue
 		}
 
@@ -347,7 +378,7 @@ func (e *Expression) findSchedule(reverse bool) (*cronTime, error) {
 			// earlier matching instant, so it is accepted instead of spinning
 			// to the loop limit.
 			if op == opAdd || current.Millisecond() == 0 {
-				current.applyDateOperation(op, unitSecond, hoursLen)
+				e.applyOp(current, op, unitSecond, hoursLen)
 				continue
 			}
 		}
@@ -393,7 +424,7 @@ func (e *Expression) matchHour(current *cronTime, op dateMathOp, reverse bool) b
 	// the same schedule is not produced twice.
 	if isDstEnd && !reverse {
 		current.dstEnd = -1
-		current.applyDateOperation(opAdd, unitHour, hoursLen)
+		e.applyOp(current, opAdd, unitHour, hoursLen)
 		return false
 	}
 
@@ -406,7 +437,7 @@ func (e *Expression) matchHour(current *cronTime, op dateMathOp, reverse bool) b
 	if !ok {
 		// No matching hour remains today; skip the whole day rather than
 		// stepping hour by hour to its end.
-		current.applyDateOperation(op, unitDay, hoursLen)
+		e.applyOp(current, op, unitDay, hoursLen)
 		return false
 	}
 
@@ -419,7 +450,7 @@ func (e *Expression) matchHour(current *cronTime, op dateMathOp, reverse bool) b
 			steps = currentHour - nextHour
 		}
 		for i := 0; i < steps; i++ {
-			current.applyDateOperation(op, unitHour, hoursLen)
+			e.applyOp(current, op, unitHour, hoursLen)
 			// A spring-forward step can cross two wall-clock hours, so stop as
 			// soon as the target is reached or passed.
 			if !reverse && current.Hour() >= nextHour {
@@ -446,7 +477,7 @@ func (e *Expression) moveToNextMinute(current *cronTime, op dateMathOp, reverse 
 		current.setSecond(e.fields.Second.minOrMax(reverse))
 		return
 	}
-	current.applyDateOperation(op, unitHour, len(e.fields.Hour.values))
+	e.applyOp(current, op, unitHour, len(e.fields.Hour.values))
 	current.setMinute(e.fields.Minute.minOrMax(reverse))
 	current.setSecond(e.fields.Second.minOrMax(reverse))
 }
@@ -458,7 +489,7 @@ func (e *Expression) moveToNextSecond(current *cronTime, op dateMathOp, reverse 
 		current.setSecond(next)
 		return
 	}
-	current.applyDateOperation(op, unitMinute, len(e.fields.Hour.values))
+	e.applyOp(current, op, unitMinute, len(e.fields.Hour.values))
 	current.setSecond(e.fields.Second.minOrMax(reverse))
 }
 

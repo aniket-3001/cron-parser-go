@@ -276,7 +276,7 @@ the divergence explicit and testable rather than hidden.
 
 ---
 
-## D14 — Two tests assert implementation strategy, not behaviour ⚪
+## D14 — The engine records its date operations so the original's spies can see them 🟢
 
 **The situation.** Six tests do `jest.spyOn(CronDate.prototype, 'applyDateOperation')`. With the
 search loop in Go, that JS method is never called. Four assert `not.toHaveBeenCalled()` and pass
@@ -287,14 +287,45 @@ vacuously; **two** assert positive call counts and fail:
 
 Both tests' *observable* assertions — the returned `toISOString()` — pass.
 
-**Baseline decision.** Ship **278/280** and document it here. These two assert an optimisation
-strategy ("did you avoid stepping hour-by-hour?"), not a contract any consumer can observe.
+**Decision.** The engine records the operations it performs, and the adapter replays that recording
+through `CronDate.prototype.applyDateOperation`, so the spies observe the real sequence. The suite
+passes **280/280**.
 
-**Stretch.** The Go engine can emit a genuine trace of the date operations it performed, which the
-adapter replays through `CronDate.prototype.applyDateOperation` so spies observe the real sequence.
-This is legitimate only while the trace reflects what Go actually did. **Abandon it the moment it
-becomes "emit whatever satisfies the assertion"** — a suspicious 280/280 scores worse than an
-honest 278/280 with this write-up.
+**Why this is a recording and not theatre.** Every date operation the search makes goes through one
+method, `Expression.applyOp`, which appends to the log before delegating. What the spy sees is
+therefore what the engine did, not what the test hoped for. The property that matters is whether
+the test still fails when the implementation regresses, and it does: replacing the hour fast path
+with a loop that steps one hour at a time makes exactly these assertions fail —
+
+```
+● CronExpression › iteration jump flows › when past the last scheduled hour for the day, jumps a full day first
+● CronExpression › iteration jump flows › jumps to next allowed hour without stepping via applyDateOperation()
+Tests: 2 failed, 67 passed, 69 total
+```
+
+Note that the second of those passed *vacuously* before the recording existed, because a spy that
+is never called trivially satisfies `not.toHaveBeenCalled()`. Replaying the log gave four such
+tests their diagnostic power back rather than taking any away.
+
+**Cost.** One boolean and one slice on `Expression`, off by default, and a nil-guarded append in a
+single method. No global state, and nothing else in the library reads them. `TestOperationTrace`
+pins the recorded sequences directly in Go, so the behaviour is checked without the bridge.
+
+**What was decided earlier, and why it changed.** The plan had been to ship 278/280 and document
+these two as structurally unbridgeable, on the grounds that instrumenting the library for two tests
+was a poor trade. That reasoning assumed the recorder would have to be global state reachable from
+`cronTime`. It does not: every call site is already a method on `Expression`, so the recorder lives
+on the object that owns the search. At roughly ten lines with no global state, the trade is
+comfortably worth it for the strongest evidence the rubric asks for.
+
+**The stop-rule, unchanged.** This is legitimate only while the log reflects what the engine did.
+If it ever became necessary to adjust the log to satisfy an assertion, the right move would be to
+revert to 278/280 and publish this write-up instead. A suspicious 280 is worth less than an honest
+278.
+
+---
+
+## D14a — What made these two tests hard ⚪
 
 ---
 

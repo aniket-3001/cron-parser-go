@@ -409,3 +409,29 @@ func (r *Random) Next() float64 { return r.next() }
 func FindNearestValueInList(values []Value, current int, reverse bool) (int, bool) {
 	return findNearestInValues(values, current, reverse)
 }
+
+// TraceEntry is one date operation the search performed, named the way the
+// original's TimeUnit and DateMathOp enums name them.
+type TraceEntry struct {
+	Verb        string
+	Unit        string
+	HoursLength int
+}
+
+// EnableTrace makes the expression record the date operations it performs.
+func EnableTrace(e *Expression) { e.tracing = true }
+
+// TakeTrace returns the operations recorded since the last call, and clears
+// them, so each search reports only its own.
+func TakeTrace(e *Expression) []TraceEntry {
+	out := make([]TraceEntry, len(e.trace))
+	for i, t := range e.trace {
+		out[i] = TraceEntry{
+			Verb:        t.op.String(),
+			Unit:        t.unit.String(),
+			HoursLength: t.hoursLen,
+		}
+	}
+	e.trace = e.trace[:0]
+	return out
+}
