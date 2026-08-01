@@ -322,3 +322,39 @@ func TestWildcardOverride(t *testing.T) {
 		})
 	}
 }
+
+// TestDuplicateZeroMasksLaterDuplicates pins the full shape of the original's
+// duplicate check, which stops at the first duplicate and then tests it for
+// truthiness. A duplicated 0 sorts first, so it both escapes detection itself
+// and hides every later duplicate.
+//
+// Found by differential fuzzing: checking every value instead, which is the
+// obvious translation, rejects "0,7,4,4" where the original accepts it.
+func TestDuplicateZeroMasksLaterDuplicates(t *testing.T) {
+	tests := []struct {
+		name   string
+		values []Value
+		want   string // empty means accepted
+	}{
+		{"a duplicated zero is accepted", Nums(0, 0), ""},
+		{"and it masks a later duplicate", Nums(0, 0, 4, 4), ""},
+		{"a duplicate without a leading zero is rejected", Nums(4, 4),
+			"CronDayOfWeek Validation error, duplicate values found: 4"},
+		{"a single zero does not mask anything", Nums(0, 4, 4),
+			"CronDayOfWeek Validation error, duplicate values found: 4"},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			_, err := newField(specDayOfWeek, tc.values, fieldOptions{})
+			switch {
+			case tc.want == "" && err != nil:
+				t.Errorf("expected acceptance, got %v", err)
+			case tc.want != "" && err == nil:
+				t.Errorf("expected %q, got acceptance", tc.want)
+			case tc.want != "" && err.Error() != tc.want:
+				t.Errorf("got %q, want %q", err.Error(), tc.want)
+			}
+		})
+	}
+}

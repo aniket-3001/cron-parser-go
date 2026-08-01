@@ -30,6 +30,23 @@ new CronSecond([0, 0]);   // accepted -- no error
 new CronSecond([0, 0, 1]); // accepted -- no error
 ```
 
+### It also hides unrelated duplicates
+
+`find` stops at the first duplicate, so once a duplicated `0` has been found and
+tested as falsy, no further check happens. Values are sorted ascending, which puts a
+duplicated `0` first — and every other duplicate in the field goes unreported:
+
+```js
+const parser = require('cron-parser');
+
+parser.parse('* * * * * 4,4');      // throws: duplicate values found: 4
+parser.parse('* * * * * 0,7,4,4');  // accepted
+```
+
+Both fields end up holding `[0, 0, 4, 4]`: day-of-week normalises `7` to `0`, so the
+second expression contains two duplicate pairs. The `0` pair suppresses the report of
+the `4` pair.
+
 ### Expected vs actual
 
 **Expected:** `[0, 0]` is rejected exactly as `[1, 1]` is.

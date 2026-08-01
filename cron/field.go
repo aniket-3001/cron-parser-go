@@ -259,17 +259,21 @@ func (f *Field) validate() error {
 		}
 	}
 
+	// The original writes `if (duplicate)` against the value returned by
+	// Array.prototype.find, which stops at the FIRST duplicate. When that value
+	// is 0 the test is falsy and no error is raised — and because the search
+	// already stopped, later duplicates go unreported as well. Values are sorted
+	// ascending, so a duplicated 0 masks every other duplicate in the field.
+	//
+	// Reproduced deliberately; reported upstream as bug 5. Checking each value
+	// instead, which is the obvious translation, rejects "0,7,4,4" where the
+	// original accepts it.
 	for i, v := range f.values {
 		if slices.Index(f.values, v) == i {
 			continue
 		}
-		// The original writes `if (duplicate)` against the value returned by
-		// Array.prototype.find, which is falsy when the duplicated value is 0.
-		// Duplicate zeros therefore escape detection while every other
-		// duplicate is rejected. Reproduced deliberately: the reference suite
-		// distinguishes the two cases. Reported upstream as bug 5.
 		if v.IsNumeric() && v.N == 0 {
-			continue
+			return nil
 		}
 		return &FieldError{Field: f.spec.name, Kind: errKindDuplicate, Value: v}
 	}

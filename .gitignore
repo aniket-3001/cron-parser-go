@@ -9,3 +9,4 @@ scripts/probe/node_modules/
 # Differential corpora are regenerated on demand and run to tens of megabytes.
 scripts/probe/*-corpus.json
 adapter/wasm-bytes.js
+fuzz/last-run.json
