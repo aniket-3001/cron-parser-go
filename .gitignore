@@ -24,3 +24,7 @@ fuzz/divergences/
 /cron-parser.exe
 /bench-port
 /bench-port.exe
+
+# Coverage profiles. npm run honest-numbers writes one per run and removes it,
+# but an interrupted run leaves it behind.
+*.out
