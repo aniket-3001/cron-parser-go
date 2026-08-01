@@ -11,7 +11,8 @@
     "verify-hashes": "node scripts/verify-hashes.js",
     "fuzz": "node fuzz/differential.js --seconds=60",
     "bench": "node bench/report.js",
-    "compare": "node compare/cli-diff.js"
+    "compare": "node compare/cli-diff.js",
+    "honest-numbers": "node scripts/honest-numbers.js"
   },
   "devDependencies": {
     "@jest/globals": "^30.0.0",
