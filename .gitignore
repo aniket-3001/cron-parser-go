@@ -12,6 +12,12 @@ adapter/wasm-bytes.js
 # The fuzz log and the CLI diff are published evidence, so they are tracked.
 # Only the regenerable corpora are ignored.
 
+# Live fuzzer output. Reproductions here come from whatever the last run did,
+# including the deliberate sabotage runs used to validate the harness, so they
+# are not evidence of anything on their own. fuzz/log.txt and fuzz/last-run.json
+# record the clean run instead. See fuzz/README.md.
+fuzz/divergences/
+
 # Built artifacts. Anchored with a leading slash: an unanchored "cron-parser"
 # also matches the cmd/cron-parser/ source directory.
 /cron-parser

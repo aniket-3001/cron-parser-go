@@ -1,0 +1,30 @@
+{
+  "summary": {
+    "seed": 1,
+    "seconds": 65,
+    "expressionCases": 2531,
+    "dateCases": 1231,
+    "casesPerSecond": 58,
+    "bothAccepted": 937,
+    "bothRejected": 1594,
+    "divergences": 0,
+    "zones": [
+      "UTC",
+      "America/New_York",
+      "Europe/London",
+      "Europe/Sofia",
+      "Asia/Kolkata",
+      "Australia/Lord_Howe",
+      "Antarctica/Troll",
+      "Pacific/Chatham",
+      "America/Santiago",
+      "Africa/Cairo",
+      "Australia/Sydney",
+      "America/Sao_Paulo",
+      "Asia/Beirut",
+      "Pacific/Auckland"
+    ],
+    "generatedAt": "2026-08-01T07:53:17.742Z"
+  },
+  "divergences": []
+}
