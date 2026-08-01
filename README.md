@@ -191,22 +191,32 @@ anything depended on it. See [`DESIGN.md`](DESIGN.md) §4.
 
 ## Bugs found in the original
 
-Seven, all **filed upstream and open**. Three were found by differential and property-based
-testing rather than by reading. Existing issues were checked first to avoid duplicates; see
-[`upstream-issues/`](upstream-issues/) for the reproductions and that check.
+Seven filed upstream on 2026-08-01. **Two were fixed and merged the same day**, two more are
+labelled `bug` and assigned to the maintainer, and one duplicates a pull request that was already
+open. Three were found by differential and property-based testing rather than by reading. See
+[`upstream-issues/`](upstream-issues/) for the reproductions, the outcome and the duplicate check.
 
-| Issue | Bug |
-|---|---|
-| [#424](https://github.com/harrisiirak/cron-parser/issues/424) | **`stringify()` can change the schedule** — `0 0 16 * 0-6` renders to `0 0 16 * *`; the first fires daily, the second monthly |
-| [#419](https://github.com/harrisiirak/cron-parser/issues/419) | **DST compensation assumes one-hour transitions** — `diff === 2` never fires for `Antarctica/Troll`'s two-hour gap |
-| [#420](https://github.com/harrisiirak/cron-parser/issues/420) | **In-place `sort()` mutates the caller's array** — a constructor rewrites its argument |
-| [#422](https://github.com/harrisiirak/cron-parser/issues/422) | **Bare `L` in day-of-week fails at `next()`** — parses cleanly, throws during iteration |
-| [#423](https://github.com/harrisiirak/cron-parser/issues/423) | **A duplicated `0` masks every other duplicate** and makes rendering throw — `0,7,4,4` is accepted, `4,4` is rejected |
-| [#425](https://github.com/harrisiirak/cron-parser/issues/425) | **`stringify()` is not idempotent** — day-of-month renders and parses against different maxima |
-| [#421](https://github.com/harrisiirak/cron-parser/issues/421) | **`[,-/]` is an unintended character range** — matches `.` as well as `,` `-` `/` |
+| Issue | Bug | Status |
+|---|---|---|
+| [#424](https://github.com/harrisiirak/cron-parser/issues/424) | **`stringify()` can change the schedule** — `0 0 16 * 0-6` renders to `0 0 16 * *`; the first fires daily, the second monthly | `bug`, assigned |
+| [#419](https://github.com/harrisiirak/cron-parser/issues/419) | **DST compensation assumes one-hour transitions** — `diff === 2` never fires for `Antarctica/Troll`'s two-hour gap, and an occurrence is skipped outright | open |
+| [#420](https://github.com/harrisiirak/cron-parser/issues/420) | **In-place `sort()` mutates the caller's array** — a constructor rewrites its argument | ✅ **merged**, [PR #427](https://github.com/harrisiirak/cron-parser/pull/427) |
+| [#422](https://github.com/harrisiirak/cron-parser/issues/422) | **Bare `L` in day-of-week fails at `next()`** — parses cleanly, throws during iteration | open |
+| [#423](https://github.com/harrisiirak/cron-parser/issues/423) | **A duplicated `0` masks every other duplicate** and makes rendering throw — `0,7,4,4` is accepted, `4,4` is rejected | `bug`, assigned — duplicate of [PR #418](https://github.com/harrisiirak/cron-parser/pull/418) |
+| [#425](https://github.com/harrisiirak/cron-parser/issues/425) | **`stringify()` is not idempotent** — day-of-month renders and parses against different maxima | open, partly overlaps #279 |
+| [#421](https://github.com/harrisiirak/cron-parser/issues/421) | **`[,-/]` is an unintended character range** — matches `.` as well as `,` `-` `/` | ✅ **merged**, [PR #426](https://github.com/harrisiirak/cron-parser/pull/426) |
 
-Plus a design inconsistency: **`W` is a phantom feature** — the stringify path handles it, no
-field accepts it, so it is unreachable through any constructor.
+PR #427's fix — `values.sort(...)` → `[...values].sort(...)` — is the one this port had already
+made independently on day one, for the same reason (D4).
+
+**The honest count is six original findings, not seven.** #423 restates PR #418, open since three
+days before kickoff. The duplicate check searched issues and not open pull requests; that miss and
+what it should have been are recorded in [`upstream-issues/`](upstream-issues/) rather than edited
+away.
+
+Plus a design inconsistency deliberately **not** filed: **`W` is a phantom feature** — the stringify
+path handles it, no field accepts it, so it is unreachable through any constructor. Filing an
+ambiguous half-landed feature to raise a count is how maintainers learn to stop reading issues.
 
 ---
 

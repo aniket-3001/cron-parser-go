@@ -289,6 +289,27 @@ by accident.
 **What would change this.** If the upstream reports are accepted and fixed, the port should follow
 the fix rather than keep the bug. The pinning tests are where that work would start.
 
+**And it has started.** On 2026-08-01, the day they were filed, the maintainer merged fixes for two
+of the reports. The port is pinned to the kickoff commit `aeb2a151`, which is what every equivalence
+claim here is measured against, so the pin stays for the submission — but the two behaviours have
+now moved in opposite directions relative to upstream `main`:
+
+| Behaviour | Port | Pinned `aeb2a151` | Upstream `main` |
+|---|---|---|---|
+| Constructor mutates the caller's slice | no (D4) | yes | **no** — [PR #427](https://github.com/harrisiirak/cron-parser/pull/427) |
+| `[,-/]` matches `.` | yes | yes | **no** — [PR #426](https://github.com/harrisiirak/cron-parser/pull/426) |
+
+The first was a deliberate divergence from the pin and has now *converged* with upstream: the fix
+merged is `[...values].sort(...)`, which is what this port has done since day one.
+
+The second is the reverse. The port faithfully reproduces a bug upstream no longer has, so
+`0 0 * * 1.2#2` is still rejected here with the old message. That case is in the CLI diff corpus,
+which means `npm run compare` against a *fresh* upstream clone would report one difference — against
+the pinned clone it reports none, and the pin is what `.port-mortem.toml` records.
+
+Following the fix is the right move once the submission is judged; doing it now would break the
+equivalence evidence the submission rests on.
+
 ---
 
 ## D14 — The engine records its date operations so the original's spies can see them 🟢

@@ -3,19 +3,55 @@
 Latent bugs found in `harrisiirak/cron-parser` v5.6.2 while porting it to Go, each reproduced
 against the pinned commit `aeb2a1513fd33365a6414f4137516c9482f831ed`.
 
-All seven are **filed upstream** and open.
+Seven were filed upstream on 2026-08-01. **Two have been fixed and merged**, two more are labelled
+`bug` and assigned to the maintainer, and one turned out to duplicate a pull request that was
+already open — see [Outcome](#outcome) below for the honest accounting.
 
-| Filed | Bug | Severity | Draft |
-|---|---|---|---|
-| [#424](https://github.com/harrisiirak/cron-parser/issues/424) | `stringify()` round trip changes the schedule | **High** — silently reschedules a job | [06](06-stringify-round-trip-changes-schedule.md) |
-| [#419](https://github.com/harrisiirak/cron-parser/issues/419) | DST compensation assumes one-hour transitions | High — wrong results in `Antarctica/Troll` | [01](01-dst-two-hour-transitions.md) |
-| [#420](https://github.com/harrisiirak/cron-parser/issues/420) | In-place `sort()` mutates the caller's array | Medium — silent caller data corruption | [02](02-in-place-sort-mutates-caller.md) |
-| [#422](https://github.com/harrisiirak/cron-parser/issues/422) | Bare `L` in day-of-week throws at `next()`, not `parse()` | Medium — validation boundary is wrong | [04](04-bare-L-day-of-week-throws-late.md) |
-| [#423](https://github.com/harrisiirak/cron-parser/issues/423) | A duplicated `0` escapes validation, masks later duplicates, and breaks `stringify()` | Medium — accepted input cannot be rendered | [05](05-duplicate-zero-escapes-validation.md) |
-| [#425](https://github.com/harrisiirak/cron-parser/issues/425) | `stringify()` is not idempotent | Low — rendered text is not canonical | [08](08-stringify-not-idempotent.md) |
-| [#421](https://github.com/harrisiirak/cron-parser/issues/421) | `[,-/]` is an unintended character range | Low — wrong rejection reason | [03](03-regex-character-range.md) |
+| Filed | Bug | Severity | Status | Draft |
+|---|---|---|---|---|
+| [#424](https://github.com/harrisiirak/cron-parser/issues/424) | `stringify()` round trip changes the schedule | **High** — silently reschedules a job | labelled `bug`, assigned | [06](06-stringify-round-trip-changes-schedule.md) |
+| [#419](https://github.com/harrisiirak/cron-parser/issues/419) | DST compensation assumes one-hour transitions | High — an occurrence is skipped in `Antarctica/Troll` | open | [01](01-dst-two-hour-transitions.md) |
+| [#420](https://github.com/harrisiirak/cron-parser/issues/420) | In-place `sort()` mutates the caller's array | Medium — silent caller data corruption | **fixed, [PR #427](https://github.com/harrisiirak/cron-parser/pull/427)** | [02](02-in-place-sort-mutates-caller.md) |
+| [#422](https://github.com/harrisiirak/cron-parser/issues/422) | Bare `L` in day-of-week throws at `next()`, not `parse()` | Medium — validation boundary is wrong | open | [04](04-bare-L-day-of-week-throws-late.md) |
+| [#423](https://github.com/harrisiirak/cron-parser/issues/423) | A duplicated `0` escapes validation, masks later duplicates, and breaks `stringify()` | Medium — accepted input cannot be rendered | labelled `bug`, assigned — **duplicate of [PR #418](https://github.com/harrisiirak/cron-parser/pull/418)** | [05](05-duplicate-zero-escapes-validation.md) |
+| [#425](https://github.com/harrisiirak/cron-parser/issues/425) | `stringify()` is not idempotent | Low — rendered text is not canonical | open — overlaps #279 | [08](08-stringify-not-idempotent.md) |
+| [#421](https://github.com/harrisiirak/cron-parser/issues/421) | `[,-/]` is an unintended character range | Low — wrong rejection reason | **fixed, [PR #426](https://github.com/harrisiirak/cron-parser/pull/426)** | [03](03-regex-character-range.md) |
 
-Filed 2026-08-01. Listed by severity rather than by number.
+Listed by severity rather than by number.
+
+## Outcome
+
+Recorded as of 2026-08-01T15:30Z. The maintainer acted on the same day they were filed.
+
+**Merged.** Both fixes match what the reports proposed, and both landed with regression tests:
+
+| | |
+|---|---|
+| [PR #426](https://github.com/harrisiirak/cron-parser/pull/426) → #421 | `val.match(/([,-/])/)` → `val.match(/([,\-/])/)` — the hyphen escaped so it is a literal rather than a range. Commit `a551625`. |
+| [PR #427](https://github.com/harrisiirak/cron-parser/pull/427) → #420 | `values.sort(...)` → `[...values].sort(...)` — a defensive copy. Commit `5c01e1f`. |
+
+The second is the fix this port had already made independently on day one, for the same reason
+(`DECISIONS.md` D4): Go slices share a backing array, so the naive translation would have inherited
+the bug.
+
+**Triaged but not yet fixed.** #423 and #424 are labelled `bug` and assigned to the maintainer.
+
+**One duplicate, which is a miss on our part.** #423 restates
+[PR #418](https://github.com/harrisiirak/cron-parser/pull/418), opened by `gaoflow` on 2026-07-29 —
+three days before kickoff — describing the identical falsy-zero mechanism. The duplicate check
+below searched *issues* and not *open pull requests*, which is how it was missed. The defect is
+real and was reproduced independently here, but it was already known, so it does not count as an
+original finding.
+
+**One partial overlap.** #425's first step — `16-26/5` collapsing to `16/5` — is the `start/step`
+shorthand behaviour that [PR #411](https://github.com/harrisiirak/cron-parser/pull/411) addresses
+for issue #279. The distinct part of #425 is what follows: day-of-month maximum is narrowed to the
+named month's length when stringifying but not when parsing, so re-parsing the output gains a 31st
+of June. Related mechanism, different defect, and worth describing that way rather than as wholly
+independent.
+
+**So the defensible claim is six original findings, of which two are merged** — not seven
+discoveries.
 
 ## How they were found
 
@@ -45,6 +81,26 @@ Existing issues were checked for overlap, to avoid duplicates:
 
 Searches for the two-hour transition, the sort mutation, the round-trip divergence and the
 internal render error returned nothing.
+
+### What that check got wrong
+
+**It searched issues and not open pull requests.** Two of the conclusions above did not survive
+contact with the repository:
+
+- [PR #418](https://github.com/harrisiirak/cron-parser/pull/418) had been open since 2026-07-29 with
+  the duplicate-zero fix. #423 restates it. The maintainer pointed this out within hours.
+- #279 was recorded as stale, but it has an **open** pull request,
+  [#411](https://github.com/harrisiirak/cron-parser/pull/411), from June. The issue not reproducing
+  as written is not the same as the underlying defect being gone, and #425 turned out to overlap it
+  in part.
+
+A duplicate search that ignores pull requests only covers half the project's memory of itself: on a
+repository where fixes arrive as PRs, the most recent thinking about a bug often lives there and
+never in an issue at all. The correct query set is issues **and** PRs, open **and** closed, searched
+by mechanism rather than by title.
+
+This is recorded rather than quietly corrected because it changes a headline number: six original
+findings, not seven.
 
 ## Not filed
 

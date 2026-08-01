@@ -248,10 +248,24 @@ matters more than throughput nobody is bottlenecked on.
 
 ---
 
-## Seven bugs in the original, and one I deliberately didn't file
+## Six bugs in the original, two already merged, and one I deliberately didn't file
 
-Differential testing finds bugs in the *reference*, not just the port. Seven filed upstream during
-the hackathon ([#419–#425](https://github.com/harrisiirak/cron-parser/issues)):
+Differential testing finds bugs in the *reference*, not just the port. Seven reports went upstream
+during the hackathon ([#419–#425](https://github.com/harrisiirak/cron-parser/issues)). Two were
+fixed and merged the same day:
+
+| | |
+|---|---|
+| [PR #426](https://github.com/harrisiirak/cron-parser/pull/426) | `val.match(/([,-/])/)` → `/([,\-/])/` — escape the hyphen so it's a literal, not a range |
+| [PR #427](https://github.com/harrisiirak/cron-parser/pull/427) | `values.sort(...)` → `[...values].sort(...)` — a defensive copy |
+
+Filed 07:12Z, merged by 14:16Z. That second one is the fix I'd already made in Go on day one, for
+the same reason — Go slices share a backing array, so the naive translation inherits the bug. Nice
+to have the maintainer arrive at the same line independently.
+
+Two more (`#423`, `#424`) are now labelled `bug` and assigned to the maintainer.
+
+**And one of the seven wasn't mine.** More on that below.
 
 **`stringify()` isn't round-trip safe** — the worst one. `0 0 16 * 0-6` renders as `0 0 16 * *`.
 The original fires **daily**; its own rendered output fires **monthly**. Cause: `isWildcard` is
@@ -274,12 +288,33 @@ A late job versus a **missing** job. I filed the shifted-time version first, the
 while re-verifying and added it as a follow-up comment — the harder failure to notice, and I'd
 initially understated it.
 
-**A duplicated `0` escapes validation.** The check is `if (duplicate)` against
-`Array.prototype.find`'s return value — which is falsy when the value found is `0`. So `[1,1]` is
-rejected and `[0,0]` sails through, and worse, it *masks later duplicates* in the same field.
+**Bare `L` in day-of-week parses fine and throws on `next()`.** `parse('0 0 * * L')` succeeds; the
+error arrives later, from a different call, after you've already stored the expression as valid.
+Validation that happens at use rather than at parse is validation you can't build a UI around.
 
-Plus: an in-place `sort()` that mutates the caller's array, a character class `[,-/]` whose
-unintended range matches `.`, and `stringify()` not being idempotent.
+Plus: `stringify()` not being idempotent, and the two already merged above.
+
+### The one that wasn't mine
+
+I filed a seventh — a duplicated `0` escaping validation, because the check is `if (duplicate)`
+against `Array.prototype.find`'s return value, which is falsy when the value found is `0`. Real bug.
+`[1,1]` is rejected, `[0,0]` sails through.
+
+It also had **an open pull request since three days before the hackathon started**, which the
+maintainer pointed out within hours.
+
+My duplicate check searched *issues*. It didn't search *open pull requests*. On a repo where fixes
+arrive as PRs, that's half the project's memory of itself — the most recent thinking about a bug
+often lives in a PR and never in an issue at all. A second report (`#425`) turned out to partly
+overlap an issue I'd dismissed as stale, on the grounds that it "no longer reproduces as written" —
+which, I now know, is not the same as the defect being gone. It had an open PR too.
+
+So: **six original findings, not seven.** I'm leaving the wrong number visible in my repo's issue
+log with a note, rather than editing it into a cleaner story, because the failure mode is more
+useful than the count. If you're going to claim novelty against a live codebase, search issues *and*
+PRs, open *and* closed, and search by **mechanism** rather than by title — my query was "duplicate
+values", and the PR was titled "reject duplicate 0 in field validation", which a title-shaped search
+finds and a concept-shaped one finds faster.
 
 **The one I didn't file:** `W` (nearest weekday) is a phantom. It's in the `CronChars` type, it has
 an explicit branch in `compactField`, four tests exercise it — but it's absent from

@@ -2,3 +2,16 @@
 # change their sha256 and break the contract with the judges. Force LF everywhere.
 * text=auto eol=lf
 *.wasm binary
+
+# tests/original/ is upstream's test suite, copied in byte for byte and hash
+# pinned. It is vendored in the literal sense the attribute means: not written
+# here, and not modifiable without breaking the contract with the judges.
+# Marking it keeps GitHub's language bar describing the code this project
+# actually wrote.
+#
+# Deliberately scoped to that directory alone. adapter/, bridge/, fuzz/, bench/
+# and compare/ are TypeScript and JavaScript written for this port, and they
+# stay counted: a Go port that needed a WebAssembly bridge and a JS-side
+# harness to prove itself is honest signal about what the work involved, not
+# something to tidy out of the statistics.
+tests/original/** linguist-vendored
