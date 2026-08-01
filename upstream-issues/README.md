@@ -3,46 +3,56 @@
 Latent bugs found in `harrisiirak/cron-parser` v5.6.2 while porting it to Go, each reproduced
 against the pinned commit `aeb2a1513fd33365a6414f4137516c9482f831ed`.
 
-The Port Mortem **Bug Catcher** bonus requires these to be *filed upstream during the 72-hour
-window* — reproducing them is not sufficient. This directory holds the drafts; the table below
-tracks what has actually been filed.
+All seven are **filed upstream** and open.
 
-| # | Bug | Severity | Filed |
+| Filed | Bug | Severity | Draft |
 |---|---|---|---|
-| 6 | [`stringify()` round trip changes the schedule](06-stringify-round-trip-changes-schedule.md) | **High — silently reschedules a job** | ☐ |
-| 1 | [DST compensation assumes 1-hour transitions](01-dst-two-hour-transitions.md) | High — wrong results in `Antarctica/Troll` | ☐ |
-| 2 | [In-place `sort()` mutates the caller's array](02-in-place-sort-mutates-caller.md) | Medium — silent caller data corruption | ☐ |
-| 4 | [Bare `L` in day-of-week throws at `next()`, not `parse()`](04-bare-L-day-of-week-throws-late.md) | Medium — validation boundary is wrong | ☐ |
-| 7 | [Repeated zeros make `stringify()` throw an internal error](07-repeated-zeros-break-stringify.md) | Medium — accepted input cannot be rendered | ☐ |
-| 8 | [`stringify()` is not idempotent](08-stringify-not-idempotent.md) | Low — rendered text is not canonical | ☐ |
-| 3 | [`[,-/]` is an unintended character range](03-regex-character-range.md) | Low — wrong rejection reason | ☐ |
-| 5 | [Duplicate `0` escapes the duplicate check](05-duplicate-zero-escapes-validation.md) | Low — inconsistent validation | ☐ |
+| [#424](https://github.com/harrisiirak/cron-parser/issues/424) | `stringify()` round trip changes the schedule | **High** — silently reschedules a job | [06](06-stringify-round-trip-changes-schedule.md) |
+| [#419](https://github.com/harrisiirak/cron-parser/issues/419) | DST compensation assumes one-hour transitions | High — wrong results in `Antarctica/Troll` | [01](01-dst-two-hour-transitions.md) |
+| [#420](https://github.com/harrisiirak/cron-parser/issues/420) | In-place `sort()` mutates the caller's array | Medium — silent caller data corruption | [02](02-in-place-sort-mutates-caller.md) |
+| [#422](https://github.com/harrisiirak/cron-parser/issues/422) | Bare `L` in day-of-week throws at `next()`, not `parse()` | Medium — validation boundary is wrong | [04](04-bare-L-day-of-week-throws-late.md) |
+| [#423](https://github.com/harrisiirak/cron-parser/issues/423) | A duplicated `0` escapes validation, masks later duplicates, and breaks `stringify()` | Medium — accepted input cannot be rendered | [05](05-duplicate-zero-escapes-validation.md) |
+| [#425](https://github.com/harrisiirak/cron-parser/issues/425) | `stringify()` is not idempotent | Low — rendered text is not canonical | [08](08-stringify-not-idempotent.md) |
+| [#421](https://github.com/harrisiirak/cron-parser/issues/421) | `[,-/]` is an unintended character range | Low — wrong rejection reason | [03](03-regex-character-range.md) |
 
-Listed by severity rather than by number. Bugs 6 to 8 were found later than the
-others and by a different method: 1 to 5 came from reading the source and
-confirming by execution, while 6 to 8 were found by checking a property over
-randomly generated expressions — that an expression and its rendering describe
-the same schedule. None of the three would have been found by reading.
+Filed 2026-08-01. Listed by severity rather than by number.
 
-Bugs 5, 7 and 8 form a chain worth mentioning together when filing: the
-duplicate-zero gap (5) is what lets a field of repeated zeros exist, which is
-what makes rendering fail (7).
+## How they were found
 
-## Filing notes
+Reports 01 to 04 came from reading the source and confirming by execution. Reports 05, 06 and 08
+came from checking a property over randomly generated expressions — that an expression and its
+rendering describe the same schedule — and none of the three would have been found by reading.
 
-- Each report is self-contained: summary, runnable repro, expected vs actual, suggested fix.
-- Every repro was executed against v5.6.2, not inferred from reading the source.
-- Reports mention that the bug was found while porting, which explains the unusual thoroughness
-  without editorialising.
-- Bug 3 is deliberately framed as low severity — the input is invalid either way, and overstating
-  it would undermine the credibility of the other four.
+The masking half of 05 was found by the differential fuzzer during a qualifying run: the port
+checked every duplicate rather than only the first, and so rejected `0,7,4,4` where the original
+accepts it. Reproducing the original exactly meant making the port accept it too.
 
-## Not filed as a bug
+Reports 05 and 07 were originally separate. They share one root cause and one fix — a field that
+survives the duplicate check is the same field that cannot be rendered — so they were merged
+before filing rather than sent as two issues a maintainer would have to reconcile.
+
+## Before filing
+
+Existing issues were checked for overlap, to avoid duplicates:
+
+- **#279** (`stringifyField` renders `6-18/3` as `6/6`) no longer reproduces on v5.6.2 and links to
+  the v4 source layout.
+- **#273** is a different daylight-saving bug, about `endDate` and the timespan check rather than
+  the width of a transition.
+- **#257** asks for `L` combined with lists to be rejected in day-of-month, which is adjacent to
+  #422 but not the same defect.
+- **#268** is closed and concerns a different duplicate-value path.
+
+Searches for the two-hour transition, the sort mutation, the round-trip divergence and the
+internal render error returned nothing.
+
+## Not filed
 
 **`W` is a phantom feature.** `CronChars` is `'L' | 'W'`, `CronFieldCollection.compactField()`
-handles `'W'`, and four tests exercise it — but no `validChars` regex contains `W`, so the parser
-rejects `15W` and `LW`. The stringify path can emit a value the parse path cannot produce.
+handles `'W'`, and four tests exercise it — but no field's `validChars` contains `W`, so the
+parser rejects `15W` and `LW` and no constructor accepts it. The stringify path can emit a value
+the parse path cannot produce.
 
 This is a design inconsistency rather than a defect with a wrong output, and whether `W` was meant
-to be supported is a maintainer's call, not ours. It is documented in `DECISIONS.md` D15 and
-`SEMANTICS.md` §7. If raised upstream at all, it belongs as a question, not a bug report.
+to be supported is a maintainer's call — there are already open requests for it (#167, #376). It
+is documented in `DECISIONS.md` D15 and `SEMANTICS.md` section 7.

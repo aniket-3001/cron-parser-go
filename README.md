@@ -131,20 +131,19 @@ anything depended on it. See [`DESIGN.md`](DESIGN.md) §4.
 
 ## Bugs found in the original
 
-Eight, reproduced against v5.6.2 and drafted as reports in
-[`upstream-issues/`](upstream-issues/). Three were found by differential and property-based
-testing rather than by reading:
+Seven, all **filed upstream and open**. Three were found by differential and property-based
+testing rather than by reading. Existing issues were checked first to avoid duplicates; see
+[`upstream-issues/`](upstream-issues/) for the reproductions and that check.
 
-| | |
+| Issue | Bug |
 |---|---|
-| **`stringify()` can change the schedule** | `0 0 16 * 0-6` renders to `0 0 16 * *`; the first fires daily, the second monthly |
-| **DST compensation assumes one-hour transitions** | `diff === 2` never fires for `Antarctica/Troll`'s two-hour gap |
-| **`stringify()` throws on repeated zeros** | reaches an internal error the source marks unreachable |
-| **In-place `sort()` mutates the caller's array** | a constructor rewrites its argument |
-| **Bare `L` in day-of-week fails at `next()`** | parses cleanly, throws during iteration |
-| **A duplicated `0` masks every other duplicate** | `0,7,4,4` is accepted; `4,4` is rejected |
-| **`stringify()` is not idempotent** | day-of-month renders and parses against different maxima |
-| **`[,-/]` is an unintended character range** | matches `.` as well as `,` `-` `/` |
+| [#424](https://github.com/harrisiirak/cron-parser/issues/424) | **`stringify()` can change the schedule** — `0 0 16 * 0-6` renders to `0 0 16 * *`; the first fires daily, the second monthly |
+| [#419](https://github.com/harrisiirak/cron-parser/issues/419) | **DST compensation assumes one-hour transitions** — `diff === 2` never fires for `Antarctica/Troll`'s two-hour gap |
+| [#420](https://github.com/harrisiirak/cron-parser/issues/420) | **In-place `sort()` mutates the caller's array** — a constructor rewrites its argument |
+| [#422](https://github.com/harrisiirak/cron-parser/issues/422) | **Bare `L` in day-of-week fails at `next()`** — parses cleanly, throws during iteration |
+| [#423](https://github.com/harrisiirak/cron-parser/issues/423) | **A duplicated `0` masks every other duplicate** and makes rendering throw — `0,7,4,4` is accepted, `4,4` is rejected |
+| [#425](https://github.com/harrisiirak/cron-parser/issues/425) | **`stringify()` is not idempotent** — day-of-month renders and parses against different maxima |
+| [#421](https://github.com/harrisiirak/cron-parser/issues/421) | **`[,-/]` is an unintended character range** — matches `.` as well as `,` `-` `/` |
 
 Plus a design inconsistency: **`W` is a phantom feature** — the stringify path handles it, no
 field accepts it, so it is unreachable through any constructor.

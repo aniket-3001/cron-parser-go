@@ -1,4 +1,4 @@
-**Title:** Duplicate-value validation silently passes when the duplicated value is `0`
+**Title:** A duplicated `0` escapes validation, masks later duplicates, and makes `stringify()` throw
 
 **Version:** 5.6.2 (`aeb2a1513fd33365a6414f4137516c9482f831ed`)
 
@@ -47,9 +47,42 @@ Both fields end up holding `[0, 0, 4, 4]`: day-of-week normalises `7` to `0`, so
 second expression contains two duplicate pairs. The `0` pair suppresses the report of
 the `4` pair.
 
+
+### It then makes `stringify()` throw
+
+A field that reaches this state cannot be rendered. `compactField` derives a stride of zero from
+a run of identical values, and `#handleMultipleRanges` rejects that stride with an error the
+source marks as unreachable:
+
+```js
+const parser = require('cron-parser');
+
+const e = parser.parse('0 0 * * 7,0,7');
+console.log(e.fields.dayOfWeek.values);   // [ 0, 0, 0 ]  (day-of-week normalises 7 to 0)
+
+e.stringify();
+// Error: Unexpected range step
+```
+
+```ts
+// src/CronFieldCollection.ts:348-351
+/* istanbul ignore if */
+if (!step) {
+  throw new Error('Unexpected range step');
+}
+```
+
+The `istanbul ignore` comment records the belief that this cannot happen. It can, and only
+ordinary input is needed to reach it. The practical effect is that a schedule stored as
+`0 0 * * 7,0,7` parses, but cannot be round-tripped or displayed: any code that renders
+expressions for logging or persistence throws on input `parse()` accepted.
+
+Fixing the duplicate check removes this too, since the field would no longer be constructible.
+
 ### Expected vs actual
 
-**Expected:** `[0, 0]` is rejected exactly as `[1, 1]` is.
+**Expected:** `[0, 0]` is rejected exactly as `[1, 1]` is, and no accepted expression is
+unrenderable.
 **Actual:** duplicates of `0` pass validation, so the field is constructed with a duplicated value
 while every other duplicate is rejected. The validation is inconsistent depending on which value
 happens to repeat.
@@ -70,4 +103,6 @@ Alternatively use `findIndex(...) !== -1` and read the value from the index.
 ### Notes
 
 Found while porting the library to Go, where the equivalent check had to be written explicitly and
-the truthiness dependence became visible.
+the truthiness dependence became visible. The masking behaviour was then found by differential
+fuzzing: the port checked every value rather than only the first, and so rejected `0,7,4,4` where
+this library accepts it.
