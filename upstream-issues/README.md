@@ -7,17 +7,23 @@ Seven were filed upstream on 2026-08-01. **Three have been fixed and merged**, t
 triaged and assigned to the maintainer, and one of those duplicates a pull request that was
 already open — see [Outcome](#outcome) below for the honest accounting.
 
-| Filed | Bug | Severity | Status | Draft |
-|---|---|---|---|---|
-| [#424](https://github.com/harrisiirak/cron-parser/issues/424) | `stringify()` round trip changes the schedule | **High** — silently reschedules a job | labelled `bug`, assigned | [06](06-stringify-round-trip-changes-schedule.md) |
-| [#419](https://github.com/harrisiirak/cron-parser/issues/419) | DST compensation assumes one-hour transitions | High — an occurrence is skipped in `Antarctica/Troll` | open | [01](01-dst-two-hour-transitions.md) |
-| [#420](https://github.com/harrisiirak/cron-parser/issues/420) | In-place `sort()` mutates the caller's array | Medium — silent caller data corruption | **fixed, [PR #427](https://github.com/harrisiirak/cron-parser/pull/427)** | [02](02-in-place-sort-mutates-caller.md) |
-| [#422](https://github.com/harrisiirak/cron-parser/issues/422) | Bare `L` in day-of-week throws at `next()`, not `parse()` | Medium — validation boundary is wrong | **fixed, [PR #428](https://github.com/harrisiirak/cron-parser/pull/428)** | [04](04-bare-L-day-of-week-throws-late.md) |
-| [#423](https://github.com/harrisiirak/cron-parser/issues/423) | A duplicated `0` escapes validation, masks later duplicates, and breaks `stringify()` | Medium — accepted input cannot be rendered | labelled `bug`, assigned — **duplicate of [PR #418](https://github.com/harrisiirak/cron-parser/pull/418)** | [05](05-duplicate-zero-escapes-validation.md) |
-| [#425](https://github.com/harrisiirak/cron-parser/issues/425) | `stringify()` is not idempotent | Low — rendered text is not canonical | open — overlaps #279 | [08](08-stringify-not-idempotent.md) |
-| [#421](https://github.com/harrisiirak/cron-parser/issues/421) | `[,-/]` is an unintended character range | Low — wrong rejection reason | **fixed, [PR #426](https://github.com/harrisiirak/cron-parser/pull/426)** | [03](03-regex-character-range.md) |
+| Filed | Bug | Severity | Status |
+|---|---|---|---|
+| [#424](https://github.com/harrisiirak/cron-parser/issues/424) | `stringify()` round trip changes the schedule | **High** — silently reschedules a job | labelled `bug`, assigned |
+| [#419](https://github.com/harrisiirak/cron-parser/issues/419) | DST compensation assumes one-hour transitions | High — an occurrence is skipped in `Antarctica/Troll` | open |
+| [#420](https://github.com/harrisiirak/cron-parser/issues/420) | In-place `sort()` mutates the caller's array | Medium — silent caller data corruption | **fixed, [PR #427](https://github.com/harrisiirak/cron-parser/pull/427)** |
+| [#422](https://github.com/harrisiirak/cron-parser/issues/422) | Bare `L` in day-of-week throws at `next()`, not `parse()` | Medium — validation boundary is wrong | **fixed, [PR #428](https://github.com/harrisiirak/cron-parser/pull/428)** |
+| [#423](https://github.com/harrisiirak/cron-parser/issues/423) | A duplicated `0` escapes validation, masks later duplicates, and breaks `stringify()` | Medium — accepted input cannot be rendered | labelled `bug`, assigned — **duplicate of [PR #418](https://github.com/harrisiirak/cron-parser/pull/418)** |
+| [#425](https://github.com/harrisiirak/cron-parser/issues/425) | `stringify()` is not idempotent | Low — rendered text is not canonical | open — overlaps #279 |
+| [#421](https://github.com/harrisiirak/cron-parser/issues/421) | `[,-/]` is an unintended character range | Low — wrong rejection reason | **fixed, [PR #426](https://github.com/harrisiirak/cron-parser/pull/426)** |
 
-Listed by severity rather than by number.
+Listed by severity rather than by number. **Each row links to the filed issue, which carries the
+full reproduction and root-cause analysis** — those were drafted here first and now live upstream,
+so they are not duplicated in this repository.
+
+Each is also pinned by a test in the port, since the port reproduces these bugs rather than
+correcting them (`DECISIONS.md` D13). Searching the Go tests for an issue number finds the test
+that holds the behaviour in place.
 
 ## Outcome
 
@@ -61,17 +67,17 @@ discoveries.
 
 ## How they were found
 
-Reports 01 to 04 came from reading the source and confirming by execution. Reports 05, 06 and 08
-came from checking a property over randomly generated expressions — that an expression and its
+#419, #420, #421 and #422 came from reading the source and confirming by execution. #423, #424 and
+#425 came from checking a property over randomly generated expressions — that an expression and its
 rendering describe the same schedule — and none of the three would have been found by reading.
 
-The masking half of 05 was found by the differential fuzzer during a qualifying run: the port
+The masking half of #423 was found by the differential fuzzer during a qualifying run: the port
 checked every duplicate rather than only the first, and so rejected `0,7,4,4` where the original
 accepts it. Reproducing the original exactly meant making the port accept it too.
 
-Reports 05 and 07 were originally separate. They share one root cause and one fix — a field that
-survives the duplicate check is the same field that cannot be rendered — so they were merged
-before filing rather than sent as two issues a maintainer would have to reconcile.
+#423 began as two findings. They share one root cause and one fix — a field that survives the
+duplicate check is the same field that cannot be rendered — so they were merged before filing
+rather than sent as two issues a maintainer would have to reconcile.
 
 ## Before filing
 

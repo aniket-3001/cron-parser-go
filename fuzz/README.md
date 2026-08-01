@@ -187,4 +187,4 @@ arguably the better behaviour, but it is not the original's. Fixed, and pinned b
 `TestDuplicateZeroMasksLaterDuplicates`.
 
 This is the upstream duplicate-zero bug being worse than first reported;
-`upstream-issues/05` has been updated to describe the masking.
+Issue #423 filed upstream describes the masking.

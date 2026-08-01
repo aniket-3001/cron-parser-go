@@ -60,4 +60,12 @@ fs.copyFileSync(wasmExec, path.join(root, 'adapter', 'wasm_exec.js'));
 console.log('embedding the module');
 run('node', ['scripts/embed-wasm.js']);
 
-console.log('\nbuild complete. Run the original test suite with: npm test');
+// The rule is that one command produces a runnable artifact, so the binary is
+// part of the build rather than a separate step a reader has to discover.
+console.log('building the runnable artifact');
+const binary = process.platform === 'win32' ? 'cron-parser.exe' : 'cron-parser';
+run('go', ['build', '-o', binary, './cmd/cron-parser']);
+
+console.log(`\nbuild complete.`);
+console.log(`  artifact  ./${binary}    try: ./${binary} next "*/15 9-17 * * 1-5" -n 3`);
+console.log('  tests     npm test          the 280 original tests against the port');
