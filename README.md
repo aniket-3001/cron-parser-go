@@ -32,9 +32,32 @@ Requires Go 1.24+ and Node 18+. The upstream clone must sit at `../cron-parser`,
 | `npm run verify-hashes` | Proves `tests/original/` matches the kickoff hashes |
 | `npm run fuzz` | 60 seconds of differential fuzzing against the original |
 | `npm run bench` | Benchmarks both implementations and writes `bench/RESULTS.md` |
+| `npm run compare` | Runs both CLIs on a shared input set and diffs the output |
+| `npm run honest-numbers` | Measures unsafe/`any`/pass rate/coverage into `HONEST-NUMBERS.md` |
 
 A `Makefile` provides the same targets for anyone who prefers it. The npm scripts are the
 primary path because `make` is not present on a stock Windows install.
+
+### The runnable artifact
+
+```bash
+go build -o cron-parser ./cmd/cron-parser
+
+./cron-parser next "*/15 9-17 * * 1-5" -n 3
+./cron-parser next "30 2 * * *" -n 2 -tz America/New_York   # crosses a DST gap
+./cron-parser parse "0 0 L * *"
+./cron-parser check "0 0 * * *" -at 2026-01-02T00:00:00Z    # exit status is the answer
+```
+
+Or without a Go toolchain, from the 2.7 MB scratch image — the build runs `go vet` and the full
+test suite, so an image that exists is an image whose tests passed:
+
+```bash
+docker build -t cron-parser-go .
+docker run --rm cron-parser-go next "0 0 * * *" -n 3
+```
+
+The zone database is embedded, so timezones resolve inside `scratch` with no OS packages.
 
 ---
 
@@ -74,6 +97,27 @@ either can produce is compared. Four runs, no divergences:
 The harness was validated by deliberately breaking the port and checking it noticed — and one
 sabotage defeated it three times, each failure exposing a real blind spot. See
 [`fuzz/README.md`](fuzz/README.md), which also records the genuine defect it found in this port.
+A published run is in [`fuzz/log.txt`](fuzz/log.txt).
+
+### CLI output diff
+
+The fuzzer compares the two through their APIs. This compares them as **programs**: the same
+command line against each, diffing stdout, stderr and exit status.
+
+| | |
+|---|---:|
+| Command lines compared | 124 |
+| Identical output | **124** |
+
+Covering 66 expression cases across the grammar, 30 timezone cases including two-hour, half-hour
+and quarter-hour transitions, 8 hashed cases under a shared seed, 4 membership queries, and 16
+rejection paths where the error text and the exit status both have to match.
+
+The original ships only a library, so `compare/original-cli.js` gives it a front end with the same
+output shape. It contains no logic beyond formatting — every answer comes from the original — and
+it pins the timestamp format, since Go writes a zero offset as `Z` where luxon writes `+00:00` and
+every line would otherwise differ for reasons unrelated to the schedule. See
+[`compare/CLI-DIFF.md`](compare/CLI-DIFF.md).
 
 ### Performance
 
@@ -96,14 +140,25 @@ rather than reduced to a ratio that would imply more precision than exists.
 
 | | |
 |---|---|
-| Statement coverage | **100%**, matching the original's own baseline |
+| Statement coverage | **100%** with `CRON_GEN_CORPUS=1`, 99.5% in a default run |
 | `unsafe` in the library | **0** |
 | `interface{}` in the library | **0** |
 | Reflection in the library | **0** |
+| `any` in the adapter | **0** |
 | `gofmt`, `go vet` | clean |
 
 The compatibility surface needed by the test bridge lives in `cron/bridge_wasm.go` behind a
 `js && wasm` build tag, so it does not exist in an ordinary build of the library.
+
+Both coverage figures are given because the port's suite has two honest readings. Two tests are
+corpus *generators* that write multi-megabyte fixtures, so they are gated behind an environment
+variable rather than run every time, and the statements only they reach are uncovered without it.
+Quoting the higher number alone would be the more flattering presentation and the less true one.
+
+Every figure in this section is produced by `npm run honest-numbers`, which writes
+[`HONEST-NUMBERS.md`](HONEST-NUMBERS.md): unsafe count, `any` count, per-file test pass rate and
+the coverage diff against the original, measured rather than typed in, so the table cannot drift
+away from the repository.
 
 ---
 
@@ -153,13 +208,18 @@ field accepts it, so it is unreachable through any constructor.
 ## Repository layout
 
 ```
-cron/            the port. Pure Go, zero unsafe, no JavaScript dependency
-bridge/          js/wasm handle registry, for test bridging only
-adapter/src/     TypeScript shim mirroring the original's module layout
-tests/original/  the 280 original tests, byte-identical, with kickoff hashes
-fuzz/            differential fuzzing harness and its write-up
-bench/           benchmark harnesses and results
-upstream-issues/ drafted bug reports
+cron/              the port. Pure Go, zero unsafe, no JavaScript dependency
+cmd/cron-parser/   the CLI, and the runnable artifact
+bridge/            js/wasm handle registry, for test bridging only
+adapter/src/       TypeScript shim mirroring the original's module layout
+tests/original/    the 280 original tests, byte-identical, with kickoff hashes
+fuzz/              differential fuzzing harness, its write-up, and a published run
+bench/             benchmark harnesses, methodology and results
+compare/           CLI output diff against the original, on a shared input set
+upstream-issues/   drafted bug reports
+Dockerfile         multi-stage build; vets and tests, then a scratch image
+.port-mortem.toml  submission manifest: track, source, kickoff hash, results
+HONEST-NUMBERS.md  generated: unsafe, any, per-file pass rate, coverage diff
 ```
 
 The library and the test bridge are deliberately separate. `./cron` is what a Go developer would
