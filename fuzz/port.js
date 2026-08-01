@@ -62,6 +62,32 @@ class PortExpression {
     return call('expr.includes', this.handle, millis);
   }
 
+  hasNext() {
+    return call('expr.hasNext', this.handle);
+  }
+
+  hasPrev() {
+    return call('expr.hasPrev', this.handle);
+  }
+
+  take(n) {
+    return call('expr.take', this.handle, n);
+  }
+
+  /**
+   * Passing null rather than omitting the argument is deliberate: the bridge
+   * distinguishes a numeric instant from anything else to decide between
+   * resetting to a given time and resetting to the initial one, and reading a
+   * missing argument would trip the dispatcher instead.
+   */
+  reset(millis) {
+    call('expr.reset', this.handle, millis === undefined ? null : millis);
+  }
+
+  string() {
+    return call('expr.string', this.handle);
+  }
+
   fieldValues() {
     const fields = call('expr.fields', this.handle);
     const read = (name) => {

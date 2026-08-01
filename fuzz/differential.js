@@ -231,8 +231,19 @@ function startInstant(zone) {
 
 const ITERATIONS = 8;
 
+/**
+ * Fraction of cases that also get the cursor-behaviour probes.
+ *
+ * At 1.0 the run loses about four fifths of its throughput, because each probed
+ * case re-parses four times and runs fourteen extra searches. A quarter keeps
+ * hundreds of probes in a 60-second run while leaving the budget on generating
+ * new inputs, which is where a genuinely unknown divergence is more likely to
+ * be hiding.
+ */
+const PROBE_RATE = 0.25;
+
 /** Runs one implementation and captures everything observable. */
-function observeReference(expr, options) {
+function observeReference(expr, options, probe) {
   try {
     const parsed = CronExpressionParser.parse(expr, options);
     const out = { parsed: true, next: [], prev: [], nextError: null, prevError: null };
@@ -278,14 +289,66 @@ function observeReference(expr, options) {
       return [probe(ms), probe(ms + 1000), probe(ms - 1000)];
     });
 
+    out.toString = fresh.toString();
+
+    // The cursor-behaviour probes below re-parse the expression four times and
+    // run fourteen further searches. Doing that on every case cost about four
+    // fifths of the throughput, which is a bad trade: these five methods are
+    // thin deterministic wrappers over next and prev, so a difference in them
+    // is systematic rather than input-dependent and shows up on whichever
+    // cases are checked. They are therefore sampled.
+    //
+    // The decision is drawn once per case from the seeded generator and handed
+    // to both sides, so a run stays reproducible and the two never disagree
+    // about whether to probe for reasons of their own.
+    if (!probe || out.next.length === 0) return out;
+    out.probed = true;
+
+    // hasNext and hasPrev promise an answer *and* an untouched cursor: both
+    // run the search and then put the current date back in a finally. The
+    // restoration is the part worth comparing, so the instant produced after
+    // asking is recorded too — a port that answered correctly but consumed the
+    // occurrence would look identical without it.
+    const asking = CronExpressionParser.parse(expr, options);
+    out.hasNext = asking.hasNext();
+    out.hasPrev = asking.hasPrev();
+    out.afterAsking = attempt(() => asking.next().getTime());
+
+    // take has a separate backward branch for a negative limit, and swallows
+    // the error at the end of a schedule rather than propagating it, so a
+    // truncated result is part of the contract.
+    out.takeForward = attempt(() =>
+      CronExpressionParser.parse(expr, options).take(4).map((d) => d.getTime()),
+    );
+    out.takeBackward = attempt(() =>
+      CronExpressionParser.parse(expr, options).take(-4).map((d) => d.getTime()),
+    );
+
+    // reset must rewind to the initial instant, so the occurrence after it has
+    // to be the one already recorded as next[0].
+    const resetting = CronExpressionParser.parse(expr, options);
+    attempt(() => resetting.next().getTime());
+    attempt(() => resetting.next().getTime());
+    resetting.reset();
+    out.afterReset = attempt(() => resetting.next().getTime());
+
     return out;
   } catch (e) {
     return { parsed: false, error: e.message };
   }
 }
 
+/** Runs a call, recording the failure text rather than letting it escape. */
+function attempt(fn) {
+  try {
+    return fn();
+  } catch (e) {
+    return `error:${e.message}`;
+  }
+}
+
 /** The same observations, from the port. */
-function observePort(expr, options) {
+function observePort(expr, options, probe) {
   let parsed;
   try {
     parsed = new PortExpression(expr, options);
@@ -332,6 +395,34 @@ function observePort(expr, options) {
       };
       return [probe(ms), probe(ms + 1000), probe(ms - 1000)];
     });
+
+    out.toString = fresh.string();
+
+    // Sampled on the same decision as the reference, so the two either both
+    // probe or both skip.
+    if (!probe || out.next.length === 0) return out;
+    out.probed = true;
+
+    const asking = new PortExpression(expr, options);
+    held.push(asking);
+    out.hasNext = asking.hasNext();
+    out.hasPrev = asking.hasPrev();
+    out.afterAsking = attempt(() => asking.next());
+
+    const forward = new PortExpression(expr, options);
+    held.push(forward);
+    out.takeForward = attempt(() => forward.take(4));
+
+    const backward = new PortExpression(expr, options);
+    held.push(backward);
+    out.takeBackward = attempt(() => backward.take(-4));
+
+    const resetting = new PortExpression(expr, options);
+    held.push(resetting);
+    attempt(() => resetting.next());
+    attempt(() => resetting.next());
+    resetting.reset();
+    out.afterReset = attempt(() => resetting.next());
 
     return out;
   } finally {
@@ -395,6 +486,35 @@ function compare(a, b) {
     }
   }
 
+  if (a.toString !== b.toString) {
+    return { what: 'toString', reference: String(a.toString), port: String(b.toString) };
+  }
+
+  // Both sides gate the cursor probes on the same condition, so disagreeing
+  // about whether to run them is itself a divergence rather than a reason to
+  // skip the comparison.
+  if ((a.probed ?? false) !== (b.probed ?? false)) {
+    return { what: 'probed', reference: String(a.probed), port: String(b.probed) };
+  }
+  if (!a.probed) return null;
+
+  // Cursor-preserving and cursor-moving calls. afterAsking and afterReset are
+  // where a broken cursor shows up: the answer can be right while the state
+  // left behind is wrong.
+  for (const key of ['hasNext', 'hasPrev', 'afterAsking', 'afterReset']) {
+    if (a[key] !== b[key]) {
+      return { what: key, reference: String(a[key]), port: String(b[key]) };
+    }
+  }
+
+  for (const key of ['takeForward', 'takeBackward']) {
+    const x = JSON.stringify(a[key]);
+    const y = JSON.stringify(b[key]);
+    if (x !== y) {
+      return { what: key, reference: x, port: y };
+    }
+  }
+
   return null;
 }
 
@@ -419,8 +539,8 @@ function optionsFor(testCase) {
  */
 function runCase(testCase) {
   const options = optionsFor(testCase);
-  const reference = observeReference(testCase.expr, options.reference);
-  const port = observePort(testCase.expr, options.port);
+  const reference = observeReference(testCase.expr, options.reference, testCase.probe);
+  const port = observePort(testCase.expr, options.port, testCase.probe);
   return { difference: compare(reference, port), reference };
 }
 
@@ -647,6 +767,9 @@ function main() {
       tz,
       startMs: startInstant(tz),
       hashSeed: pick(['port-mortem', 'seed-a', 'seed-b']),
+      // Whether to run the cursor-behaviour probes. Drawn here so both
+      // implementations receive the same decision and a seed replays exactly.
+      probe: rand() < PROBE_RATE,
     };
 
     cases++;

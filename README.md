@@ -89,10 +89,15 @@ either can produce is compared. Four runs, no divergences:
 
 | Seed | Duration | Expression cases | Date cases | Divergences |
 |---|---|---|---|---|
-| 1 | 90s | 3,446 | 1,666 | **0** |
-| 2 | 65s | 2,267 | 1,098 | **0** |
-| 7 | 65s | 1,855 | 898 | **0** |
-| 31337 | 65s | 2,773 | 1,348 | **0** |
+| 1 | 90s | 2,903 | 1,381 | **0** |
+| 2 | 65s | 2,216 | 1,090 | **0** |
+| 7 | 65s | 1,455 | 765 | **0** |
+| 31337 | 65s | 2,143 | 985 | **0** |
+
+The compared surface is the whole public API of `CronExpression` and `CronDate`: both
+schedules, rendering, field values, membership, and the cursor methods — `hasNext`,
+`hasPrev`, `take` in both directions and `reset` — checked on the state they leave behind
+as well as the answer they return.
 
 The harness was validated by deliberately breaking the port and checking it noticed — and one
 sabotage defeated it three times, each failure exposing a real blind spot. See

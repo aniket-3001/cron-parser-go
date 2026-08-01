@@ -1,12 +1,12 @@
 {
   "summary": {
-    "seed": 1,
+    "seed": 31337,
     "seconds": 65,
-    "expressionCases": 2531,
-    "dateCases": 1231,
-    "casesPerSecond": 58,
-    "bothAccepted": 937,
-    "bothRejected": 1594,
+    "expressionCases": 2143,
+    "dateCases": 985,
+    "casesPerSecond": 48,
+    "bothAccepted": 816,
+    "bothRejected": 1327,
     "divergences": 0,
     "zones": [
       "UTC",
@@ -24,7 +24,7 @@
       "Asia/Beirut",
       "Pacific/Auckland"
     ],
-    "generatedAt": "2026-08-01T07:53:17.742Z"
+    "generatedAt": "2026-08-01T11:25:08.018Z"
   },
   "divergences": []
 }

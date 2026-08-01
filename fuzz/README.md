@@ -1,7 +1,12 @@
 # Differential fuzzing
 
-The original TypeScript library and the Go port are given identical inputs, and every
-answer either can produce is compared. A disagreement is a bug in one of them.
+The original TypeScript library and the Go port are given identical inputs, and their
+answers are compared across the whole public surface of `CronExpression` and `CronDate`.
+A disagreement is a bug in one of them.
+
+The one public entry point not fuzzed is `CronFileParser`, which reads crontab files: file
+IO stays in JavaScript by design (`DECISIONS.md` D12), so there is no second
+implementation of it to compare against. It is covered by the original suite instead.
 
 There is no template for this; the design below is mine.
 
@@ -44,6 +49,27 @@ For an expression case, all of:
 | Rendered text | `stringify()` and `stringify(true)` |
 | Field values | all six fields, including the number-or-token distinction |
 | Membership | `includesDate` on each instant and one second either side |
+| Rendered expression | `toString()`, which falls back to `stringify(true)` on a falsy expression |
+| Cursor predicates | `hasNext()` and `hasPrev()`, **and the instant produced afterwards** |
+| Bulk iteration | `take(4)` and `take(-4)`, the forward and backward branches |
+| Rewinding | `reset()`, then the instant produced afterwards |
+
+The last three rows are about state as much as answers. `hasNext` and `hasPrev` run a
+search and then put the cursor back; a port that returned the right boolean while
+consuming the occurrence would be indistinguishable unless the instant *after* the call
+is compared too, so it is. `take` has a separate backward branch for a negative limit and
+swallows the error at the end of a schedule, so a truncated result is part of the
+contract. `reset` has to rewind far enough that the next occurrence is the first one
+again.
+
+**These four are sampled, not run on every case.** Each probed case re-parses the
+expression four times and runs fourteen further searches, which cost about four fifths of
+the run's throughput when applied universally. They are thin deterministic wrappers over
+`next` and `prev`, so a fault in them is systematic rather than input-dependent and
+surfaces on whichever cases are checked; a quarter of cases keeps a few hundred probes in
+a 60-second run while leaving the budget on generating new inputs. The decision is drawn
+once per case from the seeded generator and handed to both implementations, so a seed
+still replays exactly and the two can never disagree about whether to probe.
 
 For a date case, every operation the date type exposes — twelve arithmetic operations,
 seven setters across several values each, and both day boundaries — is applied to one
@@ -81,17 +107,21 @@ six-field expression that happened to expose it.
 
 ## Results
 
+All runs below are on the full surface described above, including the cursor probes.
+
 | Seed | Duration | Expression cases | Date cases | Divergences |
 |---|---|---|---|---|
-| 1 | 90s | 3,446 | 1,666 | **0** |
-| 2 | 65s | 2,267 | 1,098 | **0** |
-| 7 | 65s | 1,855 | 898 | **0** |
-| 31337 | 65s | 2,773 | 1,348 | **0** |
+| 1 | 90s | 2,903 | 1,381 | **0** |
+| 2 | 65s | 2,216 | 1,090 | **0** |
+| 7 | 65s | 1,455 | 765 | **0** |
+| 31337 | 65s | 2,143 | 985 | **0** |
 
-Each expression case is roughly forty individual comparisons and each date case around
+`fuzz/log.txt` is the seed 1 run above, published in full.
+
+Each expression case is roughly fifty individual comparisons and each date case around
 forty more, so a 90-second run is on the order of 200,000 compared answers.
 
-Throughput is about 57 cases per second. The limit is the reference: an expression that
+Throughput is about 48 cases per second. The limit is the reference: an expression that
 can never match costs it 39 ms, because it performs ten thousand iterations of date
 arithmetic before giving up, against 4 ms for an ordinary case. The generator is not
 biased away from those, since how the two agree on giving up is worth comparing.
@@ -125,6 +155,17 @@ unnoticed through three separate attempts, and each failure improved the harness
    in a thousand. **Date cases now draw half their starts from a boundary corpus.**
 
 With those in place the same sabotage is caught in seconds, with leap-day reproductions.
+
+**Breaking the cursor restoration in `HasNext`.** Deleting the line that puts the cursor
+back — so the predicate answers correctly but silently consumes an occurrence — produced
+74 divergences in 25 seconds, all reported against `afterAsking`, the instant observed
+after asking. Comparing only the boolean would have missed every one of them.
+
+Worth recording honestly: the original suite catches that sabotage too, with 7 failures.
+The cursor probes were added because the harness claimed a surface it did not cover, not
+because they found something the tests had missed. What they add is the same surface
+across thousands of generated expressions and fourteen timezones rather than a handful of
+fixed cases.
 
 ## What it found
 

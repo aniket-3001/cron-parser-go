@@ -1,21 +1,23 @@
-differential fuzzing: original vs port
-  duration : 65s
+﻿differential fuzzing: original vs port
+  duration : 90s
   seed     : 1
   zones    : 14
 
-  10s  215 expression + 108 date cases, 0 divergences
-  24s  609 expression + 288 date cases, 0 divergences
-  34s  1,064 expression + 512 date cases, 0 divergences
-  44s  1,492 expression + 736 date cases, 0 divergences
-  54s  2,006 expression + 979 date cases, 0 divergences
-  65s  2,487 expression + 1,215 date cases, 0 divergences
+  10s  342 expression + 154 date cases, 0 divergences
+  24s  532 expression + 252 date cases, 0 divergences
+  34s  955 expression + 448 date cases, 0 divergences
+  44s  1,325 expression + 607 date cases, 0 divergences
+  54s  1,694 expression + 776 date cases, 0 divergences
+  64s  2,060 expression + 943 date cases, 0 divergences
+  74s  2,447 expression + 1,152 date cases, 0 divergences
+  84s  2,721 expression + 1,299 date cases, 0 divergences
 
-ran 65.0s
-  expression cases 2,531
-  date cases       1,231
-  combined rate    58/s
-  both accepted    937
-  both rejected    1,594 (identical error text)
+ran 90.0s
+  expression cases 2,903
+  date cases       1,381
+  combined rate    48/s
+  both accepted    1,081
+  both rejected    1,822 (identical error text)
   divergences      0
 
 PASS - no divergence on any compared behaviour.
