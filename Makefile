@@ -15,10 +15,13 @@ all: build
 build: build-wasm
 	$(GO) build ./...
 
-## build-wasm: compile the bridge and stage wasm_exec.js for the adapter
+## build-wasm: compile the bridge and stage everything the adapter loads
+##   The module is embedded as base64 because the adapter cannot read it from
+##   disk: the original's file-parser tests replace the filesystem module.
 build-wasm:
 	GOOS=js GOARCH=wasm $(GO) build -o $(WASM) ./bridge
 	cp "$(GOROOT_)/lib/wasm/wasm_exec.js" adapter/wasm_exec.js
+	node scripts/embed-wasm.js
 
 ## test: native Go tests
 test:
@@ -66,5 +69,5 @@ bench:
 	$(GO) test ./cron/... -bench=. -benchmem -run=^$$
 
 clean:
-	rm -f $(WASM) adapter/wasm_exec.js
+	rm -f $(WASM) adapter/wasm_exec.js adapter/wasm-bytes.js
 	$(GO) clean
