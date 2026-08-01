@@ -1,7 +1,7 @@
 The MIT License (MIT)
 
-Copyright (c) 2026 Aniket Gupta
 Copyright (c) 2014-2023 Harri Siirak
+Copyright (c) 2026 Aniket Gupta
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -20,14 +20,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
----
-
-Attribution
-
-This project is a port of cron-parser (https://github.com/harrisiirak/cron-parser)
-from TypeScript to Go. The original is Copyright (c) 2014-2023 Harri Siirak and is
-likewise distributed under the MIT License, reproduced above.
-
-The tests/original/ directory contains test files reproduced byte-for-byte from the
-original project and remains under the original copyright.

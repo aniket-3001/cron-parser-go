@@ -1,0 +1,18 @@
+cron-parser-go
+Copyright (c) 2026 Aniket Gupta
+
+This product is a port of cron-parser from TypeScript to Go.
+
+  cron-parser
+  https://github.com/harrisiirak/cron-parser
+  Copyright (c) 2014-2023 Harri Siirak
+  Licensed under the MIT License.
+
+The port was made from v5.6.2, commit aeb2a1513fd33365a6414f4137516c9482f831ed.
+
+The files in tests/original/ are reproduced byte-for-byte from that commit and
+remain under the original copyright. Their SHA-256 digests are recorded in
+tests/original/HASHES.txt and can be re-verified with `npm run verify-hashes`.
+
+Both the original and this port are distributed under the MIT License, the text
+of which is in LICENSE.

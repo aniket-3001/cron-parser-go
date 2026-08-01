@@ -343,5 +343,6 @@ artifact, `npm test` for the suite, `npm run fuzz`, `npm run bench`, `npm run co
 
 ## License
 
-MIT. The original work is © 2014-2023 Harri Siirak; `tests/original/` remains under that
-copyright. See [`LICENSE`](LICENSE).
+MIT, the same licence as the original. The original work is © 2014-2023 Harri Siirak, and
+`tests/original/` is reproduced from it byte-for-byte and remains under that copyright. See
+[`LICENSE`](LICENSE) for the terms and [`NOTICE`](NOTICE) for the attribution.
