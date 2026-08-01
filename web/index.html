@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>cron-parser-go — differential playground</title>
+<meta name="description" content="The TypeScript original and its Go port, both running in your browser, answering the same questions side by side.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%230A0F1A'/><circle cx='16' cy='16' r='9' fill='none' stroke='%232BD9E4' stroke-width='2'/><path d='M16 11v5.6l3.6 2.2' stroke='%234A90D9' stroke-width='2' stroke-linecap='round' fill='none'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="boot" id="boot" role="status" aria-live="polite">
+  <div class="boot__inner">
+    <div class="boot__dial" aria-hidden="true"><span></span><span></span><span></span></div>
+    <p class="boot__label">Loading the Go port</p>
+    <p class="boot__hint" id="bootHint">4.3 MB of WebAssembly, compiled from <code>./cron</code></p>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap masthead__grid">
+    <div>
+      <p class="eyebrow">Port Mortem · Track C · TypeScript to Go</p>
+      <h1>Two implementations.<br>One answer.</h1>
+      <p class="lede">
+        The original TypeScript library and the Go port are both running <em>in this page</em> —
+        the port as WebAssembly, compiled from the same source the test suite runs against.
+        Ask them anything. They should never disagree.
+      </p>
+    </div>
+    <dl class="vitals">
+      <div><dt>Original suite</dt><dd>280<span>/280</span></dd></div>
+      <div><dt>Fuzz divergences</dt><dd>0</dd></div>
+      <div><dt><code>unsafe</code> in library</dt><dd>0</dd></div>
+      <div><dt>Upstream bugs merged</dt><dd>3</dd></div>
+    </dl>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="console" aria-labelledby="ask">
+    <h2 id="ask" class="sr-only">Ask both implementations</h2>
+
+    <div class="controls">
+      <div class="field field--expr">
+        <label for="expr">Cron expression</label>
+        <input id="expr" type="text" value="*/15 9-17 * * 1-5" spellcheck="false" autocomplete="off">
+      </div>
+      <div class="field">
+        <label for="tz">Timezone</label>
+        <select id="tz"></select>
+      </div>
+      <div class="field">
+        <label for="from">From</label>
+        <input id="from" type="text" value="2026-01-01T00:00:00Z" spellcheck="false" autocomplete="off">
+      </div>
+      <div class="field field--n">
+        <label for="count">Show</label>
+        <select id="count">
+          <option>6</option><option selected>8</option><option>12</option><option>20</option>
+        </select>
+      </div>
+      <div class="field field--dir">
+        <label for="dir">Direction</label>
+        <select id="dir">
+          <option value="next" selected>Forwards</option>
+          <option value="prev">Backwards</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="presets">
+      <span class="presets__label">Try something hard</span>
+      <div class="presets__row" id="presets"></div>
+    </div>
+
+    <div class="verdict" id="verdict" data-state="idle">
+      <span class="verdict__dot" aria-hidden="true"></span>
+      <span class="verdict__text" id="verdictText">Ready</span>
+      <span class="verdict__meta" id="verdictMeta"></span>
+    </div>
+
+    <div class="diff" id="diff">
+      <div class="diff__col diff__col--ts">
+        <div class="diff__head">
+          <span class="tag tag--ts">Original</span>
+          <span class="diff__impl">TypeScript · luxon</span>
+        </div>
+        <ol class="rows" id="rowsTs"></ol>
+      </div>
+      <div class="diff__spine" aria-hidden="true"></div>
+      <div class="diff__col diff__col--go">
+        <div class="diff__head">
+          <span class="tag tag--go">Port</span>
+          <span class="diff__impl">Go · WebAssembly</span>
+        </div>
+        <ol class="rows" id="rowsGo"></ol>
+      </div>
+    </div>
+
+    <details class="fields" id="fieldsBox">
+      <summary>Parsed fields, from both sides</summary>
+      <div class="fields__grid" id="fieldsGrid"></div>
+      <p class="fields__note" id="canonical"></p>
+    </details>
+  </section>
+
+  <section class="stress" aria-labelledby="stress-h">
+    <div class="stress__intro">
+      <p class="eyebrow">The part you can't fake</p>
+      <h2 id="stress-h">Fuzz it yourself</h2>
+      <p>
+        Random expressions, random timezones, random starting instants — generated here, handed to
+        both implementations, every answer compared. This is the same harness that runs in CI on
+        every push, only now it is running on your machine, on inputs neither of us chose.
+      </p>
+      <ul class="checklist">
+        <li><span>Parse</span> accepted or rejected, and the exact wording when rejected</li>
+        <li><span>Schedule</span> five successive instants, to the millisecond</li>
+        <li><span>Rendering</span> <code>stringify()</code> on both sides</li>
+        <li><span>Fields</span> all six, including the number-or-token distinction</li>
+      </ul>
+      <p class="stress__foot">
+        A quarter of generated expressions are deliberately malformed. Agreeing on a rejection, and
+        on its message, is as much a claim as agreeing on a date.
+      </p>
+    </div>
+
+    <div class="stress__panel">
+      <div class="gauge">
+        <div class="gauge__item">
+          <span class="gauge__n" id="fCases">0</span>
+          <span class="gauge__l">cases</span>
+        </div>
+        <div class="gauge__item">
+          <span class="gauge__n" id="fChecks">0</span>
+          <span class="gauge__l">comparisons</span>
+        </div>
+        <div class="gauge__item gauge__item--verdict" id="fDivBox">
+          <span class="gauge__n" id="fDiv">0</span>
+          <span class="gauge__l">divergences</span>
+        </div>
+      </div>
+      <div class="stress__bar"><div class="stress__fill" id="fBar"></div></div>
+      <div class="stress__actions">
+        <button class="btn btn--primary" id="fRun">Run 500 cases</button>
+        <button class="btn" id="fStop" disabled>Stop</button>
+      </div>
+      <ol class="ticker" id="fTicker" aria-live="polite"></ol>
+    </div>
+  </section>
+
+  <section class="bugs" aria-labelledby="bugs-h">
+    <p class="eyebrow">Fidelity, not correction</p>
+    <h2 id="bugs-h">Where the original is wrong, the port is wrong identically</h2>
+    <p class="bugs__lede">
+      Differential and property-based testing produced seven reports upstream, six of them original
+      findings — one restated a pull request that was already open, which is recorded rather than
+      quietly dropped. Three are now fixed and merged. The port reproduces every one of them instead
+      of quietly correcting them, because a drop-in replacement that schedules differently is worse
+      than a documented bug. Load one and watch both sides produce the same wrong answer.
+    </p>
+    <div class="bugs__row" id="bugs"></div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap foot__grid">
+    <p>
+      <strong>cron-parser-go</strong> — a Go port of
+      <a href="https://github.com/harrisiirak/cron-parser">harrisiirak/cron-parser</a> v5.6.2.
+      Everything on this page runs client-side; there is no server answering for either implementation.
+    </p>
+    <p class="foot__links">
+      <a href="https://github.com/aniket-3001/cron-parser-go">Repository</a>
+      <a href="https://github.com/aniket-3001/cron-parser-go/blob/main/DECISIONS.md">Decisions</a>
+      <a href="https://github.com/aniket-3001/cron-parser-go/blob/main/fuzz/log.txt">Fuzz log</a>
+      <a href="https://github.com/aniket-3001/cron-parser-go/blob/main/bench/RESULTS.md">Benchmarks</a>
+    </p>
+  </div>
+</footer>
+
+<script src="wasm_exec.js"></script>
+<script src="original.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

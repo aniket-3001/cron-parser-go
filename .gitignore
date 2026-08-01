@@ -28,3 +28,11 @@ fuzz/divergences/
 # Coverage profiles. npm run honest-numbers writes one per run and removes it,
 # but an interrupted run leaves it behind.
 *.out
+
+# Playground build output. Both implementations are compiled by npm run
+# build:web, and committing either would let the deployed page compare
+# something other than what this repository contains.
+web/cron.wasm
+web/original.js
+web/wasm_exec.js
+web/smoke.html

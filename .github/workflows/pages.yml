@@ -1,0 +1,84 @@
+# Publishes the differential playground to GitHub Pages.
+#
+# The page runs both implementations client-side, so the deploy has to build
+# both: the port compiled to WebAssembly from ./bridge, and the original
+# bundled from its published dist at the pinned commit. Neither artifact is
+# committed — building them here means the deployed page always compares the
+# code that is actually in this repository against the reference it claims.
+
+name: Playground
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'web/**'
+      - 'cron/**'
+      - 'bridge/**'
+      - 'scripts/build-web.js'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deploy at a time; a queued run supersedes a waiting one rather than
+# cancelling a deploy already in flight.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+env:
+  UPSTREAM_COMMIT: aeb2a1513fd33365a6414f4137516c9482f831ed
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: check out the reference at the pinned commit
+        run: |
+          git clone --no-checkout https://github.com/harrisiirak/cron-parser.git ../cron-parser
+          git -C ../cron-parser checkout "$UPSTREAM_COMMIT"
+          npm --prefix ../cron-parser ci
+          npm --prefix ../cron-parser run build
+
+      - name: build the playground
+        run: npm run build:web
+
+      # A page that loads but answers wrongly is worse than one that fails to
+      # deploy, so the page is driven before it ships: both implementations must
+      # load, and a fuzz run must complete with no divergence.
+      - name: verify the page in a real browser
+        run: node scripts/verify-web.js
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: web
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
