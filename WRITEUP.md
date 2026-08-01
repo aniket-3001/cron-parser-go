@@ -248,22 +248,23 @@ matters more than throughput nobody is bottlenecked on.
 
 ---
 
-## Six bugs in the original, two already merged, and one I deliberately didn't file
+## Six bugs in the original, three already merged, and one I deliberately didn't file
 
 Differential testing finds bugs in the *reference*, not just the port. Seven reports went upstream
-during the hackathon ([#419–#425](https://github.com/harrisiirak/cron-parser/issues)). Two were
+during the hackathon ([#419–#425](https://github.com/harrisiirak/cron-parser/issues)). Three were
 fixed and merged the same day:
 
 | | |
 |---|---|
 | [PR #426](https://github.com/harrisiirak/cron-parser/pull/426) | `val.match(/([,-/])/)` → `/([,\-/])/` — escape the hyphen so it's a literal, not a range |
 | [PR #427](https://github.com/harrisiirak/cron-parser/pull/427) | `values.sort(...)` → `[...values].sort(...)` — a defensive copy |
+| [PR #428](https://github.com/harrisiirak/cron-parser/pull/428) | standalone `L` in day-of-week rejected at construction, not from `next()` |
 
-Filed 07:12Z, merged by 14:16Z. That second one is the fix I'd already made in Go on day one, for
-the same reason — Go slices share a backing array, so the naive translation inherits the bug. Nice
-to have the maintainer arrive at the same line independently.
+Filed 07:12Z, all three merged by 16:13Z. The second is the fix I'd already made in Go on day one,
+for the same reason — Go slices share a backing array, so the naive translation inherits the bug.
+Nice to have the maintainer arrive at the same line independently.
 
-Two more (`#423`, `#424`) are now labelled `bug` and assigned to the maintainer.
+The remaining three (`#423`, `#424`, `#425`) are triaged and assigned to the maintainer.
 
 **And one of the seven wasn't mine.** More on that below.
 

@@ -201,17 +201,17 @@ anything depended on it. See [`DESIGN.md`](DESIGN.md) §4.
 
 ## Bugs found in the original
 
-Seven filed upstream on 2026-08-01. **Two were fixed and merged the same day**, two more are
-labelled `bug` and assigned to the maintainer, and one duplicates a pull request that was already
+Seven filed upstream on 2026-08-01. **Three were fixed and merged the same day**, three more are
+triaged and assigned to the maintainer, and one of those duplicates a pull request that was already
 open. Three were found by differential and property-based testing rather than by reading. See
 [`upstream-issues/`](upstream-issues/) for the reproductions, the outcome and the duplicate check.
 
 | Issue | Bug | Status |
 |---|---|---|
 | [#424](https://github.com/harrisiirak/cron-parser/issues/424) | **`stringify()` can change the schedule** — `0 0 16 * 0-6` renders to `0 0 16 * *`; the first fires daily, the second monthly | `bug`, assigned |
-| [#419](https://github.com/harrisiirak/cron-parser/issues/419) | **DST compensation assumes one-hour transitions** — `diff === 2` never fires for `Antarctica/Troll`'s two-hour gap, and an occurrence is skipped outright | open |
+| [#419](https://github.com/harrisiirak/cron-parser/issues/419) | **DST compensation assumes one-hour transitions** — `diff === 2` never fires for `Antarctica/Troll`'s two-hour gap, and an occurrence is skipped outright | open, patch offered |
 | [#420](https://github.com/harrisiirak/cron-parser/issues/420) | **In-place `sort()` mutates the caller's array** — a constructor rewrites its argument | ✅ **merged**, [PR #427](https://github.com/harrisiirak/cron-parser/pull/427) |
-| [#422](https://github.com/harrisiirak/cron-parser/issues/422) | **Bare `L` in day-of-week fails at `next()`** — parses cleanly, throws during iteration | open |
+| [#422](https://github.com/harrisiirak/cron-parser/issues/422) | **Bare `L` in day-of-week fails at `next()`** — parses cleanly, throws during iteration | ✅ **merged**, [PR #428](https://github.com/harrisiirak/cron-parser/pull/428) |
 | [#423](https://github.com/harrisiirak/cron-parser/issues/423) | **A duplicated `0` masks every other duplicate** and makes rendering throw — `0,7,4,4` is accepted, `4,4` is rejected | `bug`, assigned — duplicate of [PR #418](https://github.com/harrisiirak/cron-parser/pull/418) |
 | [#425](https://github.com/harrisiirak/cron-parser/issues/425) | **`stringify()` is not idempotent** — day-of-month renders and parses against different maxima | open, partly overlaps #279 |
 | [#421](https://github.com/harrisiirak/cron-parser/issues/421) | **`[,-/]` is an unintended character range** — matches `.` as well as `,` `-` `/` | ✅ **merged**, [PR #426](https://github.com/harrisiirak/cron-parser/pull/426) |
