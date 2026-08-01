@@ -150,10 +150,20 @@ rather than reduced to a ratio that would imply more precision than exists.
 | `interface{}` in the library | **0** |
 | Reflection in the library | **0** |
 | `any` in the adapter | **0** |
-| `gofmt`, `go vet` | clean |
+| `gofmt`, `go vet`, `staticcheck` | clean, on both `amd64` and `js/wasm` |
+| `govulncheck` | no vulnerabilities |
+| External dependencies | **0** — `go.sum` is empty |
+| `panic` in the library | **0** |
 
 The compatibility surface needed by the test bridge lives in `cron/bridge_wasm.go` behind a
 `js && wasm` build tag, so it does not exist in an ordinary build of the library.
+
+Everything above runs on every push — see [`.github/workflows/ci.yml`](.github/workflows/ci.yml).
+CI vets under both `amd64` and `js/wasm` (the build-tagged bridge is invisible to a default vet),
+greps for escape hatches so the zero-unsafe claim is enforced rather than asserted, and runs
+`go test -race`, which the Windows development machine cannot do because its toolchain has no
+64-bit cgo. The Docker build runs `go vet` and the full Go suite inside the build stage, so a green
+image is a test result and not just a package.
 
 Both coverage figures are given because the port's suite has two honest readings. Two tests are
 corpus *generators* that write multi-megabyte fixtures, so they are gated behind an environment

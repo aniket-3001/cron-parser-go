@@ -1,0 +1,196 @@
+# Continuous integration.
+#
+# The jobs are split by what they need rather than by what they check, because
+# the requirements differ sharply: the Go checks need no Node, the original
+# suite needs Node but not the upstream source, and only the differential jobs
+# need a clone of the reference implementation. Splitting that way keeps the
+# common failures fast and stops an unavailable upstream from masking a real
+# regression in the port.
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  # The commit the port is pinned to. Every equivalence claim in this repository
+  # is measured against it, so the differential jobs must not float to upstream
+  # HEAD — two of the bugs reported from here have since been fixed there, and
+  # the port reproduces them deliberately (DECISIONS.md D13).
+  UPSTREAM_COMMIT: aeb2a1513fd33365a6414f4137516c9482f831ed
+
+jobs:
+  go:
+    name: Go quality
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: gofmt
+        run: |
+          unformatted=$(gofmt -l .)
+          if [ -n "$unformatted" ]; then
+            echo "::error::gofmt would change these files:"
+            echo "$unformatted"
+            gofmt -d .
+            exit 1
+          fi
+
+      - name: go vet
+        run: go vet ./...
+
+      # The bridge is behind a js && wasm build tag, so the default vet never
+      # compiles it. Without this a break in the compatibility surface only
+      # shows up when the test adapter fails to load, which is a much worse
+      # error message.
+      - name: go vet (js/wasm)
+        run: GOOS=js GOARCH=wasm go vet ./...
+
+      - name: staticcheck
+        uses: dominikh/staticcheck-action@v1
+        with:
+          version: latest
+          install-go: false
+
+      # This repository claims zero unsafe. A grep is a weaker check than a
+      # human reading the diff, but it is the one that runs on every push.
+      - name: no escape hatches in the library
+        run: |
+          if grep -rn --include='*.go' -e '"unsafe"' -e 'unsafe\.' -e '"reflect"' -e 'reflect\.' -e 'go:linkname' ./cron ./cmd; then
+            echo "::error::an escape hatch appeared in the library or CLI"
+            exit 1
+          fi
+          echo "clean: no unsafe, reflect or linkname outside the build-tagged bridge"
+
+      # Not runnable on the development machine, whose toolchain has no 64-bit
+      # cgo, so CI is the only place the race detector actually executes.
+      - name: go test -race
+        run: go test ./cron/... -race -count=1
+
+      - name: coverage
+        run: |
+          CRON_GEN_CORPUS=1 go test ./cron/... -count=1 -coverprofile=cover.out -covermode=atomic
+          go tool cover -func=cover.out | tail -1
+
+      - name: build the artifact
+        run: go build -o cron-parser ./cmd/cron-parser
+
+      - name: smoke-test the artifact
+        run: |
+          ./cron-parser next '*/15 9-17 * * 1-5' -n 3
+          ./cron-parser parse '0 0 L * *'
+          # A DST gap the port compensates for; a wrong answer here is the
+          # single most likely regression in the time layer.
+          ./cron-parser next '30 2 * * *' -n 2 -tz America/New_York
+
+  govulncheck:
+    name: Vulnerabilities
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - run: go install golang.org/x/vuln/cmd/govulncheck@latest
+      - run: govulncheck ./...
+
+  original-suite:
+    name: Original test suite, unmodified
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # Runs before the suite: if the pinned files have drifted, the pass rate
+      # means nothing and the failure should say so plainly.
+      - name: verify kickoff hashes
+        run: npm run verify-hashes
+
+      - name: run the 280 original tests against the port
+        run: npm test
+
+  differential:
+    name: Differential fuzz and CLI diff
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: check out the reference at the pinned commit
+        run: |
+          git clone --no-checkout https://github.com/harrisiirak/cron-parser.git ../cron-parser
+          git -C ../cron-parser checkout "$UPSTREAM_COMMIT"
+          npm --prefix ../cron-parser ci
+          npm --prefix ../cron-parser run build
+
+      - name: build the port
+        run: npm run build
+
+      - name: differential fuzz
+        run: node fuzz/differential.js --seconds=60 --seed=${{ github.run_number }}
+
+      - name: CLI output diff
+        run: npm run compare
+
+      - name: publish the evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: differential-evidence
+          path: |
+            fuzz/last-run.json
+            fuzz/divergences/
+            compare/CLI-DIFF.md
+            compare/cli-diff.json
+          if-no-files-found: ignore
+
+  docker:
+    name: Docker image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # The build stage runs go vet and the full Go suite, so a green build is
+      # itself a test result rather than only a packaging step.
+      - name: build
+        run: docker build -t cron-parser-go .
+
+      - name: run
+        run: |
+          docker run --rm cron-parser-go next '0 0 * * *' -n 3
+          # Proves the embedded zone database resolves inside scratch, which
+          # has no /usr/share/zoneinfo.
+          docker run --rm cron-parser-go next '30 2 * * *' -n 2 -tz America/New_York

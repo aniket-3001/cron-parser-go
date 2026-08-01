@@ -10,6 +10,13 @@ import (
 //
 // The last four are extensions rather than standard cron: no Unix implementation
 // has @minutely, @secondly, @weekdays or @weekends.
+//
+// Treat this as read-only. It is exported because the original exports its
+// equivalent, and Parse consults it on every call, so mutating it changes how
+// every later parse behaves — process-wide, including from other packages.
+// There is no lock around it either: writing to it while another goroutine
+// parses is a data race. If you need different shorthands, expand them in your
+// own code before calling Parse rather than editing this map.
 var PredefinedExpressions = map[string]string{
 	"@yearly":   "0 0 0 1 1 *",
 	"@annually": "0 0 0 1 1 *",
