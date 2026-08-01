@@ -153,8 +153,8 @@ tautology the moment the thing being spied on stops existing in that language.
 in the entire history — the one that added it.
 
 **2. Differential fuzzing.** Random expressions, 14 timezones, boundary-weighted start instants,
-both implementations, every answer compared. Latest published run: **90 seconds, 2,903 expression
-cases, 1,381 date cases, zero divergences.**
+both implementations, every answer compared. Latest published run: **90 seconds, 3,110 expression
+cases, 1,468 date cases, zero divergences.**
 
 **3. CLI output diff.** The fuzzer compares APIs. This compares them as *programs* — same command
 line, diffing stdout, stderr and exit status, including 16 rejection paths where the error text and
@@ -355,7 +355,7 @@ The brief asked for honest numbers over confident claims, so:
 | `unsafe` in Go sources | **0** — the string doesn't appear, even in a comment |
 | `reflect` in the library | **0** |
 | Statement coverage | **99.5%** default, 100% with corpus generators enabled |
-| Differential fuzz | 90s, 4,284 cases, **0 divergences** |
+| Differential fuzz | 90s, 4,578 cases, **0 divergences** |
 | CLI output diff | **124 / 124** identical |
 
 Two of those I had to correct while writing this.

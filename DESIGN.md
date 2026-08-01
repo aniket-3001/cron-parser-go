@@ -6,6 +6,18 @@ Port Mortem · Track C (TypeScript → Go) · source: `harrisiirak/cron-parser` 
 Every claim in this document about luxon or Go behaviour was **measured**, not assumed. The probe
 scripts and their raw output are reproducible via `scripts/probe/`.
 
+> **Status: this is the design as written before implementation, kept as a record of what was
+> planned rather than rewritten to match what shipped.** Read it that way. Where the two diverge,
+> the code and [`DECISIONS.md`](DECISIONS.md) are authoritative, and every divergence that mattered
+> is recorded there with its reasoning. Two worth knowing before you start:
+>
+> - The milestone tables below treat **278 of 280** as the target and 280 as a stretch, on the
+>   grounds that two spy-based tests looked structurally unbridgeable. They were bridged. The suite
+>   passes **280 of 280**; see D14 for how, and why it is a recording rather than theatre.
+> - §5 describes a bridge protocol that marshals maps per call. That is what shipped. A denser
+>   encoding was sketched and never built, because the bridge is test-only scaffolding and its cost
+>   never appears in the benchmarks, which measure `./cron` directly.
+
 **Companion documents.** This file says *how* the port is built.
 [`SEMANTICS.md`](SEMANTICS.md) says *what* it must do — a line-level behavioural specification of
 v5.6.2 including the complete error catalogue and the non-obvious quirks (day-of-week `7`
@@ -89,7 +101,7 @@ need. WASM needs nothing beyond the Go toolchain that already builds the library
 | Build | `GOOS=js GOARCH=wasm go build` → 2.7 MB module |
 | Init cost | **54 ms** (×7 Jest test files ≈ 0.4 s total) |
 | Call style | **Synchronous** — `globalThis.fn(...)` callable immediately after `go.run()`, no `await` |
-| Call cost | 46 µs/call with map marshalling; will be lower with the packed protocol in §5.3 |
+| Call cost | 46 µs/call with map marshalling. A denser encoding was considered and not built: the bridge is test-only, and the benchmarks measure `./cron` directly, so this cost appears in no reported number |
 | tzdata | Embedded via `_ "time/tzdata"`. Verified: Troll `+120`, Lord Howe `+660`, Chatham `+825` |
 
 Synchronicity is non-negotiable — the original API is 100% synchronous (`parse().next()` returns a

@@ -3,21 +3,21 @@
   seed     : 1
   zones    : 14
 
-  10s  342 expression + 154 date cases, 0 divergences
-  24s  532 expression + 252 date cases, 0 divergences
-  34s  955 expression + 448 date cases, 0 divergences
-  44s  1,325 expression + 607 date cases, 0 divergences
-  54s  1,694 expression + 776 date cases, 0 divergences
-  64s  2,060 expression + 943 date cases, 0 divergences
-  74s  2,447 expression + 1,152 date cases, 0 divergences
-  84s  2,721 expression + 1,299 date cases, 0 divergences
+  10s  300 expression + 136 date cases, 0 divergences
+  23s  532 expression + 252 date cases, 0 divergences
+  33s  1,026 expression + 486 date cases, 0 divergences
+  43s  1,386 expression + 641 date cases, 0 divergences
+  54s  1,840 expression + 839 date cases, 0 divergences
+  64s  2,249 expression + 1,051 date cases, 0 divergences
+  74s  2,608 expression + 1,243 date cases, 0 divergences
+  84s  2,927 expression + 1,390 date cases, 0 divergences
 
-ran 90.0s
-  expression cases 2,903
-  date cases       1,381
-  combined rate    48/s
-  both accepted    1,081
-  both rejected    1,822 (identical error text)
+ran 90.1s
+  expression cases 3,110
+  date cases       1,468
+  combined rate    51/s
+  both accepted    1,166
+  both rejected    1,944 (identical error text)
   divergences      0
 
 PASS - no divergence on any compared behaviour.

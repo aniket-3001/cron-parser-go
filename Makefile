@@ -7,13 +7,17 @@ GO      ?= go
 WASM    := adapter/cron.wasm
 GOROOT_ := $(shell $(GO) env GOROOT)
 
-.PHONY: all build build-wasm test test-original verify-hashes fuzz bench clean
+.PHONY: all build build-wasm cli test test-original test-go verify-hashes fuzz bench compare honest-numbers clean
 
 all: build
 
 ## build: compile the Go library and the js/wasm test bridge
 build: build-wasm
 	$(GO) build ./...
+
+## cli: build the runnable artifact
+cli:
+	$(GO) build -o cron-parser ./cmd/cron-parser
 
 ## build-wasm: compile the bridge and stage everything the adapter loads
 ##   The module is embedded as base64 because the adapter cannot read it from
@@ -68,6 +72,18 @@ fuzz: build-wasm
 bench:
 	$(GO) test ./cron/... -bench=. -benchmem -run=^$$
 
+## compare: run both CLIs on a shared input set and diff stdout, stderr and exit status
+compare: cli
+	node compare/cli-diff.js
+
+## honest-numbers: measure unsafe, any, per-file pass rate and the coverage diff
+##   Writes HONEST-NUMBERS.md and honest-numbers.json. Needs the reference clone
+##   at ../cron-parser for the original's coverage baseline.
+honest-numbers:
+	node scripts/honest-numbers.js
+
 clean:
 	rm -f $(WASM) adapter/wasm_exec.js adapter/wasm-bytes.js
+	rm -f cron-parser cron-parser.exe bench-port bench-port.exe
+	rm -f coverage-go-*.out
 	$(GO) clean

@@ -111,7 +111,7 @@ All runs below are on the full surface described above, including the cursor pro
 
 | Seed | Duration | Expression cases | Date cases | Divergences |
 |---|---|---|---|---|
-| 1 | 90s | 2,903 | 1,381 | **0** |
+| 1 | 90s | 3,110 | 1,468 | **0** |
 | 2 | 65s | 2,216 | 1,090 | **0** |
 | 7 | 65s | 1,455 | 765 | **0** |
 | 31337 | 65s | 2,143 | 985 | **0** |

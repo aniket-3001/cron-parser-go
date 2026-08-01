@@ -89,7 +89,7 @@ either can produce is compared. Four runs, no divergences:
 
 | Seed | Duration | Expression cases | Date cases | Divergences |
 |---|---|---|---|---|
-| 1 | 90s | 2,903 | 1,381 | **0** |
+| 1 | 90s | 3,110 | 1,468 | **0** |
 | 2 | 65s | 2,216 | 1,090 | **0** |
 | 7 | 65s | 1,455 | 765 | **0** |
 | 31337 | 65s | 2,143 | 985 | **0** |
@@ -233,18 +233,21 @@ ambiguous half-landed feature to raise a count is how maintainers learn to stop 
 ## Repository layout
 
 ```
-cron/              the port. Pure Go, zero unsafe, no JavaScript dependency
-cmd/cron-parser/   the CLI, and the runnable artifact
-bridge/            js/wasm handle registry, for test bridging only
-adapter/src/       TypeScript shim mirroring the original's module layout
-tests/original/    the 280 original tests, byte-identical, with kickoff hashes
-fuzz/              differential fuzzing harness, its write-up, and a published run
-bench/             benchmark harnesses, methodology and results
-compare/           CLI output diff against the original, on a shared input set
-upstream-issues/   drafted bug reports
-Dockerfile         multi-stage build; vets and tests, then a scratch image
-.port-mortem.toml  submission manifest: track, source, kickoff hash, results
-HONEST-NUMBERS.md  generated: unsafe, any, per-file pass rate, coverage diff
+cron/               the port. Pure Go, zero unsafe, no JavaScript dependency
+cmd/cron-parser/    the CLI, and the runnable artifact
+bridge/             js/wasm handle registry, for test bridging only
+adapter/src/        TypeScript shim mirroring the original's module layout
+tests/original/     the 280 original tests, byte-identical, with kickoff hashes
+scripts/            build, hash verification, fixture probes, honest-numbers
+fuzz/               differential fuzzing harness, its write-up, and a published run
+bench/              benchmark harnesses, methodology and results
+compare/            CLI output diff against the original, on a shared input set
+upstream-issues/    the seven bug reports filed upstream, and their outcome
+.github/workflows/  CI: vet, staticcheck, race, escape-hatch guard, fuzz, Docker
+Dockerfile          multi-stage build; vets and tests, then a scratch image
+.port-mortem.toml   submission manifest: track, source, kickoff hash, results
+HONEST-NUMBERS.md   generated: unsafe, any, per-file pass rate, coverage diff
+WRITEUP.md          the long-form write-up of what broke and how it was proved
 ```
 
 The library and the test bridge are deliberately separate. `./cron` is what a Go developer would
