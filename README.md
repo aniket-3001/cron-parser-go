@@ -54,7 +54,7 @@ Requires Go 1.24+ and Node 18+. The upstream clone must sit at `../cron-parser`,
 
 | Command | What it does |
 |---|---|
-| `npm run build` | Builds the Go library and the WebAssembly bridge |
+| `npm run build` | Builds the Go library, the WebAssembly bridge, and `./cron-parser` |
 | `npm test` | The 280 original tests, unmodified, against the port |
 | `npm run test:go` | The port's own Go tests |
 | `npm run verify-hashes` | Proves `tests/original/` matches the kickoff hashes |
@@ -68,9 +68,10 @@ primary path because `make` is not present on a stock Windows install.
 
 ### The runnable artifact
 
-```bash
-go build -o cron-parser ./cmd/cron-parser
+`npm run build` already produced it. To build only the binary, `make cli` or
+`go build -o cron-parser ./cmd/cron-parser`.
 
+```bash
 ./cron-parser next "*/15 9-17 * * 1-5" -n 3
 ./cron-parser next "30 2 * * *" -n 2 -tz America/New_York   # crosses a DST gap
 ./cron-parser parse "0 0 L * *"
@@ -160,12 +161,12 @@ input chosen to flatter it. Full methodology and per-pattern figures in
 
 | | Original | Port | |
 |---|---:|---:|---|
-| Throughput (sum of medians) | — | — | **23.5x faster** |
-| Cold start, p50 | 136.0 ms | 12.0 ms | **11.4x faster** |
-| Cold start, p99 | 148.2 ms | 13.1 ms | 11.3x faster |
-| Memory after the workload | 84.9 MB | 20.2 MB | different metrics, see below |
+| Throughput (sum of medians) | — | — | **23.9x faster** |
+| Cold start, p50 | 139.7 ms | 14.1 ms | **9.9x faster** |
+| Cold start, p99 | 150.0 ms | 15.9 ms | 9.4x faster |
+| Memory after the workload | 82.7 MB | 24.2 MB | different metrics, see below |
 
-Faster on all 15 patterns, by between 2.9x and 36x. The memory figures are Node's resident set
+Faster on all 15 patterns, by between 3.1x and 46x. The memory figures are Node's resident set
 size against Go's runtime `Sys`; they are not the same measurement and are reported separately
 rather than reduced to a ratio that would imply more precision than exists.
 
@@ -213,17 +214,20 @@ disagrees with Go's `time` package in ways that are easy to miss and quietly wro
 | Case | luxon | Naive Go |
 |---|---|---|
 | `2024-02-29 + 1 year` | `2025-02-28` **clamps** | `2025-03-01` overflows |
-| `set(month=2)` on `2024-01-31` | `2024-02-29` **clamps** | `2024-03-02` overflows |
 | `set(day=31)` in February | `2024-03-02` **overflows** | `2024-03-02` agrees |
-| `startOf(day)` Santiago `2026-09-06` | `09-06T01:00-03` | `09-05T23:00-04` — **previous day** |
 | non-existent `2026-03-08T02:30` NY | `03:30` **forward** | `01:30` **backward** |
 
 luxon clamps for year and month but overflows for day, and resolves impossible local times in
-the opposite direction from Go. Any uniform strategy is wrong. The Santiago case is the sharpest:
-`time.Date` can land on the previous calendar day, which corrupts day-of-month matching outright.
+the opposite direction from Go, so no uniform strategy is correct. The sharpest case is
+`startOf(day)` in Santiago, where Go's `time.Date` lands on the **previous calendar day** and
+corrupts day-of-month matching outright.
 
-The time layer was built first and validated against luxon over 244,944 operations before
-anything depended on it. See [`DESIGN.md`](DESIGN.md) §4.
+Every divergence is concentrated in one 20-line function, `fromWallClock`, the only place in the
+package that constructs a wall-clock instant. The time layer was built first and validated against
+luxon over 244,944 operations before anything depended on it.
+
+The measured tables and the reasoning: [`DECISIONS.md`](DECISIONS.md) D7–D9,
+[`DESIGN.md`](DESIGN.md) §4, and [`SEMANTICS.md`](SEMANTICS.md) for the behaviour being matched.
 
 ---
 
@@ -234,27 +238,46 @@ triaged and assigned to the maintainer, and one of those duplicates a pull reque
 open. Three were found by differential and property-based testing rather than by reading. See
 [`upstream-issues/`](upstream-issues/) for the reproductions, the outcome and the duplicate check.
 
-| Issue | Bug | Status |
-|---|---|---|
-| [#424](https://github.com/harrisiirak/cron-parser/issues/424) | **`stringify()` can change the schedule** — `0 0 16 * 0-6` renders to `0 0 16 * *`; the first fires daily, the second monthly | `bug`, assigned |
-| [#419](https://github.com/harrisiirak/cron-parser/issues/419) | **DST compensation assumes one-hour transitions** — `diff === 2` never fires for `Antarctica/Troll`'s two-hour gap, and an occurrence is skipped outright | open, patch offered |
-| [#420](https://github.com/harrisiirak/cron-parser/issues/420) | **In-place `sort()` mutates the caller's array** — a constructor rewrites its argument | ✅ **merged**, [PR #427](https://github.com/harrisiirak/cron-parser/pull/427) |
-| [#422](https://github.com/harrisiirak/cron-parser/issues/422) | **Bare `L` in day-of-week fails at `next()`** — parses cleanly, throws during iteration | ✅ **merged**, [PR #428](https://github.com/harrisiirak/cron-parser/pull/428) |
-| [#423](https://github.com/harrisiirak/cron-parser/issues/423) | **A duplicated `0` masks every other duplicate** and makes rendering throw — `0,7,4,4` is accepted, `4,4` is rejected | `bug`, assigned — duplicate of [PR #418](https://github.com/harrisiirak/cron-parser/pull/418) |
-| [#425](https://github.com/harrisiirak/cron-parser/issues/425) | **`stringify()` is not idempotent** — day-of-month renders and parses against different maxima | open, partly overlaps #279 |
-| [#421](https://github.com/harrisiirak/cron-parser/issues/421) | **`[,-/]` is an unintended character range** — matches `.` as well as `,` `-` `/` | ✅ **merged**, [PR #426](https://github.com/harrisiirak/cron-parser/pull/426) |
+The sharpest is [#424](https://github.com/harrisiirak/cron-parser/issues/424): `0 0 16 * 0-6`
+renders via the library's own `stringify()` to `0 0 16 * *`. The first fires **daily**, the second
+**monthly** — a schedule silently changed by round-tripping it through its own output.
 
-PR #427's fix — `values.sort(...)` → `[...values].sort(...)` — is the one this port had already
-made independently on day one, for the same reason (D4).
+**The honest count is six original findings, not seven.** [#423](https://github.com/harrisiirak/cron-parser/issues/423)
+restates a pull request that had been open since three days before kickoff; the duplicate check
+searched issues and not open pull requests. That miss, the full table, the outcome of each report
+and one bug deliberately *not* filed are in [`upstream-issues/`](upstream-issues/).
 
-**The honest count is six original findings, not seven.** #423 restates PR #418, open since three
-days before kickoff. The duplicate check searched issues and not open pull requests; that miss and
-what it should have been are recorded in [`upstream-issues/`](upstream-issues/) rather than edited
-away.
+---
 
-Plus a design inconsistency deliberately **not** filed: **`W` is a phantom feature** — the stringify
-path handles it, no field accepts it, so it is unreachable through any constructor. Filing an
-ambiguous half-landed feature to raise a count is how maintainers learn to stop reading issues.
+## The JavaScript in this repository, and why none of it is a dependency
+
+There is TypeScript and JavaScript here, so it is worth being exact about what runs where.
+
+**`./cron` imports nothing outside the Go standard library.** `go.sum` is empty. It does not link
+against Node, embed a JavaScript engine, or shell out to one. `./cron-parser` and the 2.7 MB
+`scratch` image contain Go and an embedded zone database, and nothing else. That is the whole point
+of the exercise, and it is checkable in one command:
+
+```bash
+# every dependency of the library that is not the standard library. Prints nothing.
+go list -deps ./cron | grep '\.' | grep -v '^github.com/aniket-3001/'
+
+# and its direct imports, all of which are stdlib
+go list -f '{{join .Imports "\n"}}' ./cron
+```
+
+The JavaScript exists for one reason: **the original test suite is written in TypeScript, and the
+rules ask for it to run unmodified.** `adapter/` and `bridge/` are the thin adapter that lets those
+tests reach Go, compiled to WebAssembly and gated behind a `js && wasm` build tag so none of it
+exists in an ordinary build. `fuzz/`, `bench/` and `compare/` are measurement harnesses that load
+*both* implementations to compare them; they are not part of the library either.
+
+**On API compatibility.** The adapter reproduces the original's public surface exactly — same module
+layout, same class and method names, same error strings — which is what lets the original suite run
+against it. The Go package deliberately does *not* mirror that shape: it uses functional options,
+returns `(T, error)`, and exposes `iter.Seq` rather than a JavaScript iterator, because a
+transliterated TypeScript API is not one a Go reviewer would accept. Both surfaces exist, and
+[`DECISIONS.md`](DECISIONS.md) D1–D6 records each place they diverge and why.
 
 ---
 
