@@ -328,6 +328,19 @@ for t := range expr.All() {   // Go 1.23 range-over-func
 
 ---
 
+## Contact
+
+Solo entry. Reachable for written follow-up during the evaluation window through
+[GitHub issues on this repository](https://github.com/aniket-3001/cron-parser-go/issues) or by
+messaging [@aniket-3001](https://github.com/aniket-3001). The commit history carries a working
+email address on every commit.
+
+Anything in this repository can be reproduced from a clean checkout: `npm run build` for the
+artifact, `npm test` for the suite, `npm run fuzz`, `npm run bench`, `npm run compare` and
+`npm run honest-numbers` for each of the claims above.
+
+---
+
 ## License
 
 MIT. The original work is © 2014-2023 Harri Siirak; `tests/original/` remains under that
