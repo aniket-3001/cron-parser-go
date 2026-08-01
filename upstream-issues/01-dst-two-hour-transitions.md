@@ -49,7 +49,24 @@ branch fires as intended.
 
 `dstStart` should record the skipped hour(s) for any transition. For `Antarctica/Troll` it stays
 `null`, so an expression scheduled inside the skipped window is not compensated the way it is in
-one-hour zones — behaviour is inconsistent across timezones.
+one-hour zones.
+
+The consequence is an occurrence that is **silently skipped** rather than shifted:
+
+```js
+// America/New_York, 1-hour gap 02:00-03:00 on 2026-03-08. Schedule 02:30 daily.
+//   2026-03-07 02:30
+//   2026-03-08 03:30   <- shifted past the gap, still runs
+//   2026-03-09 02:30
+
+// Antarctica/Troll, 2-hour gap 00:00-03:00 on 2026-03-29. Schedule 01:30 daily.
+//   2026-03-28 01:30
+//   2026-03-30 01:30   <- 29 March never appears
+//   2026-03-31 01:30
+```
+
+For a daily job that is one missed execution rather than a late one, which is the harder failure
+to notice. This was found after filing and added to the issue as a follow-up comment.
 
 ### Suggested fix
 
