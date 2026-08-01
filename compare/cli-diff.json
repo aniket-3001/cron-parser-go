@@ -1,0 +1,2699 @@
+{
+  "generatedAt": "2026-08-01T10:54:04.383Z",
+  "total": 124,
+  "matched": 124,
+  "results": [
+    {
+      "name": "next * * * * *",
+      "args": [
+        "next",
+        "* * * * *",
+        "-n",
+        "6",
+        "-from",
+        "2026-01-01T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2026-01-01T00:01:00Z\n2026-01-01T00:02:00Z\n2026-01-01T00:03:00Z\n2026-01-01T00:04:00Z\n2026-01-01T00:05:00Z\n2026-01-01T00:06:00Z\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2026-01-01T00:01:00Z\n2026-01-01T00:02:00Z\n2026-01-01T00:03:00Z\n2026-01-01T00:04:00Z\n2026-01-01T00:05:00Z\n2026-01-01T00:06:00Z\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "prev * * * * *",
+      "args": [
+        "prev",
+        "* * * * *",
+        "-n",
+        "4",
+        "-from",
+        "2026-01-01T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2025-12-31T23:59:00Z\n2025-12-31T23:58:00Z\n2025-12-31T23:57:00Z\n2025-12-31T23:56:00Z\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2025-12-31T23:59:00Z\n2025-12-31T23:58:00Z\n2025-12-31T23:57:00Z\n2025-12-31T23:56:00Z\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "parse * * * * *",
+      "args": [
+        "parse",
+        "* * * * *"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "expression  * * * * *\ncanonical   0 * * * * *\nsecond      0\nminute      0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59  (wildcard)\nhour        0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23  (wildcard)\ndayOfMonth  1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31  (wildcard)\nmonth       1,2,3,4,5,6,7,8,9,10,11,12  (wildcard)\ndayOfWeek   0,1,2,3,4,5,6,7  (wildcard)\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "expression  * * * * *\ncanonical   0 * * * * *\nsecond      0\nminute      0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59  (wildcard)\nhour        0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23  (wildcard)\ndayOfMonth  1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31  (wildcard)\nmonth       1,2,3,4,5,6,7,8,9,10,11,12  (wildcard)\ndayOfWeek   0,1,2,3,4,5,6,7  (wildcard)\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "next 0 0 * * *",
+      "args": [
+        "next",
+        "0 0 * * *",
+        "-n",
+        "6",
+        "-from",
+        "2026-01-01T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2026-01-02T00:00:00Z\n2026-01-03T00:00:00Z\n2026-01-04T00:00:00Z\n2026-01-05T00:00:00Z\n2026-01-06T00:00:00Z\n2026-01-07T00:00:00Z\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2026-01-02T00:00:00Z\n2026-01-03T00:00:00Z\n2026-01-04T00:00:00Z\n2026-01-05T00:00:00Z\n2026-01-06T00:00:00Z\n2026-01-07T00:00:00Z\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "prev 0 0 * * *",
+      "args": [
+        "prev",
+        "0 0 * * *",
+        "-n",
+        "4",
+        "-from",
+        "2026-01-01T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2025-12-31T00:00:00Z\n2025-12-30T00:00:00Z\n2025-12-29T00:00:00Z\n2025-12-28T00:00:00Z\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2025-12-31T00:00:00Z\n2025-12-30T00:00:00Z\n2025-12-29T00:00:00Z\n2025-12-28T00:00:00Z\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "parse 0 0 * * *",
+      "args": [
+        "parse",
+        "0 0 * * *"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "expression  0 0 * * *\ncanonical   0 0 0 * * *\nsecond      0\nminute      0\nhour        0\ndayOfMonth  1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31  (wildcard)\nmonth       1,2,3,4,5,6,7,8,9,10,11,12  (wildcard)\ndayOfWeek   0,1,2,3,4,5,6,7  (wildcard)\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "expression  0 0 * * *\ncanonical   0 0 0 * * *\nsecond      0\nminute      0\nhour        0\ndayOfMonth  1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31  (wildcard)\nmonth       1,2,3,4,5,6,7,8,9,10,11,12  (wildcard)\ndayOfWeek   0,1,2,3,4,5,6,7  (wildcard)\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "next */15 9-17 * * 1-5",
+      "args": [
+        "next",
+        "*/15 9-17 * * 1-5",
+        "-n",
+        "6",
+        "-from",
+        "2026-01-01T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2026-01-01T09:00:00Z\n2026-01-01T09:15:00Z\n2026-01-01T09:30:00Z\n2026-01-01T09:45:00Z\n2026-01-01T10:00:00Z\n2026-01-01T10:15:00Z\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2026-01-01T09:00:00Z\n2026-01-01T09:15:00Z\n2026-01-01T09:30:00Z\n2026-01-01T09:45:00Z\n2026-01-01T10:00:00Z\n2026-01-01T10:15:00Z\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "prev */15 9-17 * * 1-5",
+      "args": [
+        "prev",
+        "*/15 9-17 * * 1-5",
+        "-n",
+        "4",
+        "-from",
+        "2026-01-01T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2025-12-31T17:45:00Z\n2025-12-31T17:30:00Z\n2025-12-31T17:15:00Z\n2025-12-31T17:00:00Z\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2025-12-31T17:45:00Z\n2025-12-31T17:30:00Z\n2025-12-31T17:15:00Z\n2025-12-31T17:00:00Z\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "parse */15 9-17 * * 1-5",
+      "args": [
+        "parse",
+        "*/15 9-17 * * 1-5"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "expression  */15 9-17 * * 1-5\ncanonical   0 */15 9-17 * * 1-5\nsecond      0\nminute      0,15,30,45\nhour        9,10,11,12,13,14,15,16,17\ndayOfMonth  1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31  (wildcard)\nmonth       1,2,3,4,5,6,7,8,9,10,11,12  (wildcard)\ndayOfWeek   1,2,3,4,5\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "expression  */15 9-17 * * 1-5\ncanonical   0 */15 9-17 * * 1-5\nsecond      0\nminute      0,15,30,45\nhour        9,10,11,12,13,14,15,16,17\ndayOfMonth  1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31  (wildcard)\nmonth       1,2,3,4,5,6,7,8,9,10,11,12  (wildcard)\ndayOfWeek   1,2,3,4,5\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "next 0 12 * * MON-FRI",
+      "args": [
+        "next",
+        "0 12 * * MON-FRI",
+        "-n",
+        "6",
+        "-from",
+        "2026-01-01T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2026-01-01T12:00:00Z\n2026-01-02T12:00:00Z\n2026-01-05T12:00:00Z\n2026-01-06T12:00:00Z\n2026-01-07T12:00:00Z\n2026-01-08T12:00:00Z\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2026-01-01T12:00:00Z\n2026-01-02T12:00:00Z\n2026-01-05T12:00:00Z\n2026-01-06T12:00:00Z\n2026-01-07T12:00:00Z\n2026-01-08T12:00:00Z\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "prev 0 12 * * MON-FRI",
+      "args": [
+        "prev",
+        "0 12 * * MON-FRI",
+        "-n",
+        "4",
+        "-from",
+        "2026-01-01T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2025-12-31T12:00:00Z\n2025-12-30T12:00:00Z\n2025-12-29T12:00:00Z\n2025-12-26T12:00:00Z\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2025-12-31T12:00:00Z\n2025-12-30T12:00:00Z\n2025-12-29T12:00:00Z\n2025-12-26T12:00:00Z\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "parse 0 12 * * MON-FRI",
+      "args": [
+        "parse",
+        "0 12 * * MON-FRI"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "expression  0 12 * * MON-FRI\ncanonical   0 0 12 * * 1-5\nsecond      0\nminute      0\nhour        12\ndayOfMonth  1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31  (wildcard)\nmonth       1,2,3,4,5,6,7,8,9,10,11,12  (wildcard)\ndayOfWeek   1,2,3,4,5\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "expression  0 12 * * MON-FRI\ncanonical   0 0 12 * * 1-5\nsecond      0\nminute      0\nhour        12\ndayOfMonth  1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31  (wildcard)\nmonth       1,2,3,4,5,6,7,8,9,10,11,12  (wildcard)\ndayOfWeek   1,2,3,4,5\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "next 30 2 * * *",
+      "args": [
+        "next",
+        "30 2 * * *",
+        "-n",
+        "6",
+        "-from",
+        "2026-01-01T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2026-01-01T02:30:00Z\n2026-01-02T02:30:00Z\n2026-01-03T02:30:00Z\n2026-01-04T02:30:00Z\n2026-01-05T02:30:00Z\n2026-01-06T02:30:00Z\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2026-01-01T02:30:00Z\n2026-01-02T02:30:00Z\n2026-01-03T02:30:00Z\n2026-01-04T02:30:00Z\n2026-01-05T02:30:00Z\n2026-01-06T02:30:00Z\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "prev 30 2 * * *",
+      "args": [
+        "prev",
+        "30 2 * * *",
+        "-n",
+        "4",
+        "-from",
+        "2026-01-01T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2025-12-31T02:30:00Z\n2025-12-30T02:30:00Z\n2025-12-29T02:30:00Z\n2025-12-28T02:30:00Z\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2025-12-31T02:30:00Z\n2025-12-30T02:30:00Z\n2025-12-29T02:30:00Z\n2025-12-28T02:30:00Z\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "parse 30 2 * * *",
+      "args": [
+        "parse",
+        "30 2 * * *"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "expression  30 2 * * *\ncanonical   0 30 2 * * *\nsecond      0\nminute      30\nhour        2\ndayOfMonth  1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31  (wildcard)\nmonth       1,2,3,4,5,6,7,8,9,10,11,12  (wildcard)\ndayOfWeek   0,1,2,3,4,5,6,7  (wildcard)\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "expression  30 2 * * *\ncanonical   0 30 2 * * *\nsecond      0\nminute      30\nhour        2\ndayOfMonth  1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31  (wildcard)\nmonth       1,2,3,4,5,6,7,8,9,10,11,12  (wildcard)\ndayOfWeek   0,1,2,3,4,5,6,7  (wildcard)\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "next 0 0 1 * *",
+      "args": [
+        "next",
+        "0 0 1 * *",
+        "-n",
+        "6",
+        "-from",
+        "2026-01-01T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2026-02-01T00:00:00Z\n2026-03-01T00:00:00Z\n2026-04-01T00:00:00Z\n2026-05-01T00:00:00Z\n2026-06-01T00:00:00Z\n2026-07-01T00:00:00Z\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2026-02-01T00:00:00Z\n2026-03-01T00:00:00Z\n2026-04-01T00:00:00Z\n2026-05-01T00:00:00Z\n2026-06-01T00:00:00Z\n2026-07-01T00:00:00Z\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "prev 0 0 1 * *",
+      "args": [
+        "prev",
+        "0 0 1 * *",
+        "-n",
+        "4",
+        "-from",
+        "2026-01-01T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2025-12-01T00:00:00Z\n2025-11-01T00:00:00Z\n2025-10-01T00:00:00Z\n2025-09-01T00:00:00Z\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2025-12-01T00:00:00Z\n2025-11-01T00:00:00Z\n2025-10-01T00:00:00Z\n2025-09-01T00:00:00Z\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "parse 0 0 1 * *",
+      "args": [
+        "parse",
+        "0 0 1 * *"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "expression  0 0 1 * *\ncanonical   0 0 0 1 * *\nsecond      0\nminute      0\nhour        0\ndayOfMonth  1\nmonth       1,2,3,4,5,6,7,8,9,10,11,12  (wildcard)\ndayOfWeek   0,1,2,3,4,5,6,7  (wildcard)\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "expression  0 0 1 * *\ncanonical   0 0 0 1 * *\nsecond      0\nminute      0\nhour        0\ndayOfMonth  1\nmonth       1,2,3,4,5,6,7,8,9,10,11,12  (wildcard)\ndayOfWeek   0,1,2,3,4,5,6,7  (wildcard)\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "next 0 0 L * *",
+      "args": [
+        "next",
+        "0 0 L * *",
+        "-n",
+        "6",
+        "-from",
+        "2026-01-01T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2026-01-31T00:00:00Z\n2026-02-28T00:00:00Z\n2026-03-31T00:00:00Z\n2026-04-30T00:00:00Z\n2026-05-31T00:00:00Z\n2026-06-30T00:00:00Z\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2026-01-31T00:00:00Z\n2026-02-28T00:00:00Z\n2026-03-31T00:00:00Z\n2026-04-30T00:00:00Z\n2026-05-31T00:00:00Z\n2026-06-30T00:00:00Z\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "prev 0 0 L * *",
+      "args": [
+        "prev",
+        "0 0 L * *",
+        "-n",
+        "4",
+        "-from",
+        "2026-01-01T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2025-12-31T00:00:00Z\n2025-11-30T00:00:00Z\n2025-10-31T00:00:00Z\n2025-09-30T00:00:00Z\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2025-12-31T00:00:00Z\n2025-11-30T00:00:00Z\n2025-10-31T00:00:00Z\n2025-09-30T00:00:00Z\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "parse 0 0 L * *",
+      "args": [
+        "parse",
+        "0 0 L * *"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "expression  0 0 L * *\ncanonical   0 0 0 L * *\nsecond      0\nminute      0\nhour        0\ndayOfMonth  L\nmonth       1,2,3,4,5,6,7,8,9,10,11,12  (wildcard)\ndayOfWeek   0,1,2,3,4,5,6,7  (wildcard)\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "expression  0 0 L * *\ncanonical   0 0 0 L * *\nsecond      0\nminute      0\nhour        0\ndayOfMonth  L\nmonth       1,2,3,4,5,6,7,8,9,10,11,12  (wildcard)\ndayOfWeek   0,1,2,3,4,5,6,7  (wildcard)\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "next 0 0 * * 5L",
+      "args": [
+        "next",
+        "0 0 * * 5L",
+        "-n",
+        "6",
+        "-from",
+        "2026-01-01T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2026-01-30T00:00:00Z\n2026-02-27T00:00:00Z\n2026-03-27T00:00:00Z\n2026-04-24T00:00:00Z\n2026-05-29T00:00:00Z\n2026-06-26T00:00:00Z\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2026-01-30T00:00:00Z\n2026-02-27T00:00:00Z\n2026-03-27T00:00:00Z\n2026-04-24T00:00:00Z\n2026-05-29T00:00:00Z\n2026-06-26T00:00:00Z\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "prev 0 0 * * 5L",
+      "args": [
+        "prev",
+        "0 0 * * 5L",
+        "-n",
+        "4",
+        "-from",
+        "2026-01-01T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2025-12-26T00:00:00Z\n2025-11-28T00:00:00Z\n2025-10-31T00:00:00Z\n2025-09-26T00:00:00Z\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2025-12-26T00:00:00Z\n2025-11-28T00:00:00Z\n2025-10-31T00:00:00Z\n2025-09-26T00:00:00Z\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "parse 0 0 * * 5L",
+      "args": [
+        "parse",
+        "0 0 * * 5L"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "expression  0 0 * * 5L\ncanonical   0 0 0 * * 5L\nsecond      0\nminute      0\nhour        0\ndayOfMonth  1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31  (wildcard)\nmonth       1,2,3,4,5,6,7,8,9,10,11,12  (wildcard)\ndayOfWeek   5L\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "expression  0 0 * * 5L\ncanonical   0 0 0 * * 5L\nsecond      0\nminute      0\nhour        0\ndayOfMonth  1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31  (wildcard)\nmonth       1,2,3,4,5,6,7,8,9,10,11,12  (wildcard)\ndayOfWeek   5L\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "next 0 0 * * MON#2",
+      "args": [
+        "next",
+        "0 0 * * MON#2",
+        "-n",
+        "6",
+        "-from",
+        "2026-01-01T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2026-01-12T00:00:00Z\n2026-02-09T00:00:00Z\n2026-03-09T00:00:00Z\n2026-04-13T00:00:00Z\n2026-05-11T00:00:00Z\n2026-06-08T00:00:00Z\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2026-01-12T00:00:00Z\n2026-02-09T00:00:00Z\n2026-03-09T00:00:00Z\n2026-04-13T00:00:00Z\n2026-05-11T00:00:00Z\n2026-06-08T00:00:00Z\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "prev 0 0 * * MON#2",
+      "args": [
+        "prev",
+        "0 0 * * MON#2",
+        "-n",
+        "4",
+        "-from",
+        "2026-01-01T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2025-12-08T00:00:00Z\n2025-11-10T00:00:00Z\n2025-10-13T00:00:00Z\n2025-09-08T00:00:00Z\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2025-12-08T00:00:00Z\n2025-11-10T00:00:00Z\n2025-10-13T00:00:00Z\n2025-09-08T00:00:00Z\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "parse 0 0 * * MON#2",
+      "args": [
+        "parse",
+        "0 0 * * MON#2"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "expression  0 0 * * MON#2\ncanonical   0 0 0 * * 1#2\nsecond      0\nminute      0\nhour        0\ndayOfMonth  1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31  (wildcard)\nmonth       1,2,3,4,5,6,7,8,9,10,11,12  (wildcard)\ndayOfWeek   1\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "expression  0 0 * * MON#2\ncanonical   0 0 0 * * 1#2\nsecond      0\nminute      0\nhour        0\ndayOfMonth  1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31  (wildcard)\nmonth       1,2,3,4,5,6,7,8,9,10,11,12  (wildcard)\ndayOfWeek   1\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "next 0 0 13 * 5",
+      "args": [
+        "next",
+        "0 0 13 * 5",
+        "-n",
+        "6",
+        "-from",
+        "2026-01-01T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2026-01-02T00:00:00Z\n2026-01-09T00:00:00Z\n2026-01-13T00:00:00Z\n2026-01-16T00:00:00Z\n2026-01-23T00:00:00Z\n2026-01-30T00:00:00Z\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2026-01-02T00:00:00Z\n2026-01-09T00:00:00Z\n2026-01-13T00:00:00Z\n2026-01-16T00:00:00Z\n2026-01-23T00:00:00Z\n2026-01-30T00:00:00Z\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "prev 0 0 13 * 5",
+      "args": [
+        "prev",
+        "0 0 13 * 5",
+        "-n",
+        "4",
+        "-from",
+        "2026-01-01T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2025-12-26T00:00:00Z\n2025-12-19T00:00:00Z\n2025-12-13T00:00:00Z\n2025-12-12T00:00:00Z\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2025-12-26T00:00:00Z\n2025-12-19T00:00:00Z\n2025-12-13T00:00:00Z\n2025-12-12T00:00:00Z\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "parse 0 0 13 * 5",
+      "args": [
+        "parse",
+        "0 0 13 * 5"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "expression  0 0 13 * 5\ncanonical   0 0 0 13 * 5\nsecond      0\nminute      0\nhour        0\ndayOfMonth  13\nmonth       1,2,3,4,5,6,7,8,9,10,11,12  (wildcard)\ndayOfWeek   5\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "expression  0 0 13 * 5\ncanonical   0 0 0 13 * 5\nsecond      0\nminute      0\nhour        0\ndayOfMonth  13\nmonth       1,2,3,4,5,6,7,8,9,10,11,12  (wildcard)\ndayOfWeek   5\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "next 0 0 29 2 *",
+      "args": [
+        "next",
+        "0 0 29 2 *",
+        "-n",
+        "6",
+        "-from",
+        "2026-01-01T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2028-02-29T00:00:00Z\n2032-02-29T00:00:00Z\n2036-02-29T00:00:00Z\n2040-02-29T00:00:00Z\n2044-02-29T00:00:00Z\n2048-02-29T00:00:00Z\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2028-02-29T00:00:00Z\n2032-02-29T00:00:00Z\n2036-02-29T00:00:00Z\n2040-02-29T00:00:00Z\n2044-02-29T00:00:00Z\n2048-02-29T00:00:00Z\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "prev 0 0 29 2 *",
+      "args": [
+        "prev",
+        "0 0 29 2 *",
+        "-n",
+        "4",
+        "-from",
+        "2026-01-01T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2024-02-29T00:00:00Z\n2020-02-29T00:00:00Z\n2016-02-29T00:00:00Z\n2012-02-29T00:00:00Z\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2024-02-29T00:00:00Z\n2020-02-29T00:00:00Z\n2016-02-29T00:00:00Z\n2012-02-29T00:00:00Z\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "parse 0 0 29 2 *",
+      "args": [
+        "parse",
+        "0 0 29 2 *"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "expression  0 0 29 2 *\ncanonical   0 0 0 29 2 *\nsecond      0\nminute      0\nhour        0\ndayOfMonth  29\nmonth       2\ndayOfWeek   0,1,2,3,4,5,6,7  (wildcard)\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "expression  0 0 29 2 *\ncanonical   0 0 0 29 2 *\nsecond      0\nminute      0\nhour        0\ndayOfMonth  29\nmonth       2\ndayOfWeek   0,1,2,3,4,5,6,7  (wildcard)\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "next @daily",
+      "args": [
+        "next",
+        "@daily",
+        "-n",
+        "6",
+        "-from",
+        "2026-01-01T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2026-01-02T00:00:00Z\n2026-01-03T00:00:00Z\n2026-01-04T00:00:00Z\n2026-01-05T00:00:00Z\n2026-01-06T00:00:00Z\n2026-01-07T00:00:00Z\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2026-01-02T00:00:00Z\n2026-01-03T00:00:00Z\n2026-01-04T00:00:00Z\n2026-01-05T00:00:00Z\n2026-01-06T00:00:00Z\n2026-01-07T00:00:00Z\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "prev @daily",
+      "args": [
+        "prev",
+        "@daily",
+        "-n",
+        "4",
+        "-from",
+        "2026-01-01T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2025-12-31T00:00:00Z\n2025-12-30T00:00:00Z\n2025-12-29T00:00:00Z\n2025-12-28T00:00:00Z\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2025-12-31T00:00:00Z\n2025-12-30T00:00:00Z\n2025-12-29T00:00:00Z\n2025-12-28T00:00:00Z\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "parse @daily",
+      "args": [
+        "parse",
+        "@daily"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "expression  @daily\ncanonical   0 0 0 * * *\nsecond      0\nminute      0\nhour        0\ndayOfMonth  1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31  (wildcard)\nmonth       1,2,3,4,5,6,7,8,9,10,11,12  (wildcard)\ndayOfWeek   0,1,2,3,4,5,6,7  (wildcard)\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "expression  @daily\ncanonical   0 0 0 * * *\nsecond      0\nminute      0\nhour        0\ndayOfMonth  1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31  (wildcard)\nmonth       1,2,3,4,5,6,7,8,9,10,11,12  (wildcard)\ndayOfWeek   0,1,2,3,4,5,6,7  (wildcard)\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "next @weekly",
+      "args": [
+        "next",
+        "@weekly",
+        "-n",
+        "6",
+        "-from",
+        "2026-01-01T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2026-01-04T00:00:00Z\n2026-01-11T00:00:00Z\n2026-01-18T00:00:00Z\n2026-01-25T00:00:00Z\n2026-02-01T00:00:00Z\n2026-02-08T00:00:00Z\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2026-01-04T00:00:00Z\n2026-01-11T00:00:00Z\n2026-01-18T00:00:00Z\n2026-01-25T00:00:00Z\n2026-02-01T00:00:00Z\n2026-02-08T00:00:00Z\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "prev @weekly",
+      "args": [
+        "prev",
+        "@weekly",
+        "-n",
+        "4",
+        "-from",
+        "2026-01-01T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2025-12-28T00:00:00Z\n2025-12-21T00:00:00Z\n2025-12-14T00:00:00Z\n2025-12-07T00:00:00Z\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2025-12-28T00:00:00Z\n2025-12-21T00:00:00Z\n2025-12-14T00:00:00Z\n2025-12-07T00:00:00Z\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "parse @weekly",
+      "args": [
+        "parse",
+        "@weekly"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "expression  @weekly\ncanonical   0 0 0 * * 0\nsecond      0\nminute      0\nhour        0\ndayOfMonth  1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31  (wildcard)\nmonth       1,2,3,4,5,6,7,8,9,10,11,12  (wildcard)\ndayOfWeek   0\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "expression  @weekly\ncanonical   0 0 0 * * 0\nsecond      0\nminute      0\nhour        0\ndayOfMonth  1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31  (wildcard)\nmonth       1,2,3,4,5,6,7,8,9,10,11,12  (wildcard)\ndayOfWeek   0\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "next @yearly",
+      "args": [
+        "next",
+        "@yearly",
+        "-n",
+        "6",
+        "-from",
+        "2026-01-01T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2027-01-01T00:00:00Z\n2028-01-01T00:00:00Z\n2029-01-01T00:00:00Z\n2030-01-01T00:00:00Z\n2031-01-01T00:00:00Z\n2032-01-01T00:00:00Z\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2027-01-01T00:00:00Z\n2028-01-01T00:00:00Z\n2029-01-01T00:00:00Z\n2030-01-01T00:00:00Z\n2031-01-01T00:00:00Z\n2032-01-01T00:00:00Z\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "prev @yearly",
+      "args": [
+        "prev",
+        "@yearly",
+        "-n",
+        "4",
+        "-from",
+        "2026-01-01T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2025-01-01T00:00:00Z\n2024-01-01T00:00:00Z\n2023-01-01T00:00:00Z\n2022-01-01T00:00:00Z\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2025-01-01T00:00:00Z\n2024-01-01T00:00:00Z\n2023-01-01T00:00:00Z\n2022-01-01T00:00:00Z\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "parse @yearly",
+      "args": [
+        "parse",
+        "@yearly"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "expression  @yearly\ncanonical   0 0 0 1 1 *\nsecond      0\nminute      0\nhour        0\ndayOfMonth  1\nmonth       1\ndayOfWeek   0,1,2,3,4,5,6,7  (wildcard)\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "expression  @yearly\ncanonical   0 0 0 1 1 *\nsecond      0\nminute      0\nhour        0\ndayOfMonth  1\nmonth       1\ndayOfWeek   0,1,2,3,4,5,6,7  (wildcard)\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "next @weekends",
+      "args": [
+        "next",
+        "@weekends",
+        "-n",
+        "6",
+        "-from",
+        "2026-01-01T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2026-01-03T00:00:00Z\n2026-01-04T00:00:00Z\n2026-01-10T00:00:00Z\n2026-01-11T00:00:00Z\n2026-01-17T00:00:00Z\n2026-01-18T00:00:00Z\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2026-01-03T00:00:00Z\n2026-01-04T00:00:00Z\n2026-01-10T00:00:00Z\n2026-01-11T00:00:00Z\n2026-01-17T00:00:00Z\n2026-01-18T00:00:00Z\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "prev @weekends",
+      "args": [
+        "prev",
+        "@weekends",
+        "-n",
+        "4",
+        "-from",
+        "2026-01-01T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2025-12-28T00:00:00Z\n2025-12-27T00:00:00Z\n2025-12-21T00:00:00Z\n2025-12-20T00:00:00Z\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2025-12-28T00:00:00Z\n2025-12-27T00:00:00Z\n2025-12-21T00:00:00Z\n2025-12-20T00:00:00Z\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "parse @weekends",
+      "args": [
+        "parse",
+        "@weekends"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "expression  @weekends\ncanonical   0 0 0 * * 0,6\nsecond      0\nminute      0\nhour        0\ndayOfMonth  1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31  (wildcard)\nmonth       1,2,3,4,5,6,7,8,9,10,11,12  (wildcard)\ndayOfWeek   0,6\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "expression  @weekends\ncanonical   0 0 0 * * 0,6\nsecond      0\nminute      0\nhour        0\ndayOfMonth  1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31  (wildcard)\nmonth       1,2,3,4,5,6,7,8,9,10,11,12  (wildcard)\ndayOfWeek   0,6\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "next 0 0 ? * *",
+      "args": [
+        "next",
+        "0 0 ? * *",
+        "-n",
+        "6",
+        "-from",
+        "2026-01-01T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2026-01-02T00:00:00Z\n2026-01-03T00:00:00Z\n2026-01-04T00:00:00Z\n2026-01-05T00:00:00Z\n2026-01-06T00:00:00Z\n2026-01-07T00:00:00Z\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2026-01-02T00:00:00Z\n2026-01-03T00:00:00Z\n2026-01-04T00:00:00Z\n2026-01-05T00:00:00Z\n2026-01-06T00:00:00Z\n2026-01-07T00:00:00Z\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "prev 0 0 ? * *",
+      "args": [
+        "prev",
+        "0 0 ? * *",
+        "-n",
+        "4",
+        "-from",
+        "2026-01-01T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2025-12-31T00:00:00Z\n2025-12-30T00:00:00Z\n2025-12-29T00:00:00Z\n2025-12-28T00:00:00Z\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2025-12-31T00:00:00Z\n2025-12-30T00:00:00Z\n2025-12-29T00:00:00Z\n2025-12-28T00:00:00Z\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "parse 0 0 ? * *",
+      "args": [
+        "parse",
+        "0 0 ? * *"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "expression  0 0 ? * *\ncanonical   0 0 0 ? * *\nsecond      0\nminute      0\nhour        0\ndayOfMonth  1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31  (wildcard)\nmonth       1,2,3,4,5,6,7,8,9,10,11,12  (wildcard)\ndayOfWeek   0,1,2,3,4,5,6,7  (wildcard)\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "expression  0 0 ? * *\ncanonical   0 0 0 ? * *\nsecond      0\nminute      0\nhour        0\ndayOfMonth  1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31  (wildcard)\nmonth       1,2,3,4,5,6,7,8,9,10,11,12  (wildcard)\ndayOfWeek   0,1,2,3,4,5,6,7  (wildcard)\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "next */5 * * * * *",
+      "args": [
+        "next",
+        "*/5 * * * * *",
+        "-n",
+        "6",
+        "-from",
+        "2026-01-01T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2026-01-01T00:00:05Z\n2026-01-01T00:00:10Z\n2026-01-01T00:00:15Z\n2026-01-01T00:00:20Z\n2026-01-01T00:00:25Z\n2026-01-01T00:00:30Z\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2026-01-01T00:00:05Z\n2026-01-01T00:00:10Z\n2026-01-01T00:00:15Z\n2026-01-01T00:00:20Z\n2026-01-01T00:00:25Z\n2026-01-01T00:00:30Z\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "prev */5 * * * * *",
+      "args": [
+        "prev",
+        "*/5 * * * * *",
+        "-n",
+        "4",
+        "-from",
+        "2026-01-01T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2025-12-31T23:59:55Z\n2025-12-31T23:59:50Z\n2025-12-31T23:59:45Z\n2025-12-31T23:59:40Z\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2025-12-31T23:59:55Z\n2025-12-31T23:59:50Z\n2025-12-31T23:59:45Z\n2025-12-31T23:59:40Z\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "parse */5 * * * * *",
+      "args": [
+        "parse",
+        "*/5 * * * * *"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "expression  */5 * * * * *\ncanonical   */5 * * * * *\nsecond      0,5,10,15,20,25,30,35,40,45,50,55\nminute      0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59  (wildcard)\nhour        0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23  (wildcard)\ndayOfMonth  1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31  (wildcard)\nmonth       1,2,3,4,5,6,7,8,9,10,11,12  (wildcard)\ndayOfWeek   0,1,2,3,4,5,6,7  (wildcard)\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "expression  */5 * * * * *\ncanonical   */5 * * * * *\nsecond      0,5,10,15,20,25,30,35,40,45,50,55\nminute      0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59  (wildcard)\nhour        0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23  (wildcard)\ndayOfMonth  1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31  (wildcard)\nmonth       1,2,3,4,5,6,7,8,9,10,11,12  (wildcard)\ndayOfWeek   0,1,2,3,4,5,6,7  (wildcard)\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "next 0 0 1,15 * *",
+      "args": [
+        "next",
+        "0 0 1,15 * *",
+        "-n",
+        "6",
+        "-from",
+        "2026-01-01T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2026-01-15T00:00:00Z\n2026-02-01T00:00:00Z\n2026-02-15T00:00:00Z\n2026-03-01T00:00:00Z\n2026-03-15T00:00:00Z\n2026-04-01T00:00:00Z\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2026-01-15T00:00:00Z\n2026-02-01T00:00:00Z\n2026-02-15T00:00:00Z\n2026-03-01T00:00:00Z\n2026-03-15T00:00:00Z\n2026-04-01T00:00:00Z\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "prev 0 0 1,15 * *",
+      "args": [
+        "prev",
+        "0 0 1,15 * *",
+        "-n",
+        "4",
+        "-from",
+        "2026-01-01T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2025-12-15T00:00:00Z\n2025-12-01T00:00:00Z\n2025-11-15T00:00:00Z\n2025-11-01T00:00:00Z\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2025-12-15T00:00:00Z\n2025-12-01T00:00:00Z\n2025-11-15T00:00:00Z\n2025-11-01T00:00:00Z\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "parse 0 0 1,15 * *",
+      "args": [
+        "parse",
+        "0 0 1,15 * *"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "expression  0 0 1,15 * *\ncanonical   0 0 0 1,15 * *\nsecond      0\nminute      0\nhour        0\ndayOfMonth  1,15\nmonth       1,2,3,4,5,6,7,8,9,10,11,12  (wildcard)\ndayOfWeek   0,1,2,3,4,5,6,7  (wildcard)\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "expression  0 0 1,15 * *\ncanonical   0 0 0 1,15 * *\nsecond      0\nminute      0\nhour        0\ndayOfMonth  1,15\nmonth       1,2,3,4,5,6,7,8,9,10,11,12  (wildcard)\ndayOfWeek   0,1,2,3,4,5,6,7  (wildcard)\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "next 15,45 * * * *",
+      "args": [
+        "next",
+        "15,45 * * * *",
+        "-n",
+        "6",
+        "-from",
+        "2026-01-01T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2026-01-01T00:15:00Z\n2026-01-01T00:45:00Z\n2026-01-01T01:15:00Z\n2026-01-01T01:45:00Z\n2026-01-01T02:15:00Z\n2026-01-01T02:45:00Z\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2026-01-01T00:15:00Z\n2026-01-01T00:45:00Z\n2026-01-01T01:15:00Z\n2026-01-01T01:45:00Z\n2026-01-01T02:15:00Z\n2026-01-01T02:45:00Z\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "prev 15,45 * * * *",
+      "args": [
+        "prev",
+        "15,45 * * * *",
+        "-n",
+        "4",
+        "-from",
+        "2026-01-01T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2025-12-31T23:45:00Z\n2025-12-31T23:15:00Z\n2025-12-31T22:45:00Z\n2025-12-31T22:15:00Z\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2025-12-31T23:45:00Z\n2025-12-31T23:15:00Z\n2025-12-31T22:45:00Z\n2025-12-31T22:15:00Z\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "parse 15,45 * * * *",
+      "args": [
+        "parse",
+        "15,45 * * * *"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "expression  15,45 * * * *\ncanonical   0 15,45 * * * *\nsecond      0\nminute      15,45\nhour        0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23  (wildcard)\ndayOfMonth  1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31  (wildcard)\nmonth       1,2,3,4,5,6,7,8,9,10,11,12  (wildcard)\ndayOfWeek   0,1,2,3,4,5,6,7  (wildcard)\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "expression  15,45 * * * *\ncanonical   0 15,45 * * * *\nsecond      0\nminute      15,45\nhour        0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23  (wildcard)\ndayOfMonth  1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31  (wildcard)\nmonth       1,2,3,4,5,6,7,8,9,10,11,12  (wildcard)\ndayOfWeek   0,1,2,3,4,5,6,7  (wildcard)\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "next * * * * 5-7",
+      "args": [
+        "next",
+        "* * * * 5-7",
+        "-n",
+        "6",
+        "-from",
+        "2026-01-01T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2026-01-02T00:00:00Z\n2026-01-02T00:01:00Z\n2026-01-02T00:02:00Z\n2026-01-02T00:03:00Z\n2026-01-02T00:04:00Z\n2026-01-02T00:05:00Z\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2026-01-02T00:00:00Z\n2026-01-02T00:01:00Z\n2026-01-02T00:02:00Z\n2026-01-02T00:03:00Z\n2026-01-02T00:04:00Z\n2026-01-02T00:05:00Z\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "prev * * * * 5-7",
+      "args": [
+        "prev",
+        "* * * * 5-7",
+        "-n",
+        "4",
+        "-from",
+        "2026-01-01T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2025-12-28T23:59:00Z\n2025-12-28T23:58:00Z\n2025-12-28T23:57:00Z\n2025-12-28T23:56:00Z\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2025-12-28T23:59:00Z\n2025-12-28T23:58:00Z\n2025-12-28T23:57:00Z\n2025-12-28T23:56:00Z\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "parse * * * * 5-7",
+      "args": [
+        "parse",
+        "* * * * 5-7"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "expression  * * * * 5-7\ncanonical   0 * * * * 0,5,6\nsecond      0\nminute      0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59  (wildcard)\nhour        0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23  (wildcard)\ndayOfMonth  1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31  (wildcard)\nmonth       1,2,3,4,5,6,7,8,9,10,11,12  (wildcard)\ndayOfWeek   0,5,6,7\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "expression  * * * * 5-7\ncanonical   0 * * * * 0,5,6\nsecond      0\nminute      0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59  (wildcard)\nhour        0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23  (wildcard)\ndayOfMonth  1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31  (wildcard)\nmonth       1,2,3,4,5,6,7,8,9,10,11,12  (wildcard)\ndayOfWeek   0,5,6,7\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "next * * * * 7",
+      "args": [
+        "next",
+        "* * * * 7",
+        "-n",
+        "6",
+        "-from",
+        "2026-01-01T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2026-01-04T00:00:00Z\n2026-01-04T00:01:00Z\n2026-01-04T00:02:00Z\n2026-01-04T00:03:00Z\n2026-01-04T00:04:00Z\n2026-01-04T00:05:00Z\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2026-01-04T00:00:00Z\n2026-01-04T00:01:00Z\n2026-01-04T00:02:00Z\n2026-01-04T00:03:00Z\n2026-01-04T00:04:00Z\n2026-01-04T00:05:00Z\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "prev * * * * 7",
+      "args": [
+        "prev",
+        "* * * * 7",
+        "-n",
+        "4",
+        "-from",
+        "2026-01-01T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2025-12-28T23:59:00Z\n2025-12-28T23:58:00Z\n2025-12-28T23:57:00Z\n2025-12-28T23:56:00Z\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2025-12-28T23:59:00Z\n2025-12-28T23:58:00Z\n2025-12-28T23:57:00Z\n2025-12-28T23:56:00Z\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "parse * * * * 7",
+      "args": [
+        "parse",
+        "* * * * 7"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "expression  * * * * 7\ncanonical   0 * * * * 0\nsecond      0\nminute      0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59  (wildcard)\nhour        0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23  (wildcard)\ndayOfMonth  1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31  (wildcard)\nmonth       1,2,3,4,5,6,7,8,9,10,11,12  (wildcard)\ndayOfWeek   0\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "expression  * * * * 7\ncanonical   0 * * * * 0\nsecond      0\nminute      0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59  (wildcard)\nhour        0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23  (wildcard)\ndayOfMonth  1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31  (wildcard)\nmonth       1,2,3,4,5,6,7,8,9,10,11,12  (wildcard)\ndayOfWeek   0\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "next 0 0 1-30 4 *",
+      "args": [
+        "next",
+        "0 0 1-30 4 *",
+        "-n",
+        "6",
+        "-from",
+        "2026-01-01T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2026-04-01T00:00:00Z\n2026-04-02T00:00:00Z\n2026-04-03T00:00:00Z\n2026-04-04T00:00:00Z\n2026-04-05T00:00:00Z\n2026-04-06T00:00:00Z\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2026-04-01T00:00:00Z\n2026-04-02T00:00:00Z\n2026-04-03T00:00:00Z\n2026-04-04T00:00:00Z\n2026-04-05T00:00:00Z\n2026-04-06T00:00:00Z\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "prev 0 0 1-30 4 *",
+      "args": [
+        "prev",
+        "0 0 1-30 4 *",
+        "-n",
+        "4",
+        "-from",
+        "2026-01-01T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2025-04-30T00:00:00Z\n2025-04-29T00:00:00Z\n2025-04-28T00:00:00Z\n2025-04-27T00:00:00Z\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2025-04-30T00:00:00Z\n2025-04-29T00:00:00Z\n2025-04-28T00:00:00Z\n2025-04-27T00:00:00Z\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "parse 0 0 1-30 4 *",
+      "args": [
+        "parse",
+        "0 0 1-30 4 *"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "expression  0 0 1-30 4 *\ncanonical   0 0 0 * 4 *\nsecond      0\nminute      0\nhour        0\ndayOfMonth  1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30\nmonth       4\ndayOfWeek   0,1,2,3,4,5,6,7  (wildcard)\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "expression  0 0 1-30 4 *\ncanonical   0 0 0 * 4 *\nsecond      0\nminute      0\nhour        0\ndayOfMonth  1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30\nmonth       4\ndayOfWeek   0,1,2,3,4,5,6,7  (wildcard)\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "next 30 2 * * * in UTC",
+      "args": [
+        "next",
+        "30 2 * * *",
+        "-n",
+        "6",
+        "-tz",
+        "UTC",
+        "-from",
+        "2026-03-06T12:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2026-03-07T02:30:00Z\n2026-03-08T02:30:00Z\n2026-03-09T02:30:00Z\n2026-03-10T02:30:00Z\n2026-03-11T02:30:00Z\n2026-03-12T02:30:00Z\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2026-03-07T02:30:00Z\n2026-03-08T02:30:00Z\n2026-03-09T02:30:00Z\n2026-03-10T02:30:00Z\n2026-03-11T02:30:00Z\n2026-03-12T02:30:00Z\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "next 0 * * * * in UTC",
+      "args": [
+        "next",
+        "0 * * * *",
+        "-n",
+        "6",
+        "-tz",
+        "UTC",
+        "-from",
+        "2026-03-06T12:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2026-03-06T13:00:00Z\n2026-03-06T14:00:00Z\n2026-03-06T15:00:00Z\n2026-03-06T16:00:00Z\n2026-03-06T17:00:00Z\n2026-03-06T18:00:00Z\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2026-03-06T13:00:00Z\n2026-03-06T14:00:00Z\n2026-03-06T15:00:00Z\n2026-03-06T16:00:00Z\n2026-03-06T17:00:00Z\n2026-03-06T18:00:00Z\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "prev 30 2 * * * in UTC",
+      "args": [
+        "prev",
+        "30 2 * * *",
+        "-n",
+        "4",
+        "-tz",
+        "UTC",
+        "-from",
+        "2026-03-06T12:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2026-03-06T02:30:00Z\n2026-03-05T02:30:00Z\n2026-03-04T02:30:00Z\n2026-03-03T02:30:00Z\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2026-03-06T02:30:00Z\n2026-03-05T02:30:00Z\n2026-03-04T02:30:00Z\n2026-03-03T02:30:00Z\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "next 30 2 * * * in America/New_York",
+      "args": [
+        "next",
+        "30 2 * * *",
+        "-n",
+        "6",
+        "-tz",
+        "America/New_York",
+        "-from",
+        "2026-03-06T12:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2026-03-07T02:30:00-05:00\n2026-03-08T03:30:00-04:00\n2026-03-09T02:30:00-04:00\n2026-03-10T02:30:00-04:00\n2026-03-11T02:30:00-04:00\n2026-03-12T02:30:00-04:00\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2026-03-07T02:30:00-05:00\n2026-03-08T03:30:00-04:00\n2026-03-09T02:30:00-04:00\n2026-03-10T02:30:00-04:00\n2026-03-11T02:30:00-04:00\n2026-03-12T02:30:00-04:00\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "next 0 * * * * in America/New_York",
+      "args": [
+        "next",
+        "0 * * * *",
+        "-n",
+        "6",
+        "-tz",
+        "America/New_York",
+        "-from",
+        "2026-03-06T12:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2026-03-06T08:00:00-05:00\n2026-03-06T09:00:00-05:00\n2026-03-06T10:00:00-05:00\n2026-03-06T11:00:00-05:00\n2026-03-06T12:00:00-05:00\n2026-03-06T13:00:00-05:00\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2026-03-06T08:00:00-05:00\n2026-03-06T09:00:00-05:00\n2026-03-06T10:00:00-05:00\n2026-03-06T11:00:00-05:00\n2026-03-06T12:00:00-05:00\n2026-03-06T13:00:00-05:00\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "prev 30 2 * * * in America/New_York",
+      "args": [
+        "prev",
+        "30 2 * * *",
+        "-n",
+        "4",
+        "-tz",
+        "America/New_York",
+        "-from",
+        "2026-03-06T12:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2026-03-06T02:30:00-05:00\n2026-03-05T02:30:00-05:00\n2026-03-04T02:30:00-05:00\n2026-03-03T02:30:00-05:00\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2026-03-06T02:30:00-05:00\n2026-03-05T02:30:00-05:00\n2026-03-04T02:30:00-05:00\n2026-03-03T02:30:00-05:00\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "next 30 2 * * * in Europe/London",
+      "args": [
+        "next",
+        "30 2 * * *",
+        "-n",
+        "6",
+        "-tz",
+        "Europe/London",
+        "-from",
+        "2026-03-06T12:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2026-03-07T02:30:00Z\n2026-03-08T02:30:00Z\n2026-03-09T02:30:00Z\n2026-03-10T02:30:00Z\n2026-03-11T02:30:00Z\n2026-03-12T02:30:00Z\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2026-03-07T02:30:00Z\n2026-03-08T02:30:00Z\n2026-03-09T02:30:00Z\n2026-03-10T02:30:00Z\n2026-03-11T02:30:00Z\n2026-03-12T02:30:00Z\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "next 0 * * * * in Europe/London",
+      "args": [
+        "next",
+        "0 * * * *",
+        "-n",
+        "6",
+        "-tz",
+        "Europe/London",
+        "-from",
+        "2026-03-06T12:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2026-03-06T13:00:00Z\n2026-03-06T14:00:00Z\n2026-03-06T15:00:00Z\n2026-03-06T16:00:00Z\n2026-03-06T17:00:00Z\n2026-03-06T18:00:00Z\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2026-03-06T13:00:00Z\n2026-03-06T14:00:00Z\n2026-03-06T15:00:00Z\n2026-03-06T16:00:00Z\n2026-03-06T17:00:00Z\n2026-03-06T18:00:00Z\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "prev 30 2 * * * in Europe/London",
+      "args": [
+        "prev",
+        "30 2 * * *",
+        "-n",
+        "4",
+        "-tz",
+        "Europe/London",
+        "-from",
+        "2026-03-06T12:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2026-03-06T02:30:00Z\n2026-03-05T02:30:00Z\n2026-03-04T02:30:00Z\n2026-03-03T02:30:00Z\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2026-03-06T02:30:00Z\n2026-03-05T02:30:00Z\n2026-03-04T02:30:00Z\n2026-03-03T02:30:00Z\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "next 30 2 * * * in Europe/Sofia",
+      "args": [
+        "next",
+        "30 2 * * *",
+        "-n",
+        "6",
+        "-tz",
+        "Europe/Sofia",
+        "-from",
+        "2026-03-06T12:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2026-03-07T02:30:00+02:00\n2026-03-08T02:30:00+02:00\n2026-03-09T02:30:00+02:00\n2026-03-10T02:30:00+02:00\n2026-03-11T02:30:00+02:00\n2026-03-12T02:30:00+02:00\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2026-03-07T02:30:00+02:00\n2026-03-08T02:30:00+02:00\n2026-03-09T02:30:00+02:00\n2026-03-10T02:30:00+02:00\n2026-03-11T02:30:00+02:00\n2026-03-12T02:30:00+02:00\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "next 0 * * * * in Europe/Sofia",
+      "args": [
+        "next",
+        "0 * * * *",
+        "-n",
+        "6",
+        "-tz",
+        "Europe/Sofia",
+        "-from",
+        "2026-03-06T12:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2026-03-06T15:00:00+02:00\n2026-03-06T16:00:00+02:00\n2026-03-06T17:00:00+02:00\n2026-03-06T18:00:00+02:00\n2026-03-06T19:00:00+02:00\n2026-03-06T20:00:00+02:00\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2026-03-06T15:00:00+02:00\n2026-03-06T16:00:00+02:00\n2026-03-06T17:00:00+02:00\n2026-03-06T18:00:00+02:00\n2026-03-06T19:00:00+02:00\n2026-03-06T20:00:00+02:00\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "prev 30 2 * * * in Europe/Sofia",
+      "args": [
+        "prev",
+        "30 2 * * *",
+        "-n",
+        "4",
+        "-tz",
+        "Europe/Sofia",
+        "-from",
+        "2026-03-06T12:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2026-03-06T02:30:00+02:00\n2026-03-05T02:30:00+02:00\n2026-03-04T02:30:00+02:00\n2026-03-03T02:30:00+02:00\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2026-03-06T02:30:00+02:00\n2026-03-05T02:30:00+02:00\n2026-03-04T02:30:00+02:00\n2026-03-03T02:30:00+02:00\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "next 30 2 * * * in Asia/Kolkata",
+      "args": [
+        "next",
+        "30 2 * * *",
+        "-n",
+        "6",
+        "-tz",
+        "Asia/Kolkata",
+        "-from",
+        "2026-03-06T12:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2026-03-07T02:30:00+05:30\n2026-03-08T02:30:00+05:30\n2026-03-09T02:30:00+05:30\n2026-03-10T02:30:00+05:30\n2026-03-11T02:30:00+05:30\n2026-03-12T02:30:00+05:30\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2026-03-07T02:30:00+05:30\n2026-03-08T02:30:00+05:30\n2026-03-09T02:30:00+05:30\n2026-03-10T02:30:00+05:30\n2026-03-11T02:30:00+05:30\n2026-03-12T02:30:00+05:30\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "next 0 * * * * in Asia/Kolkata",
+      "args": [
+        "next",
+        "0 * * * *",
+        "-n",
+        "6",
+        "-tz",
+        "Asia/Kolkata",
+        "-from",
+        "2026-03-06T12:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2026-03-06T18:00:00+05:30\n2026-03-06T19:00:00+05:30\n2026-03-06T20:00:00+05:30\n2026-03-06T21:00:00+05:30\n2026-03-06T22:00:00+05:30\n2026-03-06T23:00:00+05:30\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2026-03-06T18:00:00+05:30\n2026-03-06T19:00:00+05:30\n2026-03-06T20:00:00+05:30\n2026-03-06T21:00:00+05:30\n2026-03-06T22:00:00+05:30\n2026-03-06T23:00:00+05:30\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "prev 30 2 * * * in Asia/Kolkata",
+      "args": [
+        "prev",
+        "30 2 * * *",
+        "-n",
+        "4",
+        "-tz",
+        "Asia/Kolkata",
+        "-from",
+        "2026-03-06T12:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2026-03-06T02:30:00+05:30\n2026-03-05T02:30:00+05:30\n2026-03-04T02:30:00+05:30\n2026-03-03T02:30:00+05:30\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2026-03-06T02:30:00+05:30\n2026-03-05T02:30:00+05:30\n2026-03-04T02:30:00+05:30\n2026-03-03T02:30:00+05:30\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "next 30 2 * * * in Australia/Lord_Howe",
+      "args": [
+        "next",
+        "30 2 * * *",
+        "-n",
+        "6",
+        "-tz",
+        "Australia/Lord_Howe",
+        "-from",
+        "2026-03-06T12:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2026-03-07T02:30:00+11:00\n2026-03-08T02:30:00+11:00\n2026-03-09T02:30:00+11:00\n2026-03-10T02:30:00+11:00\n2026-03-11T02:30:00+11:00\n2026-03-12T02:30:00+11:00\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2026-03-07T02:30:00+11:00\n2026-03-08T02:30:00+11:00\n2026-03-09T02:30:00+11:00\n2026-03-10T02:30:00+11:00\n2026-03-11T02:30:00+11:00\n2026-03-12T02:30:00+11:00\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "next 0 * * * * in Australia/Lord_Howe",
+      "args": [
+        "next",
+        "0 * * * *",
+        "-n",
+        "6",
+        "-tz",
+        "Australia/Lord_Howe",
+        "-from",
+        "2026-03-06T12:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2026-03-07T00:00:00+11:00\n2026-03-07T01:00:00+11:00\n2026-03-07T02:00:00+11:00\n2026-03-07T03:00:00+11:00\n2026-03-07T04:00:00+11:00\n2026-03-07T05:00:00+11:00\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2026-03-07T00:00:00+11:00\n2026-03-07T01:00:00+11:00\n2026-03-07T02:00:00+11:00\n2026-03-07T03:00:00+11:00\n2026-03-07T04:00:00+11:00\n2026-03-07T05:00:00+11:00\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "prev 30 2 * * * in Australia/Lord_Howe",
+      "args": [
+        "prev",
+        "30 2 * * *",
+        "-n",
+        "4",
+        "-tz",
+        "Australia/Lord_Howe",
+        "-from",
+        "2026-03-06T12:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2026-03-06T02:30:00+11:00\n2026-03-05T02:30:00+11:00\n2026-03-04T02:30:00+11:00\n2026-03-03T02:30:00+11:00\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2026-03-06T02:30:00+11:00\n2026-03-05T02:30:00+11:00\n2026-03-04T02:30:00+11:00\n2026-03-03T02:30:00+11:00\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "next 30 2 * * * in Antarctica/Troll",
+      "args": [
+        "next",
+        "30 2 * * *",
+        "-n",
+        "6",
+        "-tz",
+        "Antarctica/Troll",
+        "-from",
+        "2026-03-06T12:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2026-03-07T02:30:00Z\n2026-03-08T02:30:00Z\n2026-03-09T02:30:00Z\n2026-03-10T02:30:00Z\n2026-03-11T02:30:00Z\n2026-03-12T02:30:00Z\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2026-03-07T02:30:00Z\n2026-03-08T02:30:00Z\n2026-03-09T02:30:00Z\n2026-03-10T02:30:00Z\n2026-03-11T02:30:00Z\n2026-03-12T02:30:00Z\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "next 0 * * * * in Antarctica/Troll",
+      "args": [
+        "next",
+        "0 * * * *",
+        "-n",
+        "6",
+        "-tz",
+        "Antarctica/Troll",
+        "-from",
+        "2026-03-06T12:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2026-03-06T13:00:00Z\n2026-03-06T14:00:00Z\n2026-03-06T15:00:00Z\n2026-03-06T16:00:00Z\n2026-03-06T17:00:00Z\n2026-03-06T18:00:00Z\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2026-03-06T13:00:00Z\n2026-03-06T14:00:00Z\n2026-03-06T15:00:00Z\n2026-03-06T16:00:00Z\n2026-03-06T17:00:00Z\n2026-03-06T18:00:00Z\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "prev 30 2 * * * in Antarctica/Troll",
+      "args": [
+        "prev",
+        "30 2 * * *",
+        "-n",
+        "4",
+        "-tz",
+        "Antarctica/Troll",
+        "-from",
+        "2026-03-06T12:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2026-03-06T02:30:00Z\n2026-03-05T02:30:00Z\n2026-03-04T02:30:00Z\n2026-03-03T02:30:00Z\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2026-03-06T02:30:00Z\n2026-03-05T02:30:00Z\n2026-03-04T02:30:00Z\n2026-03-03T02:30:00Z\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "next 30 2 * * * in Pacific/Chatham",
+      "args": [
+        "next",
+        "30 2 * * *",
+        "-n",
+        "6",
+        "-tz",
+        "Pacific/Chatham",
+        "-from",
+        "2026-03-06T12:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2026-03-07T02:30:00+13:45\n2026-03-08T02:30:00+13:45\n2026-03-09T02:30:00+13:45\n2026-03-10T02:30:00+13:45\n2026-03-11T02:30:00+13:45\n2026-03-12T02:30:00+13:45\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2026-03-07T02:30:00+13:45\n2026-03-08T02:30:00+13:45\n2026-03-09T02:30:00+13:45\n2026-03-10T02:30:00+13:45\n2026-03-11T02:30:00+13:45\n2026-03-12T02:30:00+13:45\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "next 0 * * * * in Pacific/Chatham",
+      "args": [
+        "next",
+        "0 * * * *",
+        "-n",
+        "6",
+        "-tz",
+        "Pacific/Chatham",
+        "-from",
+        "2026-03-06T12:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2026-03-07T02:00:00+13:45\n2026-03-07T03:00:00+13:45\n2026-03-07T04:00:00+13:45\n2026-03-07T05:00:00+13:45\n2026-03-07T06:00:00+13:45\n2026-03-07T07:00:00+13:45\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2026-03-07T02:00:00+13:45\n2026-03-07T03:00:00+13:45\n2026-03-07T04:00:00+13:45\n2026-03-07T05:00:00+13:45\n2026-03-07T06:00:00+13:45\n2026-03-07T07:00:00+13:45\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "prev 30 2 * * * in Pacific/Chatham",
+      "args": [
+        "prev",
+        "30 2 * * *",
+        "-n",
+        "4",
+        "-tz",
+        "Pacific/Chatham",
+        "-from",
+        "2026-03-06T12:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2026-03-06T02:30:00+13:45\n2026-03-05T02:30:00+13:45\n2026-03-04T02:30:00+13:45\n2026-03-03T02:30:00+13:45\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2026-03-06T02:30:00+13:45\n2026-03-05T02:30:00+13:45\n2026-03-04T02:30:00+13:45\n2026-03-03T02:30:00+13:45\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "next 30 2 * * * in America/Santiago",
+      "args": [
+        "next",
+        "30 2 * * *",
+        "-n",
+        "6",
+        "-tz",
+        "America/Santiago",
+        "-from",
+        "2026-03-06T12:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2026-03-07T02:30:00-03:00\n2026-03-08T02:30:00-03:00\n2026-03-09T02:30:00-03:00\n2026-03-10T02:30:00-03:00\n2026-03-11T02:30:00-03:00\n2026-03-12T02:30:00-03:00\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2026-03-07T02:30:00-03:00\n2026-03-08T02:30:00-03:00\n2026-03-09T02:30:00-03:00\n2026-03-10T02:30:00-03:00\n2026-03-11T02:30:00-03:00\n2026-03-12T02:30:00-03:00\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "next 0 * * * * in America/Santiago",
+      "args": [
+        "next",
+        "0 * * * *",
+        "-n",
+        "6",
+        "-tz",
+        "America/Santiago",
+        "-from",
+        "2026-03-06T12:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2026-03-06T10:00:00-03:00\n2026-03-06T11:00:00-03:00\n2026-03-06T12:00:00-03:00\n2026-03-06T13:00:00-03:00\n2026-03-06T14:00:00-03:00\n2026-03-06T15:00:00-03:00\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2026-03-06T10:00:00-03:00\n2026-03-06T11:00:00-03:00\n2026-03-06T12:00:00-03:00\n2026-03-06T13:00:00-03:00\n2026-03-06T14:00:00-03:00\n2026-03-06T15:00:00-03:00\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "prev 30 2 * * * in America/Santiago",
+      "args": [
+        "prev",
+        "30 2 * * *",
+        "-n",
+        "4",
+        "-tz",
+        "America/Santiago",
+        "-from",
+        "2026-03-06T12:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2026-03-06T02:30:00-03:00\n2026-03-05T02:30:00-03:00\n2026-03-04T02:30:00-03:00\n2026-03-03T02:30:00-03:00\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2026-03-06T02:30:00-03:00\n2026-03-05T02:30:00-03:00\n2026-03-04T02:30:00-03:00\n2026-03-03T02:30:00-03:00\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "next 30 2 * * * in Africa/Cairo",
+      "args": [
+        "next",
+        "30 2 * * *",
+        "-n",
+        "6",
+        "-tz",
+        "Africa/Cairo",
+        "-from",
+        "2026-03-06T12:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2026-03-07T02:30:00+02:00\n2026-03-08T02:30:00+02:00\n2026-03-09T02:30:00+02:00\n2026-03-10T02:30:00+02:00\n2026-03-11T02:30:00+02:00\n2026-03-12T02:30:00+02:00\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2026-03-07T02:30:00+02:00\n2026-03-08T02:30:00+02:00\n2026-03-09T02:30:00+02:00\n2026-03-10T02:30:00+02:00\n2026-03-11T02:30:00+02:00\n2026-03-12T02:30:00+02:00\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "next 0 * * * * in Africa/Cairo",
+      "args": [
+        "next",
+        "0 * * * *",
+        "-n",
+        "6",
+        "-tz",
+        "Africa/Cairo",
+        "-from",
+        "2026-03-06T12:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2026-03-06T15:00:00+02:00\n2026-03-06T16:00:00+02:00\n2026-03-06T17:00:00+02:00\n2026-03-06T18:00:00+02:00\n2026-03-06T19:00:00+02:00\n2026-03-06T20:00:00+02:00\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2026-03-06T15:00:00+02:00\n2026-03-06T16:00:00+02:00\n2026-03-06T17:00:00+02:00\n2026-03-06T18:00:00+02:00\n2026-03-06T19:00:00+02:00\n2026-03-06T20:00:00+02:00\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "prev 30 2 * * * in Africa/Cairo",
+      "args": [
+        "prev",
+        "30 2 * * *",
+        "-n",
+        "4",
+        "-tz",
+        "Africa/Cairo",
+        "-from",
+        "2026-03-06T12:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2026-03-06T02:30:00+02:00\n2026-03-05T02:30:00+02:00\n2026-03-04T02:30:00+02:00\n2026-03-03T02:30:00+02:00\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2026-03-06T02:30:00+02:00\n2026-03-05T02:30:00+02:00\n2026-03-04T02:30:00+02:00\n2026-03-03T02:30:00+02:00\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "next H * * * * seeded",
+      "args": [
+        "next",
+        "H * * * *",
+        "-n",
+        "4",
+        "-from",
+        "2026-01-01T00:00:00Z",
+        "-seed",
+        "port-mortem"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2026-01-01T00:29:00Z\n2026-01-01T01:29:00Z\n2026-01-01T02:29:00Z\n2026-01-01T03:29:00Z\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2026-01-01T00:29:00Z\n2026-01-01T01:29:00Z\n2026-01-01T02:29:00Z\n2026-01-01T03:29:00Z\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "parse H * * * * seeded",
+      "args": [
+        "parse",
+        "H * * * *",
+        "-seed",
+        "port-mortem"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "expression  H * * * *\ncanonical   0 29 * * * *\nsecond      0\nminute      29\nhour        0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23  (wildcard)\ndayOfMonth  1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31  (wildcard)\nmonth       1,2,3,4,5,6,7,8,9,10,11,12  (wildcard)\ndayOfWeek   0,1,2,3,4,5,6,7  (wildcard)\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "expression  H * * * *\ncanonical   0 29 * * * *\nsecond      0\nminute      29\nhour        0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23  (wildcard)\ndayOfMonth  1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31  (wildcard)\nmonth       1,2,3,4,5,6,7,8,9,10,11,12  (wildcard)\ndayOfWeek   0,1,2,3,4,5,6,7  (wildcard)\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "next H/15 * * * * seeded",
+      "args": [
+        "next",
+        "H/15 * * * *",
+        "-n",
+        "4",
+        "-from",
+        "2026-01-01T00:00:00Z",
+        "-seed",
+        "port-mortem"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2026-01-01T00:07:00Z\n2026-01-01T00:22:00Z\n2026-01-01T00:37:00Z\n2026-01-01T00:52:00Z\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2026-01-01T00:07:00Z\n2026-01-01T00:22:00Z\n2026-01-01T00:37:00Z\n2026-01-01T00:52:00Z\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "parse H/15 * * * * seeded",
+      "args": [
+        "parse",
+        "H/15 * * * *",
+        "-seed",
+        "port-mortem"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "expression  H/15 * * * *\ncanonical   0 7,22,37,52 * * * *\nsecond      0\nminute      7,22,37,52\nhour        0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23  (wildcard)\ndayOfMonth  1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31  (wildcard)\nmonth       1,2,3,4,5,6,7,8,9,10,11,12  (wildcard)\ndayOfWeek   0,1,2,3,4,5,6,7  (wildcard)\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "expression  H/15 * * * *\ncanonical   0 7,22,37,52 * * * *\nsecond      0\nminute      7,22,37,52\nhour        0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23  (wildcard)\ndayOfMonth  1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31  (wildcard)\nmonth       1,2,3,4,5,6,7,8,9,10,11,12  (wildcard)\ndayOfWeek   0,1,2,3,4,5,6,7  (wildcard)\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "next H(0-30) * * * * seeded",
+      "args": [
+        "next",
+        "H(0-30) * * * *",
+        "-n",
+        "4",
+        "-from",
+        "2026-01-01T00:00:00Z",
+        "-seed",
+        "port-mortem"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2026-01-01T00:15:00Z\n2026-01-01T01:15:00Z\n2026-01-01T02:15:00Z\n2026-01-01T03:15:00Z\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2026-01-01T00:15:00Z\n2026-01-01T01:15:00Z\n2026-01-01T02:15:00Z\n2026-01-01T03:15:00Z\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "parse H(0-30) * * * * seeded",
+      "args": [
+        "parse",
+        "H(0-30) * * * *",
+        "-seed",
+        "port-mortem"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "expression  H(0-30) * * * *\ncanonical   0 15 * * * *\nsecond      0\nminute      15\nhour        0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23  (wildcard)\ndayOfMonth  1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31  (wildcard)\nmonth       1,2,3,4,5,6,7,8,9,10,11,12  (wildcard)\ndayOfWeek   0,1,2,3,4,5,6,7  (wildcard)\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "expression  H(0-30) * * * *\ncanonical   0 15 * * * *\nsecond      0\nminute      15\nhour        0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23  (wildcard)\ndayOfMonth  1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31  (wildcard)\nmonth       1,2,3,4,5,6,7,8,9,10,11,12  (wildcard)\ndayOfWeek   0,1,2,3,4,5,6,7  (wildcard)\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "next H H * * * seeded",
+      "args": [
+        "next",
+        "H H * * *",
+        "-n",
+        "4",
+        "-from",
+        "2026-01-01T00:00:00Z",
+        "-seed",
+        "port-mortem"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "2026-01-01T20:29:00Z\n2026-01-02T20:29:00Z\n2026-01-03T20:29:00Z\n2026-01-04T20:29:00Z\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "2026-01-01T20:29:00Z\n2026-01-02T20:29:00Z\n2026-01-03T20:29:00Z\n2026-01-04T20:29:00Z\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "parse H H * * * seeded",
+      "args": [
+        "parse",
+        "H H * * *",
+        "-seed",
+        "port-mortem"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "expression  H H * * *\ncanonical   0 29 20 * * *\nsecond      0\nminute      29\nhour        20\ndayOfMonth  1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31  (wildcard)\nmonth       1,2,3,4,5,6,7,8,9,10,11,12  (wildcard)\ndayOfWeek   0,1,2,3,4,5,6,7  (wildcard)\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "expression  H H * * *\ncanonical   0 29 20 * * *\nsecond      0\nminute      29\nhour        20\ndayOfMonth  1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31  (wildcard)\nmonth       1,2,3,4,5,6,7,8,9,10,11,12  (wildcard)\ndayOfWeek   0,1,2,3,4,5,6,7  (wildcard)\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "check 0 0 * * * at 2026-01-02T00:00:00Z",
+      "args": [
+        "check",
+        "0 0 * * *",
+        "-at",
+        "2026-01-02T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "true\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "true\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "check 0 0 * * * at 2026-01-02T00:00:01Z",
+      "args": [
+        "check",
+        "0 0 * * *",
+        "-at",
+        "2026-01-02T00:00:01Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 1,
+        "stdout": "false\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 1,
+        "stdout": "false\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "check 0 12 * * MON at 2026-01-05T12:00:00Z",
+      "args": [
+        "check",
+        "0 12 * * MON",
+        "-at",
+        "2026-01-05T12:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "true\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "true\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "check 0 0 L * * at 2026-01-31T00:00:00Z",
+      "args": [
+        "check",
+        "0 0 L * *",
+        "-at",
+        "2026-01-31T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "true\n",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "true\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "reject 61 * * * *",
+      "args": [
+        "next",
+        "61 * * * *",
+        "-n",
+        "1",
+        "-from",
+        "2026-01-01T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 1,
+        "stdout": "",
+        "stderr": "cron-parser: Constraint error, got value 61 expected range 0-59\n"
+      },
+      "original": {
+        "status": 1,
+        "stdout": "",
+        "stderr": "cron-parser: Constraint error, got value 61 expected range 0-59\n"
+      }
+    },
+    {
+      "name": "reject * 24 * * *",
+      "args": [
+        "next",
+        "* 24 * * *",
+        "-n",
+        "1",
+        "-from",
+        "2026-01-01T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 1,
+        "stdout": "",
+        "stderr": "cron-parser: Constraint error, got value 24 expected range 0-23\n"
+      },
+      "original": {
+        "status": 1,
+        "stdout": "",
+        "stderr": "cron-parser: Constraint error, got value 24 expected range 0-23\n"
+      }
+    },
+    {
+      "name": "reject * * 32 * *",
+      "args": [
+        "next",
+        "* * 32 * *",
+        "-n",
+        "1",
+        "-from",
+        "2026-01-01T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 1,
+        "stdout": "",
+        "stderr": "cron-parser: Constraint error, got value 32 expected range 1-31\n"
+      },
+      "original": {
+        "status": 1,
+        "stdout": "",
+        "stderr": "cron-parser: Constraint error, got value 32 expected range 1-31\n"
+      }
+    },
+    {
+      "name": "reject * * * 13 *",
+      "args": [
+        "next",
+        "* * * 13 *",
+        "-n",
+        "1",
+        "-from",
+        "2026-01-01T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 1,
+        "stdout": "",
+        "stderr": "cron-parser: Constraint error, got value 13 expected range 1-12\n"
+      },
+      "original": {
+        "status": 1,
+        "stdout": "",
+        "stderr": "cron-parser: Constraint error, got value 13 expected range 1-12\n"
+      }
+    },
+    {
+      "name": "reject * * * * 8",
+      "args": [
+        "next",
+        "* * * * 8",
+        "-n",
+        "1",
+        "-from",
+        "2026-01-01T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 1,
+        "stdout": "",
+        "stderr": "cron-parser: Constraint error, got value 8 expected range 0-7\n"
+      },
+      "original": {
+        "status": 1,
+        "stdout": "",
+        "stderr": "cron-parser: Constraint error, got value 8 expected range 0-7\n"
+      }
+    },
+    {
+      "name": "reject x",
+      "args": [
+        "next",
+        "x",
+        "-n",
+        "1",
+        "-from",
+        "2026-01-01T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 1,
+        "stdout": "",
+        "stderr": "cron-parser: Constraint error, got value 0 expected range 1-12\n"
+      },
+      "original": {
+        "status": 1,
+        "stdout": "",
+        "stderr": "cron-parser: Constraint error, got value 0 expected range 1-12\n"
+      }
+    },
+    {
+      "name": "reject * * * xyz *",
+      "args": [
+        "next",
+        "* * * xyz *",
+        "-n",
+        "1",
+        "-from",
+        "2026-01-01T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 1,
+        "stdout": "",
+        "stderr": "cron-parser: Validation error, cannot resolve alias \"xyz\"\n"
+      },
+      "original": {
+        "status": 1,
+        "stdout": "",
+        "stderr": "cron-parser: Validation error, cannot resolve alias \"xyz\"\n"
+      }
+    },
+    {
+      "name": "reject */0 * * * *",
+      "args": [
+        "next",
+        "*/0 * * * *",
+        "-n",
+        "1",
+        "-from",
+        "2026-01-01T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 1,
+        "stdout": "",
+        "stderr": "cron-parser: Constraint error, cannot repeat at every 0 time.\n"
+      },
+      "original": {
+        "status": 1,
+        "stdout": "",
+        "stderr": "cron-parser: Constraint error, cannot repeat at every 0 time.\n"
+      }
+    },
+    {
+      "name": "reject 5/5/5 * * * *",
+      "args": [
+        "next",
+        "5/5/5 * * * *",
+        "-n",
+        "1",
+        "-from",
+        "2026-01-01T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 1,
+        "stdout": "",
+        "stderr": "cron-parser: Invalid repeat: 5/5/5\n"
+      },
+      "original": {
+        "status": 1,
+        "stdout": "",
+        "stderr": "cron-parser: Invalid repeat: 5/5/5\n"
+      }
+    },
+    {
+      "name": "reject 30-20 * * * *",
+      "args": [
+        "next",
+        "30-20 * * * *",
+        "-n",
+        "1",
+        "-from",
+        "2026-01-01T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 1,
+        "stdout": "",
+        "stderr": "cron-parser: Invalid range: 30-20, min(30) > max(20)\n"
+      },
+      "original": {
+        "status": 1,
+        "stdout": "",
+        "stderr": "cron-parser: Invalid range: 30-20, min(30) > max(20)\n"
+      }
+    },
+    {
+      "name": "reject 1,,2 * * * *",
+      "args": [
+        "next",
+        "1,,2 * * * *",
+        "-n",
+        "1",
+        "-from",
+        "2026-01-01T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 1,
+        "stdout": "",
+        "stderr": "cron-parser: Invalid list value format\n"
+      },
+      "original": {
+        "status": 1,
+        "stdout": "",
+        "stderr": "cron-parser: Invalid list value format\n"
+      }
+    },
+    {
+      "name": "reject 0 0 * * 1.2#2",
+      "args": [
+        "next",
+        "0 0 * * 1.2#2",
+        "-n",
+        "1",
+        "-from",
+        "2026-01-01T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 1,
+        "stdout": "",
+        "stderr": "cron-parser: Constraint error, invalid dayOfWeek `#` and `.` special characters are incompatible\n"
+      },
+      "original": {
+        "status": 1,
+        "stdout": "",
+        "stderr": "cron-parser: Constraint error, invalid dayOfWeek `#` and `.` special characters are incompatible\n"
+      }
+    },
+    {
+      "name": "reject 0 0 15W * *",
+      "args": [
+        "next",
+        "0 0 15W * *",
+        "-n",
+        "1",
+        "-from",
+        "2026-01-01T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 1,
+        "stdout": "",
+        "stderr": "cron-parser: Invalid characters, got value: 15W\n"
+      },
+      "original": {
+        "status": 1,
+        "stdout": "",
+        "stderr": "cron-parser: Invalid characters, got value: 15W\n"
+      }
+    },
+    {
+      "name": "reject * * * * * * *",
+      "args": [
+        "next",
+        "* * * * * * *",
+        "-n",
+        "1",
+        "-from",
+        "2026-01-01T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 1,
+        "stdout": "",
+        "stderr": "cron-parser: Invalid cron expression, too many fields\n"
+      },
+      "original": {
+        "status": 1,
+        "stdout": "",
+        "stderr": "cron-parser: Invalid cron expression, too many fields\n"
+      }
+    },
+    {
+      "name": "reject 0 0 30 2 *",
+      "args": [
+        "next",
+        "0 0 30 2 *",
+        "-n",
+        "1",
+        "-from",
+        "2026-01-01T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 1,
+        "stdout": "",
+        "stderr": "cron-parser: Invalid explicit day of month definition\n"
+      },
+      "original": {
+        "status": 1,
+        "stdout": "",
+        "stderr": "cron-parser: Invalid explicit day of month definition\n"
+      }
+    },
+    {
+      "name": "reject 0 0 * * L",
+      "args": [
+        "next",
+        "0 0 * * L",
+        "-n",
+        "1",
+        "-from",
+        "2026-01-01T00:00:00Z"
+      ],
+      "same": true,
+      "port": {
+        "status": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "original": {
+        "status": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    }
+  ]
+}
