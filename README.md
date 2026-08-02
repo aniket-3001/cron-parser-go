@@ -212,7 +212,7 @@ rather than reduced to a ratio that would imply more precision than exists.
 | `any` in the adapter | **0** |
 | `gofmt`, `go vet`, `staticcheck` | clean, on both `amd64` and `js/wasm` |
 | `govulncheck` | no vulnerabilities |
-| External dependencies | **0**: `go.sum` is empty |
+| External dependencies | **0**: there is no `go.sum`, because nothing to record |
 | `panic` in the library | **0** |
 
 The compatibility surface needed by the test bridge lives in `cron/bridge_wasm.go` behind a
@@ -303,7 +303,8 @@ and one bug deliberately *not* filed are in [`upstream-issues/`](upstream-issues
 
 There is TypeScript and JavaScript here, so it is worth being exact about what runs where.
 
-**`./cron` imports nothing outside the Go standard library.** `go.sum` is empty. It does not link
+**`./cron` imports nothing outside the Go standard library.** The module has no `go.sum` at all,
+because there is no dependency to record. It does not link
 against Node, embed a JavaScript engine, or shell out to one. `./cron-parser` and the 2.7 MB
 `scratch` image contain Go and an embedded zone database, and nothing else. That is the whole point
 of the exercise, and it is checkable in one command:
