@@ -3,7 +3,7 @@
 Latent bugs found in `harrisiirak/cron-parser` v5.6.2 while porting it to Go, each reproduced
 against the pinned commit `aeb2a1513fd33365a6414f4137516c9482f831ed`.
 
-Seven were filed upstream on 2026-08-01. **Three have been fixed and merged**, three more are
+Seven were filed upstream on 2026-08-01. **Four have been fixed and merged**, two more are
 triaged and assigned to the maintainer, and one of those duplicates a pull request that was
 already open — see [Outcome](#outcome) below for the honest accounting.
 
@@ -14,7 +14,7 @@ already open — see [Outcome](#outcome) below for the honest accounting.
 | [#420](https://github.com/harrisiirak/cron-parser/issues/420) | In-place `sort()` mutates the caller's array | Medium — silent caller data corruption | **fixed, [PR #427](https://github.com/harrisiirak/cron-parser/pull/427)** |
 | [#422](https://github.com/harrisiirak/cron-parser/issues/422) | Bare `L` in day-of-week throws at `next()`, not `parse()` | Medium — validation boundary is wrong | **fixed, [PR #428](https://github.com/harrisiirak/cron-parser/pull/428)** |
 | [#423](https://github.com/harrisiirak/cron-parser/issues/423) | A duplicated `0` escapes validation, masks later duplicates, and breaks `stringify()` | Medium — accepted input cannot be rendered | labelled `bug`, assigned — **duplicate of [PR #418](https://github.com/harrisiirak/cron-parser/pull/418)** |
-| [#425](https://github.com/harrisiirak/cron-parser/issues/425) | `stringify()` is not idempotent | Low — rendered text is not canonical | open — overlaps #279 |
+| [#425](https://github.com/harrisiirak/cron-parser/issues/425) | `stringify()` is not idempotent | Low — rendered text is not canonical | **fixed, [PR #433](https://github.com/harrisiirak/cron-parser/pull/433)** |
 | [#421](https://github.com/harrisiirak/cron-parser/issues/421) | `[,-/]` is an unintended character range | Low — wrong rejection reason | **fixed, [PR #426](https://github.com/harrisiirak/cron-parser/pull/426)** |
 
 Listed by severity rather than by number. **Each row links to the filed issue, which carries the
@@ -27,21 +27,22 @@ that holds the behaviour in place.
 
 ## Outcome
 
-Recorded as of 2026-08-01T15:30Z. The maintainer acted on the same day they were filed.
+Recorded as of 2026-08-02T13:00Z. The maintainer began fixing them the same day they were filed.
 
-**Merged.** Both fixes match what the reports proposed, and both landed with regression tests:
+**Merged.** Each fix matches what the report proposed, and each landed with regression tests:
 
 | | |
 |---|---|
 | [PR #426](https://github.com/harrisiirak/cron-parser/pull/426) → #421 | `val.match(/([,-/])/)` → `val.match(/([,\-/])/)` — the hyphen escaped so it is a literal rather than a range. Commit `a551625`. |
 | [PR #427](https://github.com/harrisiirak/cron-parser/pull/427) → #420 | `values.sort(...)` → `[...values].sort(...)` — a defensive copy. Commit `5c01e1f`. |
 | [PR #428](https://github.com/harrisiirak/cron-parser/pull/428) → #422 | Standalone `L` in day-of-week rejected at construction instead of throwing later from `next()`. |
+| [PR #433](https://github.com/harrisiirak/cron-parser/pull/433) → #425 | Day-of-month values the named month does not have are dropped, so `stringify()` settles on the first render. |
 
 The second is the fix this port had already made independently on day one, for the same reason
 (`DECISIONS.md` D4): Go slices share a backing array, so the naive translation would have inherited
 the bug.
 
-**Triaged but not yet fixed.** #423, #424 and #425 are labelled and assigned to the maintainer.
+**Triaged but not yet fixed.** #423 and #424 are labelled and assigned to the maintainer.
 
 **Offered.** #419 is the only one still untriaged. A working patch exists — offset-based gap
 detection plus multi-hour matching, 292 tests green and a 5,865-case sweep showing changes confined
@@ -59,10 +60,10 @@ original finding.
 shorthand behaviour that [PR #411](https://github.com/harrisiirak/cron-parser/pull/411) addresses
 for issue #279. The distinct part of #425 is what follows: day-of-month maximum is narrowed to the
 named month's length when stringifying but not when parsing, so re-parsing the output gains a 31st
-of June. Related mechanism, different defect, and worth describing that way rather than as wholly
-independent.
+of June. That second half is what PR #433 fixed, which supports treating it as a related mechanism
+rather than the same defect.
 
-**So the defensible claim is six original findings, of which three are merged** — not seven
+**So the defensible claim is six original findings, of which four are merged** — not seven
 discoveries.
 
 ## How they were found

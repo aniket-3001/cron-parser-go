@@ -1,4 +1,16 @@
 {
+  // Type-checks the TypeScript this repository actually wrote: the adapter that
+  // lets the original suite reach the Go port. Run with `npm run typecheck`.
+  //
+  // tests/original/ is deliberately excluded. Those files are upstream's,
+  // byte-pinned, and they import from '../src/...', a path that does not exist
+  // here — Jest resolves it onto the adapter through moduleNameMapper, which is
+  // a runtime mapping tsc cannot see. Including them reports a dozen
+  // unresolvable imports, and a config that always fails is worse than none.
+  //
+  // Jest does not read this file. ts-jest is configured inline in
+  // jest.config.js, deliberately loosely, because it compiles upstream's tests
+  // rather than ours.
   "compilerOptions": {
     "target": "ES2022",
     "module": "commonjs",
@@ -9,8 +21,8 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
-    "types": ["node", "jest"],
+    "types": ["node"],
     "noEmit": true
   },
-  "include": ["adapter/src/**/*", "tests/**/*"]
+  "include": ["adapter/src/**/*"]
 }

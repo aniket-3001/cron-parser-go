@@ -21,7 +21,7 @@ permissions:
 env:
   # The commit the port is pinned to. Every equivalence claim in this repository
   # is measured against it, so the differential jobs must not float to upstream
-  # HEAD — two of the bugs reported from here have since been fixed there, and
+  # HEAD — four of the bugs reported from here have since been fixed there, and
   # the port reproduces them deliberately (DECISIONS.md D13).
   UPSTREAM_COMMIT: aeb2a1513fd33365a6414f4137516c9482f831ed
 
@@ -122,6 +122,11 @@ jobs:
           cache: npm
 
       - run: npm ci
+
+      # The adapter is the only TypeScript this repository wrote; upstream's
+      # tests are excluded from it, see tsconfig.json.
+      - name: typecheck the adapter
+        run: npm run typecheck
 
       # Runs before the suite: if the pinned files have drifted, the pass rate
       # means nothing and the failure should say so plainly.

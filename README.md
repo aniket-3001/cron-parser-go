@@ -33,7 +33,7 @@ Each row is a submission requirement and the one place to look for it.
 | — | Submission manifest | [`.port-mortem.toml`](.port-mortem.toml) |
 
 Beyond the requirements: [`compare/CLI-DIFF.md`](compare/CLI-DIFF.md) diffs the two as command-line
-programs, and [`upstream-issues/`](upstream-issues/) records seven bugs found in the original, three
+programs, and [`upstream-issues/`](upstream-issues/) records seven bugs found in the original, four
 of which are now fixed and merged upstream.
 
 For how the port is built and why: [`DESIGN.md`](DESIGN.md) (how), [`SEMANTICS.md`](SEMANTICS.md)
@@ -264,9 +264,9 @@ The measured tables and the reasoning: [`DECISIONS.md`](DECISIONS.md) D7–D9,
 
 ## Bugs found in the original
 
-Seven filed upstream on 2026-08-01. **Three were fixed and merged the same day**, three more are
-triaged and assigned to the maintainer, and one of those duplicates a pull request that was already
-open. Three were found by differential and property-based testing rather than by reading. See
+Seven filed upstream on 2026-08-01. **Four have been fixed and merged**, two more are triaged and
+assigned to the maintainer, and one of those duplicates a pull request that was already open. Three
+were found by differential and property-based testing rather than by reading. See
 [`upstream-issues/`](upstream-issues/) for the reproductions, the outcome and the duplicate check.
 
 The sharpest is [#424](https://github.com/harrisiirak/cron-parser/issues/424): `0 0 16 * 0-6`

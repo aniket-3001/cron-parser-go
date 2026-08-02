@@ -15,7 +15,8 @@
     "honest-numbers": "node scripts/honest-numbers.js",
     "build:web": "node scripts/build-web.js",
     "web": "npm run build:web && npx --yes serve web",
-    "verify:web": "node scripts/verify-web.js"
+    "verify:web": "node scripts/verify-web.js",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@jest/globals": "^30.0.0",
