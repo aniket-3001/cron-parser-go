@@ -80,7 +80,9 @@ jobs:
       # Every legitimate call passes time.UTC and treats the result as a pivot.
       - name: no wall-clock construction outside fromWallClock
         run: |
-          bad=$(grep -rn 'time\.Date(' ./cron --include='*.go'                 | grep -v '_test\.go:'                 | grep -v '^[^:]*:[0-9]*:[[:space:]]*//'                 | grep -v 'time\.UTC)')
+          # `|| true` because the step runs under `bash -e` and grep exits 1
+          # when it matches nothing, which is exactly the passing case here.
+          bad=$(grep -rn 'time\.Date(' ./cron --include='*.go'                 | grep -v '_test\.go:'                 | grep -v '^[^:]*:[0-9]*:[[:space:]]*//'                 | grep -v 'time\.UTC)' || true)
           if [ -n "$bad" ]; then
             echo "::error::time.Date called with a non-UTC location; see DECISIONS.md D8"
             echo "$bad"
