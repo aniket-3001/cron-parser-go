@@ -73,6 +73,21 @@ jobs:
           fi
           echo "clean: no unsafe, reflect or linkname outside the build-tagged bridge"
 
+      # D8 concentrates every luxon-versus-Go divergence in fromWallClock, which
+      # is only true while nothing else builds a wall-clock instant directly.
+      # time.Date with a real location resolves a nonexistent time the opposite
+      # way from luxon, so one such call reintroduces the whole class of bug.
+      # Every legitimate call passes time.UTC and treats the result as a pivot.
+      - name: no wall-clock construction outside fromWallClock
+        run: |
+          bad=$(grep -rn 'time\.Date(' ./cron --include='*.go'                 | grep -v '_test\.go:'                 | grep -v '^[^:]*:[0-9]*:[[:space:]]*//'                 | grep -v 'time\.UTC)')
+          if [ -n "$bad" ]; then
+            echo "::error::time.Date called with a non-UTC location; see DECISIONS.md D8"
+            echo "$bad"
+            exit 1
+          fi
+          echo "clean: every time.Date in the library builds a UTC pivot"
+
       # Not runnable on the development machine, whose toolchain has no 64-bit
       # cgo, so CI is the only place the race detector actually executes.
       - name: go test -race

@@ -234,10 +234,12 @@ map marshalling, and correct embedded tzdata (Troll `+120`, Lord Howe `+660`, Ch
 
 ---
 
-## D12. File IO stays in JavaScript
+## D12. The crontab parser takes content, not a path
 **Original.** `CronFileParser` calls `require('fs').readFileSync` internally.
 
-**Port.** Go parses crontab **content**; the adapter performs the read.
+**Port.** The parsing entry point takes a string. Reading a file is a separate, thin
+convenience (`ParseCrontabFile`), and the adapter does not use it: on the test path the read
+happens in JavaScript.
 
 **Why.** `CronFileParser.test.ts` does `jest.mock('fs')` and asserts
 `expect(fs.readFileSync).toHaveBeenCalledWith('tests/crontab.example', 'utf8')`. Only a real call

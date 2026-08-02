@@ -4,9 +4,9 @@ The original TypeScript library and the Go port are given identical inputs, and 
 answers are compared across the whole public surface of `CronExpression` and `CronDate`.
 A disagreement is a bug in one of them.
 
-The one public entry point not fuzzed is `CronFileParser`, which reads crontab files: file
-IO stays in JavaScript by design (`DECISIONS.md` D12), so there is no second
-implementation of it to compare against. It is covered by the original suite instead.
+The one public entry point not fuzzed is `CronFileParser`. On the test path the file read
+happens in JavaScript (`DECISIONS.md` D12), so there is no second implementation of it to
+compare against. It is covered by the original suite instead.
 
 There is no template for this; the design below is mine.
 
