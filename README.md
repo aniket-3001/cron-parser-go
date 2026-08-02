@@ -273,6 +273,25 @@ The sharpest is [#424](https://github.com/harrisiirak/cron-parser/issues/424): `
 renders via the library's own `stringify()` to `0 0 16 * *`. The first fires **daily**, the second
 **monthly**, a schedule silently changed by round-tripping it through its own output.
 
+### Why the port keeps these bugs
+
+The port reproduces them rather than fixing them, and the reason is measured rather than assumed.
+
+Fixing a bug in the port does **not** break the original suite: correct the `[,-/]` character class
+and all 280 still pass. What it breaks is equivalence. That same one-character fix produces **9
+divergences in 25 seconds** of differential fuzzing, because the fuzzer compares the port against
+the reference on generated input rather than against fixed expectations.
+
+Fixing bugs and claiming behavioural equivalence are mutually exclusive. This port claims
+equivalence, so where the original is wrong, it is wrong identically, and each such behaviour is
+pinned by a test naming its upstream report.
+
+The rule is not "reproduce everything". A defect **observable through the public API** is
+reproduced; one **invisible** through it is fixed. The original's field constructor mutates its
+caller's array, which is a side effect on memory the caller owns rather than an answer the API
+returns, so neither the suite nor the fuzzer can see it. This port fixed that one on day one and
+reported it; upstream has since made the same fix. See [`DECISIONS.md`](DECISIONS.md) D13 and D4.
+
 **The honest count is six original findings, not seven.** [#423](https://github.com/harrisiirak/cron-parser/issues/423)
 restates a pull request that had been open since three days before kickoff; the duplicate check
 searched issues and not open pull requests. That miss, the full table, the outcome of each report

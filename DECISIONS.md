@@ -264,10 +264,40 @@ that behaves better.
 corrected behaviour by default, the original's behaviour on request. It was not built, and the
 reasoning is worth recording rather than quietly dropping.
 
-A second behavioural mode doubles the surface every equivalence check has to cover. The
-differential fuzzer compares one implementation against one other; with two modes it would have
-to compare two, and whichever mode the original suite does not exercise would rot. One faithful
-implementation is worth more than two half-checked ones.
+**What forces this, measured.** The obvious assumption is that the original tests pin the buggy
+behaviour, so a port that fixed a bug would fail them. That assumption is wrong, and it was worth
+checking rather than asserting. Fixing a bug in the port and running the unmodified suite:
+
+| Bug fixed in the port | Original suite |
+|---|---|
+| `[,-/]` no longer matches `.` (#421) | **280 of 280 still pass** |
+| A duplicated `0` rejected like any other value (#423) | **280 of 280 still pass** |
+
+The suite does not encode these bugs. What does is the differential fuzzer, because it compares
+the port against the reference on generated input rather than against a fixed set of expectations.
+The same one-character fix to the character class, with nothing else changed:
+
+```
+node fuzz/differential.js --seconds=25 --seed=4242
+  divergences      9
+FAIL - the port and the reference disagree.
+```
+
+Nine divergences in twenty-five seconds, from correcting one bug. That is the real constraint, and
+it is the honest one: behavioural equivalence is the claim this port makes, and a port that is
+right where the original is wrong has not achieved it. Fixing bugs and claiming equivalence are
+mutually exclusive; the choice is which to deliver, and this project delivers equivalence.
+
+**The rule actually followed.** Not "reproduce every bug", but:
+
+- A defect **observable through the public API** is reproduced, because a difference there is a
+  divergence, and divergence is what this port claims not to have.
+- A defect **invisible through the public API** is fixed, because nothing is gained by carrying it.
+
+D4 is the second case and the counter-example to the table above: the original's constructor
+mutates its caller's array, and this port does not. That defect is a side effect on memory the
+caller owns, not an answer the API returns, so neither the suite nor the fuzzer can see it. There
+was no reason to reproduce it, so it was fixed and reported. Upstream has since made the same fix.
 
 There is a plainer argument too. Someone reaching for this library wants a drop-in replacement.
 Scheduling differently from the original, even more correctly, is the surprising outcome, and
