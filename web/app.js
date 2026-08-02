@@ -97,32 +97,6 @@ const PRESETS = [
   { label: 'Rejected: hour 24', expr: '* 24 * * *', tz: 'UTC', from: '2026-01-01T00:00:00Z' },
 ];
 
-const BUGS = [
-  {
-    id: '#424', merged: false,
-    title: 'stringify() changes the schedule',
-    detail: 'Renders to 0 0 16 * *, which fires monthly instead of daily.',
-    expr: '0 0 16 * 0-6', tz: 'UTC', from: '2026-01-01T00:00:00Z',
-  },
-  {
-    id: '#419', merged: false,
-    title: 'A 2-hour gap skips a day',
-    detail: '29 March never fires in Troll. A missed run, not a late one.',
-    expr: '30 1 * * *', tz: 'Antarctica/Troll', from: '2026-03-27T12:00:00Z',
-  },
-  {
-    id: '#423', merged: false,
-    title: 'A duplicated 0 escapes validation',
-    detail: '0,7,4,4 is accepted; 4,4 alone is rejected.',
-    expr: '* * * * * 0,7,4,4', tz: 'UTC', from: '2026-01-01T00:00:00Z',
-  },
-  {
-    id: '#422', merged: true,
-    title: 'Bare L parses, then throws',
-    detail: 'Accepted at parse time, fails only when you ask for a date.',
-    expr: '0 0 * * L', tz: 'UTC', from: '2026-01-01T00:00:00Z',
-  },
-];
 
 /** Wall-clock rendering in the selected zone. The instant is what is compared;
  *  this is only how it is shown. */
@@ -432,27 +406,6 @@ function buildChrome() {
     run();
   });
 
-  els.bugs.innerHTML = BUGS.map((b, i) => `
-    <button class="bug" type="button" data-i="${i}">
-      <span class="bug__id">${b.id}${b.merged ? ' <span class="merged">· fixed upstream</span>' : ''}</span>
-      <span class="bug__t"></span>
-      <span class="bug__d"></span>
-    </button>`).join('');
-  [...els.bugs.querySelectorAll('.bug')].forEach((node, i) => {
-    node.querySelector('.bug__t').textContent = BUGS[i].title;
-    node.querySelector('.bug__d').textContent = BUGS[i].detail;
-  });
-  els.bugs.addEventListener('click', (e) => {
-    const b = e.target.closest('.bug');
-    if (!b) return;
-    const bug = BUGS[Number(b.dataset.i)];
-    els.expr.value = bug.expr;
-    els.tz.value = bug.tz;
-    els.from.value = bug.from;
-    els.seed = '';
-    run();
-    document.querySelector('.console').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  });
 
   let t;
   const debounced = () => { clearTimeout(t); t = setTimeout(run, 140); };
@@ -467,7 +420,7 @@ function buildChrome() {
 async function boot() {
   for (const id of ['boot', 'bootHint', 'expr', 'tz', 'from', 'count', 'dir', 'presets',
     'verdict', 'verdictText', 'verdictMeta', 'rowsTs', 'rowsGo', 'fieldsBox', 'fieldsGrid',
-    'canonical', 'bugs', 'fCases', 'fChecks', 'fDiv', 'fDivBox', 'fBar', 'fRun', 'fStop', 'fTicker']) {
+    'canonical', 'fCases', 'fChecks', 'fDiv', 'fDivBox', 'fBar', 'fRun', 'fStop', 'fTicker']) {
     els[id] = $(id);
   }
   els.seed = '';

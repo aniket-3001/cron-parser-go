@@ -384,31 +384,6 @@ code { font-family: var(--mono); font-size: 0.92em; }
 .ticker li .no { color: var(--bad); flex: none; }
 .ticker__expr { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-/* ---------- bugs ---------- */
-
-.bugs { margin-top: clamp(3rem, 6vw, 4.5rem); }
-.bugs__lede { margin-top: .9rem; color: var(--ink-2); max-width: 68ch; }
-.bugs__row {
-  margin-top: 1.3rem; display: grid; gap: .8rem;
-  grid-template-columns: repeat(auto-fit, minmax(258px, 1fr));
-}
-.bug {
-  text-align: left; cursor: pointer; font-family: inherit;
-  color: var(--ink);                 /* buttons do not inherit colour */
-  background: var(--slab); border: 1px solid var(--line-soft);
-  border-radius: 10px; padding: .95rem 1.05rem;
-  transition: border-color .16s, transform .12s;
-  display: flex; flex-direction: column; gap: .4rem;
-}
-.bug:hover { border-color: var(--go-d); transform: translateY(-2px); }
-.bug__id {
-  font: 600 .68rem/1 var(--mono); letter-spacing: .06em;
-  color: var(--ink-3);
-}
-.bug__id .merged { color: var(--ok); }
-.bug__t { font-weight: 600; font-size: .95rem; letter-spacing: -.01em; color: var(--ink); }
-.bug__d { font-size: .82rem; color: var(--ink-2); line-height: 1.45; }
-
 /* ---------- footer ---------- */
 
 .foot {

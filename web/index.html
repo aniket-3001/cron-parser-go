@@ -24,12 +24,11 @@
 <header class="masthead">
   <div class="wrap masthead__grid">
     <div>
-      <p class="eyebrow">Port Mortem · Track C · TypeScript to Go</p>
+      <p class="eyebrow">cron-parser-go</p>
       <h1>Two implementations.<br>One answer.</h1>
       <p class="lede">
-        The original TypeScript library and the Go port are both running <em>in this page</em> —
-        the port as WebAssembly, compiled from the same source the test suite runs against.
-        Ask them anything. They should never disagree.
+        A Go port of <a href="https://github.com/harrisiirak/cron-parser">cron-parser</a>, running
+        next to the TypeScript original <em>in this page</em>. Ask them anything.
       </p>
     </div>
     <dl class="vitals">
@@ -112,12 +111,10 @@
 
   <section class="stress" aria-labelledby="stress-h">
     <div class="stress__intro">
-      <p class="eyebrow">The part you can't fake</p>
       <h2 id="stress-h">Fuzz it yourself</h2>
       <p>
-        Random expressions, random timezones, random starting instants — generated here, handed to
-        both implementations, every answer compared. This is the same harness that runs in CI on
-        every push, only now it is running on your machine, on inputs neither of us chose.
+        Random expressions, timezones and starting instants, generated here and handed to both.
+        Every case compares:
       </p>
       <ul class="checklist">
         <li><span>Parse</span> accepted or rejected, and the exact wording when rejected</li>
@@ -126,8 +123,8 @@
         <li><span>Fields</span> all six, including the number-or-token distinction</li>
       </ul>
       <p class="stress__foot">
-        A quarter of generated expressions are deliberately malformed. Agreeing on a rejection, and
-        on its message, is as much a claim as agreeing on a date.
+        A quarter of the generated expressions are deliberately malformed, because agreeing on a
+        rejection is as much a claim as agreeing on a date.
       </p>
     </div>
 
@@ -155,33 +152,22 @@
     </div>
   </section>
 
-  <section class="bugs" aria-labelledby="bugs-h">
-    <p class="eyebrow">Fidelity, not correction</p>
-    <h2 id="bugs-h">Where the original is wrong, the port is wrong identically</h2>
-    <p class="bugs__lede">
-      Differential and property-based testing produced seven reports upstream, six of them original
-      findings — one restated a pull request that was already open, which is recorded rather than
-      quietly dropped. Three are now fixed and merged. The port reproduces every one of them instead
-      of quietly correcting them, because a drop-in replacement that schedules differently is worse
-      than a documented bug. Load one and watch both sides produce the same wrong answer.
-    </p>
-    <div class="bugs__row" id="bugs"></div>
-  </section>
-
 </main>
 
 <footer class="foot">
   <div class="wrap foot__grid">
     <p>
       <strong>cron-parser-go</strong> — a Go port of
-      <a href="https://github.com/harrisiirak/cron-parser">harrisiirak/cron-parser</a> v5.6.2.
-      Everything on this page runs client-side; there is no server answering for either implementation.
+      <a href="https://github.com/harrisiirak/cron-parser">harrisiirak/cron-parser</a> v5.6.2, MIT
+      licensed like the original. Everything here runs client-side: no server answers for either
+      implementation.
     </p>
     <p class="foot__links">
       <a href="https://github.com/aniket-3001/cron-parser-go">Repository</a>
       <a href="https://github.com/aniket-3001/cron-parser-go/blob/main/DECISIONS.md">Decisions</a>
       <a href="https://github.com/aniket-3001/cron-parser-go/blob/main/fuzz/log.txt">Fuzz log</a>
       <a href="https://github.com/aniket-3001/cron-parser-go/blob/main/bench/RESULTS.md">Benchmarks</a>
+      <a href="https://github.com/aniket-3001/cron-parser-go/tree/main/upstream-issues">Bugs found</a>
     </p>
   </div>
 </footer>

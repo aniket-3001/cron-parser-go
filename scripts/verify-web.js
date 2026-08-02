@@ -9,7 +9,7 @@
  *
  *   - either implementation failing to load
  *   - any console error
- *   - any preset or bug card producing a divergence
+ *   - any preset producing a divergence
  *   - a fuzz run finding a divergence, or not finishing
  *
  * Usage:  node scripts/verify-web.js
@@ -114,14 +114,6 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
     }
     console.log(`  ${presets} presets checked`);
 
-    const bugs = await page.evaluate(() => document.querySelectorAll('#bugs .bug').length);
-    for (let i = 0; i < bugs; i++) {
-      await page.evaluate((i) => document.querySelectorAll('#bugs .bug')[i].click(), i);
-      await sleep(200);
-      const v = await state();
-      if (!acceptable.has(v.s)) failures.push(`bug card ${i}: ${v.s} — ${v.t}`);
-    }
-    console.log(`  ${bugs} bug cards checked`);
 
     await page.evaluate((n) => {
       const b = document.getElementById('fRun');
