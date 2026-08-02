@@ -67,7 +67,24 @@ jobs:
       - name: verify the page in a real browser
         run: node scripts/verify-web.js
 
+      # enablement turns Pages on for the repository rather than requiring it to
+      # have been switched on by hand first. It cannot succeed while the
+      # repository is private on a free plan, which is the one thing here that
+      # is an account setting rather than a workflow one.
       - uses: actions/configure-pages@v5
+        id: pages
+        continue-on-error: true
+        with:
+          enablement: true
+
+      - name: explain a Pages failure rather than just failing
+        if: steps.pages.outcome == 'failure'
+        run: |
+          echo "::error::Could not configure GitHub Pages."
+          echo "Pages is unavailable for private repositories on the free plan."
+          echo "Make the repository public, or enable Pages under"
+          echo "Settings -> Pages -> Source: GitHub Actions, then re-run this workflow."
+          exit 1
 
       - uses: actions/upload-pages-artifact@v3
         with:
