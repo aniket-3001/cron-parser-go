@@ -3,7 +3,7 @@
  *
  * The page runs both implementations client-side, so both have to be built for
  * the browser: the port compiled to WebAssembly from ./bridge, and the original
- * bundled from ../cron-parser/dist. Neither is checked in — they are build
+ * bundled from ../cron-parser/dist. Neither is checked in: they are build
  * output, and a stale copy of either would make the page compare something
  * other than what the repository contains.
  *

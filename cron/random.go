@@ -32,7 +32,7 @@ func xfnv1a(s string) uint32 {
 //
 // Every operation stays in uint32. In JavaScript the intermediate
 // `t + Math.imul(...)` is evaluated as a float64 and can exceed 32 bits, but the
-// enclosing XOR coerces it back via ToInt32 — that is, modulo 2^32 — which is
+// enclosing XOR coerces it back via ToInt32 (that is, modulo 2^32) which is
 // what uint32 addition does natively, so the bit patterns agree.
 func mulberry32(seed uint32) prng {
 	return func() float64 {
@@ -53,7 +53,7 @@ func mulberry32(seed uint32) prng {
 // unseeded H being scattered.
 //
 // An empty seed counts as no seed. The original tests the string for truthiness
-// — `str ? xfnv1a(str)() : ...` — so "" takes the random branch, and a caller
+// (`str ? xfnv1a(str)() : ...`) so "" takes the random branch, and a caller
 // passing an empty hashSeed gets scattered values rather than a fixed sequence.
 func seededRandom(seed string) prng {
 	if seed == "" {

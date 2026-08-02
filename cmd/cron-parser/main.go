@@ -26,7 +26,7 @@ import (
 	"github.com/aniket-3001/cron-parser-go/cron"
 )
 
-const usage = `cron-parser — evaluate cron expressions
+const usage = `cron-parser, evaluate cron expressions
 
 usage:
   cron-parser next  <expression> [-n count] [-tz zone] [-from time] [-json]

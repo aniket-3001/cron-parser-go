@@ -38,7 +38,7 @@ type Crontab struct {
 // convenience wrapper for ordinary Go callers.
 //
 // Only the first five fields of a line are treated as the schedule, matching
-// the original — so a crontab line always parses in the five-field form, and
+// the original, so a crontab line always parses in the five-field form, and
 // seconds default to zero.
 func ParseCrontab(content string, opts ...Option) *Crontab {
 	result := &Crontab{

@@ -640,7 +640,7 @@ func dispatchExpression(op string, args []js.Value) any {
 //
 // This matters more than it looks. syscall/js panics when a value is read as
 // the wrong type, and a panic that escapes the callback tears down the whole Go
-// runtime — so one malformed call would take every later call with it, and a
+// runtime, so one malformed call would take every later call with it, and a
 // test run would report hundreds of unrelated failures after the first genuine
 // one. Converting to an error keeps a mistake local to the call that made it.
 func safeDispatch(op string, args []js.Value) (result any) {

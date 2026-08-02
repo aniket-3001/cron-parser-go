@@ -119,7 +119,7 @@ module.exports = { PortExpression };
  * A date in the port.
  *
  * The original's CronDate is public API and its arithmetic is reachable
- * independently of any expression — year arithmetic, for one, is never used by
+ * independently of any expression, year arithmetic, for one, is never used by
  * the search loop. Comparing expressions alone would leave that surface
  * unchecked.
  */

@@ -10,7 +10,7 @@ import (
 //
 // The sequences must agree bit for bit, because H field values are derived from
 // them: a divergence here would silently reschedule every hashed expression.
-// The unicode seed is the one that matters most — it is what proves the hash
+// The unicode seed is the one that matters most. It is what proves the hash
 // walks UTF-16 code units, as charCodeAt does, rather than UTF-8 bytes.
 func TestSeededRandomMatchesOriginal(t *testing.T) {
 	tests := []struct {

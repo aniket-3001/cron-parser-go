@@ -45,8 +45,8 @@ const asJSON = has('json');
 /**
  * Renders an instant the way Go's time.Format(time.RFC3339) does.
  *
- * The two runtimes format differently out of the box — Go writes a trailing Z
- * for UTC and omits milliseconds, luxon includes them — so the formatting is
+ * The two runtimes format differently out of the box, Go writes a trailing Z
+ * for UTC and omits milliseconds, luxon includes them, so the formatting is
  * pinned here. Otherwise every line would differ for reasons that have nothing
  * to do with the schedule.
  */

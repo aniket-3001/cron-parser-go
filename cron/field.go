@@ -100,7 +100,7 @@ var (
 //
 // The original models this as an abstract class with six subclasses that
 // override static getters. Go has embedding but not method overriding, and the
-// subclasses differ only in data — never in behaviour — so a table of
+// subclasses differ only in data (never in behaviour) so a table of
 // descriptors expresses the same thing without six near-identical types. See
 // DECISIONS.md D2.
 type fieldSpec struct {
@@ -193,7 +193,7 @@ type Field struct {
 // newField validates values and returns the field.
 //
 // values is copied before sorting. The original sorts in place, which mutates
-// the caller's array — a bug reproduced nowhere in this port because Go slices
+// the caller's array, a bug reproduced nowhere in this port because Go slices
 // share backing arrays in exactly the same way, so the naive translation would
 // inherit it. See DECISIONS.md D4.
 func newField(spec *fieldSpec, values []Value, opts fieldOptions) (*Field, error) {
@@ -261,7 +261,7 @@ func (f *Field) validate() error {
 
 	// The original writes `if (duplicate)` against the value returned by
 	// Array.prototype.find, which stops at the FIRST duplicate. When that value
-	// is 0 the test is falsy and no error is raised — and because the search
+	// is 0 the test is falsy and no error is raised, and because the search
 	// already stopped, later duplicates go unreported as well. Values are sorted
 	// ascending, so a duplicated 0 masks every other duplicate in the field.
 	//

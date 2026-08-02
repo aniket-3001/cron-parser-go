@@ -55,9 +55,9 @@ func (o dateMathOp) String() string {
 }
 
 // daysInMonthTable mirrors the original's DAYS_IN_MONTH constant, which stores 29
-// for February regardless of the year. Its leap-permissiveness is observable —
+// for February regardless of the year. Its leap-permissiveness is observable,
 // CronFieldCollection's validation reads it directly to decide whether an explicit
-// day of month can ever occur — so it is reproduced rather than corrected. Code
+// day of month can ever occur, so it is reproduced rather than corrected. Code
 // that needs a month's true length must call daysIn.
 var daysInMonthTable = [12]int{31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}
 
@@ -113,8 +113,8 @@ func zoneOffset(t time.Time, loc *time.Location) int {
 // which side of an ambiguous reading is chosen: during a fall-back the hour
 // 01:00–01:59 occurs twice, and seeding with the pre-transition offset selects
 // the first occurrence while seeding with the post-transition offset selects the
-// second. Computing the seed from the reading itself instead — the obvious
-// shortcut — disagrees with luxon on roughly one reading in 300 near a
+// second. Computing the seed from the reading itself instead, the obvious
+// shortcut, disagrees with luxon on roughly one reading in 300 near a
 // transition, always by exactly the width of the offset change.
 func fromWallClock(y int, mo time.Month, d, h, mi, s, ms int, provisional int, loc *time.Location) time.Time {
 	// Interpret the reading as though it were UTC. luxon calls this objToLocalTS.
@@ -136,7 +136,7 @@ func fromWallClock(y int, mo time.Month, d, h, mi, s, ms int, provisional int, l
 	}
 
 	// The reading falls in a DST gap. luxon subtracts the smaller offset, which
-	// yields the later instant — resolving forward, past the gap.
+	// yields the later instant, resolving forward, past the gap.
 	lo := min(o2, o3)
 	return local.Add(-time.Duration(lo) * time.Second).In(loc)
 }
@@ -144,7 +144,7 @@ func fromWallClock(y int, mo time.Month, d, h, mi, s, ms int, provisional int, l
 // addMonthsCivil shifts a civil date by n months, clamping the day to the target
 // month's length.
 //
-// luxon clamps here — 2024-01-31 plus one month is 2024-02-29 — whereas
+// luxon clamps here (2024-01-31 plus one month is 2024-02-29) whereas
 // time.Time.AddDate overflows to 2024-03-02. Note the asymmetry documented in
 // SEMANTICS.md: luxon clamps for month and year arithmetic but overflows when
 // setting a day directly, so this must not be applied uniformly.
@@ -184,7 +184,7 @@ type cronTime struct {
 // The instant is truncated to millisecond precision because the original operates
 // in milliseconds throughout; leaving Go's nanoseconds in place would make
 // UnixMilli comparisons drift. Truncating to a millisecond is epoch-aligned and so
-// is safe in any zone — unlike truncating to an hour, which this package never
+// is safe in any zone, unlike truncating to an hour, which this package never
 // does (see startOfHour).
 func newCronTime(t time.Time, loc *time.Location) *cronTime {
 	if loc == nil {
@@ -260,7 +260,7 @@ func (c *cronTime) startOfDay() {
 
 // startOfHour zeroes the minutes and below. It rebuilds from wall-clock
 // components rather than calling Truncate, which rounds against absolute time and
-// so would be wrong in any zone whose offset is not a whole hour — India (+05:30),
+// so would be wrong in any zone whose offset is not a whole hour, India (+05:30),
 // Australia/Lord_Howe (+10:30), Pacific/Chatham (+12:45).
 func (c *cronTime) startOfHour() {
 	y, mo, d, h, _, _, _ := c.wall()
@@ -294,7 +294,7 @@ func (c *cronTime) endOfDay() {
 //
 // The order is load-bearing and matches luxon's endOf, which is
 // plus(1 unit).startOf(unit).minus(1). Snapping to the boundary first and then
-// advancing — the intuitive reading — gives a different answer whenever the hour
+// advancing (the intuitive reading) gives a different answer whenever the hour
 // is repeated by a fall-back, because the snap resolves against the wrong
 // offset. Australia/Lord_Howe, whose transition is 30 minutes, disagreed on 92
 // readings when the order was reversed.
@@ -321,7 +321,7 @@ func (c *cronTime) endOfMinute() {
 
 // addYear mirrors plus({years: 1}), which clamps: 2024-02-29 becomes 2025-02-28.
 // Go's AddDate would overflow to 2025-03-01. There is deliberately no startOf
-// call — the original has none either.
+// call, the original has none either.
 func (c *cronTime) addYear() {
 	y, mo, d, h, mi, s, ms := c.wall()
 	ny, nmo, nd := addMonthsCivil(y, mo, d, 12)
@@ -545,7 +545,7 @@ func (c *cronTime) isLastWeekdayOfMonth() bool {
 // transition it crossed.
 //
 // This reproduces the original's logic, including its assumption that every
-// transition is exactly one hour wide — see the diff == 2 test below. That
+// transition is exactly one hour wide, see the diff == 2 test below. That
 // assumption is wrong for Antarctica/Troll, whose spring-forward gap is two hours
 // and therefore produces a difference of three, so the branch never fires. The bug
 // is preserved here because the reference suite depends on it; the corrected

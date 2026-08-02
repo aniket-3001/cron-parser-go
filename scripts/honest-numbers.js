@@ -335,7 +335,7 @@ const portTotals = {
 const listHits = (hits) =>
   hits.length === 0
     ? '_none_'
-    : hits.map((h) => `- \`${h.file}:${h.line}\` — \`${h.text}\``).join('\n');
+    : hits.map((h) => `- \`${h.file}:${h.line}\` &nbsp; \`${h.text}\``).join('\n');
 
 const covRow = (label, o, p) => `| ${label} | ${o} | ${p} |`;
 
@@ -368,7 +368,7 @@ Related, since both are ways of escaping the type system:
 | Scope | \`reflect\` | \`interface{}\` / \`any\` |
 |---|---:|---:|
 | Library | ${reflectLibrary.length} | ${ifaceLibrary.length} |
-| Test bridge | — | ${ifaceBridge.length} |
+| Test bridge | n/a | ${ifaceBridge.length} |
 
 The bridge crosses into JavaScript through \`syscall/js\`, where values arrive
 untyped by construction. That is the boundary the rules describe as acceptable,
@@ -383,7 +383,7 @@ TypeScript \`any\`, separated by who wrote the code:
 |---|---:|
 | Adapter shipped by this port (\`adapter/src/\`) | **${anyAdapter.length}** |
 | Original library (\`../cron-parser/src/\`), for reference | ${
-  originalSrc.length === 0 ? 'not measured — upstream clone absent' : anyOriginal.length
+  originalSrc.length === 0 ? 'not measured, upstream clone absent' : anyOriginal.length
 } |
 
 ${anyAdapter.length === 0 ? '_No `any` in the adapter._' : listHits(anyAdapter)}
@@ -449,7 +449,7 @@ ${
       ].join('\n')
     : covRow(
         'Statements',
-        'unavailable — run `npm run test:coverage` in ../cron-parser',
+        'unavailable, run `npm run test:coverage` in ../cron-parser',
         portTotalCoverage === null ? 'n/a' : pct(portTotalCoverage),
       )
 }
@@ -457,7 +457,7 @@ ${
 **Statement coverage is the only metric the two share.** Go's cover tool
 measures statement coverage and nothing else; it has no branch, function or
 line metric to compare against. Reporting the original's branch percentage
-beside a blank is the honest presentation — inventing a Go equivalent, or
+beside a blank is the honest presentation. Inventing a Go equivalent, or
 quietly dropping the rows the port cannot fill, would both be worse.
 
 ### The port has two coverage readings, and both are reported
@@ -475,11 +475,11 @@ ${
   covDefault.uncovered.length === 0
     ? '_nothing_'
     : covDefault.uncovered
-        .map((u) => `- \`cron/${u.file}:${u.line}\` \`${u.fn}\` — ${pct(u.percent)}`)
+        .map((u) => `- \`cron/${u.file}:${u.line}\` \`${u.fn}\`, ${pct(u.percent)}`)
         .join('\n')
 }
 
-\`startOfMonth\` is not used by the engine at all — it exists so the differential
+\`startOfMonth\` is not used by the engine at all. It exists so the differential
 corpus can exercise every luxon \`startOf\`/\`endOf\` pairing, and it says so in a
 comment above the function. \`setMillisecond\` mirrors the original's public
 \`CronDate.setMilliseconds\` and the \`currentDate.setMilliseconds(0)\` call at
@@ -498,7 +498,7 @@ matters more than the percentages:
 
 Neither says anything about equivalence between the two. That evidence is the
 ${originalTotals.total} original tests running unmodified against the port, the
-differential fuzzing in \`fuzz/\`, and the CLI diff in \`compare/\` — not this
+differential fuzzing in \`fuzz/\`, and the CLI diff in \`compare/\`, not this
 table.
 
 ### Per-file, port

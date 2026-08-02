@@ -2,7 +2,7 @@
  * Builds everything the adapter needs, in one command, on any platform.
  *
  * The project ships a Makefile too, but make is not present on every machine a
- * judge might use — it is absent from a stock Windows install — and the rule is
+ * judge might use. It is absent from a stock Windows install, and the rule is
  * that one command produces a runnable artifact. Node is already required to run
  * the original suite, so the build goes through it.
  *

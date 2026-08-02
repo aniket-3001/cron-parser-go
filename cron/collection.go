@@ -7,8 +7,8 @@ import "strings"
 // stride it uses.
 //
 // end and step are optional in the original, where absent means undefined. Both
-// the absence and the value zero are meaningful — several checks in the original
-// test them for truthiness, so zero and undefined take the same branch — which is
+// the absence and the value zero are meaningful, several checks in the original
+// test them for truthiness, so zero and undefined take the same branch, which is
 // why each carries its own presence flag rather than relying on a zero value.
 type fieldRange struct {
 	start   Value

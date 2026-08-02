@@ -9,7 +9,7 @@ import (
 // know "was this a bad expression?" match on these; callers that need detail
 // use errors.As with the concrete types below.
 var (
-	// ErrValidation covers field values that cannot be represented — out of
+	// ErrValidation covers field values that cannot be represented, out of
 	// range, duplicated, or empty.
 	ErrValidation = errors.New("cron: validation error")
 	// ErrConstraint covers values that are syntactically fine but violate a
@@ -49,8 +49,8 @@ const (
 // drift. Go convention would prefer lowercase, unpunctuated error strings; the
 // deviation is deliberate and recorded in DECISIONS.md D6.
 type FieldError struct {
-	// Field is the originating class name — "CronSecond", "CronMinute" and so
-	// on — because it appears verbatim in the message.
+	// Field is the originating class name: "CronSecond", "CronMinute" and so
+	// on, because it appears verbatim in the message.
 	Field string
 	Kind  fieldErrorKind
 	Value Value

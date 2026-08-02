@@ -10,8 +10,8 @@ import "time"
 //
 // The original's CronDate is part of its public API and its tests drive it
 // directly, so the bridge needs a date object with roughly forty methods. The Go
-// library deliberately does not expose one — its public surface uses time.Time,
-// which is what a Go caller expects — so the compatibility shape lives here
+// library deliberately does not expose one, its public surface uses time.Time,
+// which is what a Go caller expects, so the compatibility shape lives here
 // instead of widening the real API.
 //
 // Everything below is a thin forwarder. There is no logic here, which is what

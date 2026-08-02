@@ -5,7 +5,7 @@
  * There is no template for this; the design is described in fuzz/README.md.
  * In short: both implementations are loaded into one process, a seeded
  * generator produces cron expressions, timezones and starting instants, and
- * every observable answer is compared — the schedules in both directions, the
+ * every observable answer is compared, the schedules in both directions, the
  * rendered text, the parsed field values, membership answers, and the exact
  * text of every error. A disagreement is minimised to the smallest input that
  * still shows it and written out as a runnable reproduction.
@@ -307,7 +307,7 @@ function observeReference(expr, options, probe) {
     // hasNext and hasPrev promise an answer *and* an untouched cursor: both
     // run the search and then put the current date back in a finally. The
     // restoration is the part worth comparing, so the instant produced after
-    // asking is recorded too — a port that answered correctly but consumed the
+    // asking is recorded too, a port that answered correctly but consumed the
     // occurrence would look identical without it.
     const asking = CronExpressionParser.parse(expr, options);
     out.hasNext = asking.hasNext();

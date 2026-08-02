@@ -1,16 +1,16 @@
-# SEMANTICS — the exact behaviour the Go port must reproduce
+# SEMANTICS, the exact behaviour the Go port must reproduce
 
 A line-level behavioural specification of `cron-parser` v5.6.2, extracted from source and
 **verified by execution**. This is the contract the Go implementation is written against; where
 `DESIGN.md` says *how*, this says *what*.
 
-Anything surprising is marked ⚠️ — those are the places a reasonable port silently diverges.
+Anything surprising is marked. Those are the places a reasonable port silently diverges.
 
 ---
 
 # 1. The parse pipeline
 
-`CronExpressionParser.parse(expression, options)` — exact order of operations:
+`CronExpressionParser.parse(expression, options)`, exact order of operations:
 
 ```
 1.  rand = seededRandom(options.hashSeed)      // seeded ONCE per parse, shared by all fields
@@ -24,11 +24,11 @@ Anything surprising is marked ⚠️ — those are the places a reasonable port 
 9.  new CronFieldCollection(...) -> new CronExpression(fields, options)
 ```
 
-⚠️ **Step 1 matters.** One PRNG instance is threaded through every field, so `H` values in
+**Step 1 matters.** One PRNG instance is threaded through every field, so `H` values in
 different fields are correlated by position. Re-seeding per field would produce different output
 for the same seed.
 
-⚠️ **Step 5's ordering matters** for the same reason — the PRNG is consumed in field order:
+**Step 5's ordering matters** for the same reason: the PRNG is consumed in field order:
 second, minute, hour, month, dayOfMonth, then dayOfWeek. Note this is **not** the display order:
 month is parsed *before* dayOfMonth.
 
@@ -44,15 +44,15 @@ if (atoms.length < defaults.length) atoms.unshift(...defaults.slice(atoms.length
 const [second, minute, hour, dayOfMonth, month, dayOfWeek] = atoms;
 ```
 
-⚠️ **`defaults.slice(atoms.length)` takes from the END, and `unshift` prepends.** For 5 atoms this
+**`defaults.slice(atoms.length)` takes from the END, and `unshift` prepends.** For 5 atoms this
 prepends `'0'` (seconds), which is the intended behaviour. But for fewer atoms it produces
 nonsense that fails later with a confusing message. Verified:
 
 | Input | Result |
 |---|---|
-| `"* * * * *"` (5) | → `0 * * * * *` ✅ |
-| `"* * * * * *"` (6) | → `* * * * * *` ✅ |
-| `"5"` (1) | → `Constraint error, got value 0 expected range 1-12` — the lone atom lands in **dayOfWeek** and `'0'` lands in **month** |
+| `"* * * * *"` (5) | → `0 * * * * *` |
+| `"* * * * * *"` (6) | → `* * * * * *` |
+| `"5"` (1) | → `Constraint error, got value 0 expected range 1-12`, the lone atom lands in **dayOfWeek** and `'0'` lands in **month** |
 | `"5 *"` (2) | → `Constraint error, got value 0 expected range 1-31` |
 
 The Go port reproduces this, including the misleading error.
@@ -69,7 +69,7 @@ All stored in **6-field** form. `@yearly`/`@annually` are distinct keys with ide
 | `@daily` | `0 0 0 * * *` | | `@weekends` | `0 0 0 * * 0,6` |
 | `@hourly` | `0 0 * * * *` | | | |
 
-The last four are **non-standard extensions** — no Unix cron has `@minutely`.
+The last four are **non-standard extensions**: no Unix cron has `@minutely`.
 
 ---
 
@@ -86,10 +86,10 @@ The last four are **non-standard extensions** — no Unix cron has `@minutely`.
 5. return #parseSequence(field, value, constraints)
 ```
 
-⚠️ **The alias regex is `/[a-z]{3}/gi` — any three consecutive letters.** It is applied to Month
+**The alias regex is `/[a-z]{3}/gi`, any three consecutive letters.** It is applied to Month
 and DayOfWeek only. `SUN` → `0`, `JAN` → `1`. An unrecognised triple throws.
 
-⚠️ **`*` and `?` are both expanded to the full range** before sequence parsing, so `?` is a synonym
+**`*` and `?` are both expanded to the full range** before sequence parsing, so `?` is a synonym
 for `*` at the value level. The distinction survives only via `hasQuestionMarkChar`, which
 `stringifyField` uses to re-emit `?` instead of `*`.
 
@@ -107,13 +107,13 @@ for `*` at the value level. The distinction survives only via `hasQuestionMarkCh
                    validate range, validate repeat interval, #createRange
 ```
 
-⚠️ **`5/10` becomes `5-59/10`**, not "every 10th starting at 5 forever". The max comes from the
+**`5/10` becomes `5-59/10`**, not "every 10th starting at 5 forever". The max comes from the
 field's own constraint.
 
-⚠️ **`#parseRange` returns a raw string when the value isn't numeric** — this is how `L`, `5L` and
+**`#parseRange` returns a raw string when the value isn't numeric**. This is how `L`, `5L` and
 `W` survive parsing as strings. They then get validated by `#isValidConstraintChar`.
 
-## 2.2 `#createRange` and the day-of-week anomaly ⚠️⚠️
+## 2.2 `#createRange` and the day-of-week anomaly 
 
 ```ts
 static #createRange(field, min, max, repeatInterval) {
@@ -146,7 +146,7 @@ v5.6.2:
 | `* * * * 1-7` | **`[0,1,2,3,4,5,6,7]`** | `* * * * *` |
 | `* * * * 0-7` | **`[0,1,2,3,4,5,6,7]`** | `* * * * *` |
 
-So `5-7` means **Sunday, Friday, Saturday** — the `0` is injected by the `max % 7` rule while `7`
+So `5-7` means **Sunday, Friday, Saturday**, the `0` is injected by the `max % 7` rule while `7`
 remains in the array. Both denote Sunday.
 
 This is why `stringifyField` special-cases day-of-week:
@@ -160,7 +160,7 @@ if (field instanceof CronDayOfWeek) {
 
 **Port requirement:** reproduce the duplicate representation exactly. A port that "cleans up" by
 normalising 7→0 everywhere produces `[0,5,6]`, which stringifies identically but has a different
-`values` array — and 19 tests read `.values` directly.
+`values` array, and 19 tests read `.values` directly.
 
 ## 2.3 Hashed (`H`) values
 
@@ -176,7 +176,7 @@ normalising 7→0 everywhere produces `[0,5,6]`, which stringifies identically b
 
 Errors: `Invalid range: ${min}-${max}, min > max` and `Invalid step: ${step}, must be positive`.
 
-⚠️ Using `H` without `options.hashSeed` still works — `seededRandom(undefined)` falls back to
+Using `H` without `options.hashSeed` still works: `seededRandom(undefined)` falls back to
 `Math.floor(Math.random() * 10_000_000_000)`, making the result **non-deterministic**.
 
 ## 2.4 `#parseNthDay`
@@ -185,14 +185,14 @@ Errors: `Invalid range: ${min}-${max}, min > max` and `Invalid step: ${step}, mu
 const atoms = val.split('#');
 if (atoms.length <= 1) return { dayOfWeek: atoms[0] };
 const nthValue = +atoms[atoms.length - 1];
-const matches = val.match(/([,-/])/);            // ⚠️ BUG: 0x2C-0x2F range = , - . /
+const matches = val.match(/([,-/])/);            // BUG: 0x2C-0x2F range = , - . /
 if (matches !== null) throw `Constraint error, invalid dayOfWeek \`#\` and \`${matches[0]}\` special characters are incompatible`;
 if (!(atoms.length <= 2 && !isNaN(nthValue) && nthValue >= 1 && nthValue <= 5))
   throw 'Constraint error, invalid dayOfWeek occurrence number (#)';
 return { dayOfWeek: atoms[0], nthDayOfWeek: nthValue };
 ```
 
-⚠️ `[,-/]` inside a character class is the **range** `0x2C`–`0x2F` = `,` `-` `.` `/`. The `.` is
+`[,-/]` inside a character class is the **range** `0x2C`–`0x2F` = `,` `-` `.` `/`. The `.` is
 unintended. Verified: `0 0 * * 1.2#2` throws with `` `.` `` in the message.
 
 ---
@@ -202,17 +202,17 @@ unintended. Verified: `0 0 * * 1.2#2` throws with `` `.` `` in the message.
 ## 3.1 Construction
 
 ```ts
-this.#values         = values.sort(CronField.sorter);          // ⚠️ in-place, mutates caller
+this.#values         = values.sort(CronField.sorter);          // in-place, mutates caller
 this.#wildcard       = options.wildcard ?? this.#isWildcardValue();
 this.#hasLastChar    = options.rawValue.includes('L') || values.includes('L');
 this.#hasQuestionMarkChar = options.rawValue.includes('?') || values.includes('?');
 ```
 
-⚠️ `hasLastChar` tests the **raw string**, so any `L` anywhere sets it — including the `L` in a
+`hasLastChar` tests the **raw string**, so any `L` anywhere sets it, including the `L` in a
 resolved alias. (Month aliases resolve to numbers before this point, so in practice only
 day-of-month and day-of-week are affected.)
 
-## 3.2 `sorter` — mixed-type ordering
+## 3.2 `sorter`, mixed-type ordering
 
 ```
 both numbers  -> a - b
@@ -227,7 +227,7 @@ if rawValue is non-empty  -> rawValue is '*' or '?'
 else                      -> values covers the entire min..max range
 ```
 
-⚠️ The second branch matters for `fieldsToExpression`, where fields are built without a raw value.
+The second branch matters for `fieldsToExpression`, where fields are built without a raw value.
 `new CronHour([0..23])` is therefore a wildcard even though no `*` was written.
 
 ## 3.4 `validate()`
@@ -241,23 +241,23 @@ So `L`, `5L`, `15L` all validate against `chars = ['L']`; `123L` does not.
 
 Then a duplicate check: `values.find((v,i) => values.indexOf(v) !== i)`.
 
-⚠️ **The duplicate check uses a falsy test** (`if (duplicate)`), so a duplicated **`0`** is not
+**The duplicate check uses a falsy test** (`if (duplicate)`), so a duplicated **`0`** is not
 reported. `[0,0]` passes validation; `[1,1]` throws.
 
 ## 3.5 Field constraints
 
 | Field | min | max | chars | `validChars` extra |
 |---|---:|---:|---|---|
-| `CronSecond` | 0 | 59 | — | base |
-| `CronMinute` | 0 | 59 | — | base |
-| `CronHour` | 0 | 23 | — | base |
+| `CronSecond` | 0 | 59 | | base |
+| `CronMinute` | 0 | 59 | | base |
+| `CronHour` | 0 | 23 | | base |
 | `CronDayOfMonth` | 1 | 31 | `L` | adds `L` |
-| `CronMonth` | 1 | 12 | — | base |
+| `CronMonth` | 1 | 12 | | base |
 | `CronDayOfWeek` | 0 | 7 | `L` | adds `L` and `#` |
 
 Base `validChars`: `/^[?,*\dH/-]+$|^.*H\(\d+-\d+\)\/\d+.*$|^.*H\(\d+-\d+\).*$|^.*H\/\d+.*$/`
 
-⚠️ **No field's `validChars` contains `W`** — see §7.
+**No field's `validChars` contains `W`**, see §7.
 
 ---
 
@@ -270,11 +270,11 @@ if (month.values.length === 1 && !dayOfMonth.hasLastChar && dayOfWeek.isWildcard
 }
 ```
 
-⚠️ Only checks `values[0]` — the **first** day-of-month value — and only when exactly one month is
+Only checks `values[0]` (the **first** day-of-month value) and only when exactly one month is
 specified and day-of-week is a wildcard. So `0 0 30,31 2 *` throws (first value 30 > 29) but
 `0 0 1,31 2 *` is **accepted** and then never matches, eventually hitting the loop limit.
 
-`daysInMonth` is `[31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]` — February is **29**, i.e.
+`daysInMonth` is `[31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]`, February is **29**, i.e.
 leap-permissive.
 
 ---
@@ -298,14 +298,14 @@ if stepCount >= LOOP_LIMIT -> throw 'Invalid expression, loop limit exceeded'
 milliseconds -> 0
 ```
 
-⚠️ **Day is matched before Month.** A port that checks month first will produce different
+**Day is matched before Month.** A port that checks month first will produce different
 `applyDateOperation` call sequences (which two tests observe) even when results agree.
 
-⚠️ **Results are exclusive of the start instant** — landing exactly on `currentDate` steps one
+**Results are exclusive of the start instant**, landing exactly on `currentDate` steps one
 second and keeps searching. The exception is a *backwards* search that began at a sub-second
 offset, which accepts the millisecond-stripped value instead.
 
-## 5.2 Day-of-month / day-of-week — the three rules
+## 5.2 Day-of-month / day-of-week, the three rules
 
 ```
 Rule 1: DOM restricted AND DOW restricted  -> match if (DOM matched OR DOW matched)
@@ -314,7 +314,7 @@ Rule 3: DOM wildcard AND DOW not wildcard AND DOW matched -> match
 otherwise -> no match
 ```
 
-⚠️ Rule 1 is **OR**, inherited from Unix cron. `0 0 13 * 5` is "the 13th **or** any Friday", not
+Rule 1 is **OR**, inherited from Unix cron. `0 0 13 * 5` is "the 13th **or** any Friday", not
 "Friday the 13th".
 
 `matchedDOM` also succeeds when `dayOfMonth.hasLastChar && currentDate.isLastDayOfMonth()`.
@@ -326,10 +326,10 @@ otherwise -> no match
 return day > lastDay - 7;
 ```
 
-i.e. "within the final 7 days of the month" — combined with a weekday match, that identifies the
+i.e. "within the final 7 days of the month", combined with a weekday match, that identifies the
 last occurrence of that weekday.
 
-⚠️ `#isLastWeekdayOfMonthMatch` does `parseInt(expression.toString().charAt(0), 10) % 7`. For a
+`#isLastWeekdayOfMonthMatch` does `parseInt(expression.toString().charAt(0), 10) % 7`. For a
 bare `'L'` that is `NaN`, and the function throws at **iteration** time, not parse time.
 
 ## 5.4 DST compensation
@@ -344,13 +344,13 @@ otherwise:
    diff === 0 && minutes === 0 && seconds === 0  -> if hoursLength !== 24: dstEnd = hourAfter
 ```
 
-⚠️ `diff === 2` assumes every transition is exactly one hour. Measured failures:
+`diff === 2` assumes every transition is exactly one hour. Measured failures:
 
 | Zone | Gap | `diff` | Fires? |
 |---|---|---|---|
-| `America/New_York` | 1 h | 2 | ✅ |
-| `Australia/Lord_Howe` | 30 min | 2 | ✅ (incidentally) |
-| `Antarctica/Troll` | **2 h** | **3** | ❌ **bug** |
+| `America/New_York` | 1 h | 2 | |
+| `Australia/Lord_Howe` | 30 min | 2 | (incidentally) |
+| `Antarctica/Troll` | **2 h** | **3** | **bug** |
 
 ---
 
@@ -370,12 +370,12 @@ Field-specific overrides in `stringifyField`:
 - **DayOfWeek**: `max` forced to `6`; a trailing `7` is dropped; `#nthDay` appended when `> 0`
 - **DayOfMonth**: `max` becomes that month's length when exactly one month is specified
 
-`stringify(includeSeconds = false)` — **seconds are omitted by default**, so the default output is
+`stringify(includeSeconds = false)`, **seconds are omitted by default**, so the default output is
 the 5-field form. `toString()` returns `options.expression` (the raw input) when available.
 
 ---
 
-# 7. `W` — a phantom feature
+# 7. `W`, a phantom feature
 
 - `CronChars = 'L' | 'W'` (`fields/types.ts`)
 - `compactField` has an explicit `if (item === 'L' || item === 'W')` branch
@@ -425,7 +425,7 @@ Every message the port must reproduce byte-for-byte. 42 tests assert on these.
 
 `charsSuffix` is `` ` or chars ${chars.join('')}` `` when the field has special chars, else empty.
 
-⚠️ `${ClassName}` is `this.constructor.name` — `CronSecond`, `CronMinute`, … The Go port carries
+`${ClassName}` is `this.constructor.name`: `CronSecond`, `CronMinute`, … The Go port carries
 these names in the field descriptor (see `DECISIONS.md` D2).
 
 ---

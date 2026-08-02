@@ -5,7 +5,7 @@
  * The differential fuzzer compares the two through their APIs. This compares
  * them the way a user would meet them: as programs, on a shared input set,
  * comparing stdout, stderr and exit status. It is the coarser check of the two
- * and it is the one that catches a difference the API comparison cannot see —
+ * and it is the one that catches a difference the API comparison cannot see:
  * a rejected expression that produces a different message, or a command that
  * exits non-zero on one side only.
  *
@@ -153,7 +153,7 @@ and stdout, stderr and exit status are compared.
 
 The original ships only a library, so \`compare/original-cli.js\` gives it a
 command-line front end with the same output shape. It contains no logic beyond
-formatting — every answer comes from the original library — and it pins the
+formatting (every answer comes from the original library) and it pins the
 timestamp format, since Go and luxon render RFC 3339 differently by default and
 every line would otherwise differ for reasons unrelated to the schedule.
 

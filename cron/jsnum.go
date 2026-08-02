@@ -10,7 +10,7 @@ import (
 // which inputs are rejected and what the resulting error message says, so they
 // are modelled explicitly rather than approximated.
 
-// jsNumber mirrors unary plus — Number(s).
+// jsNumber mirrors unary plus, Number(s).
 //
 // It differs from parseInt in two ways that matter: an empty or all-whitespace
 // string converts to 0 rather than NaN, and any trailing garbage makes the whole
@@ -57,7 +57,7 @@ func jsParseInt(s string) (int, bool) {
 	}
 
 	// The slice is an optional sign followed by digits, so this cannot fail
-	// except on values too large for int — which no cron field can produce.
+	// except on values too large for int, which no cron field can produce.
 	n, _ := strconv.Atoi(s[start:i])
 	return n, true
 }

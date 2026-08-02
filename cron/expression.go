@@ -5,8 +5,8 @@ import (
 	"time"
 )
 
-// loopLimit caps the search. An expression such as "0 0 30 2 *" — the 30th of
-// February — can never match, so without a cap the search would spin forever.
+// loopLimit caps the search. An expression such as "0 0 30 2 *", the 30th of
+// February, can never match, so without a cap the search would spin forever.
 const loopLimit = 10000
 
 // config collects the settings Parse accepts.
@@ -561,7 +561,7 @@ func isNthWeekdayOfMonthMatch(nth int, current *cronTime) bool {
 // isLastWeekdayOfMonthMatch tests an `L` suffix, such as 5L for the last Friday.
 //
 // The weekday is read from the first character of the value, which is how the
-// original does it. A bare "L" therefore yields NaN there and produces an error —
+// original does it. A bare "L" therefore yields NaN there and produces an error,
 // at iteration time rather than at parse time, which is bug 4 in the original and
 // is reproduced here.
 func isLastWeekdayOfMonthMatch(values []Value, current *cronTime) (bool, error) {

@@ -6,7 +6,7 @@ import (
 
 	// The zone database is embedded in tests so results do not depend on what the
 	// host machine happens to have installed. The library itself does not import
-	// this — that would add roughly 450 KB to every binary that links it — but the
+	// this (that would add roughly 450 KB to every binary that links it) but the
 	// wasm bridge does, since js/wasm has no system zoneinfo at all.
 	_ "time/tzdata"
 )
@@ -25,7 +25,7 @@ func mustLoad(t *testing.T, zone string) *time.Location {
 // at builds a cronTime from a wall-clock reading in the named zone.
 //
 // The offset search is seeded from the reading itself because there is no prior
-// instance to take one from — the situation luxon is in when parsing an ISO
+// instance to take one from, the situation luxon is in when parsing an ISO
 // string. Operations on an existing cronTime seed from that instance instead;
 // see setWall.
 func at(t *testing.T, zone string, y int, mo time.Month, d, h, mi, s, ms int) *cronTime {
@@ -209,7 +209,7 @@ func TestHourSteppingAcrossTransitions(t *testing.T) {
 				t.Errorf("hour after addHour() = %d, want %d (%s)", after, tc.wantHour, c.iso())
 			}
 			if diff := after - before; diff != tc.wantDiff {
-				t.Errorf("hour delta = %d, want %d — %s", diff, tc.wantDiff, tc.gapNote)
+				t.Errorf("hour delta = %d, want %d, %s", diff, tc.wantDiff, tc.gapNote)
 			}
 		})
 	}

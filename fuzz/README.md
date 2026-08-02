@@ -71,8 +71,8 @@ a 60-second run while leaving the budget on generating new inputs. The decision 
 once per case from the seeded generator and handed to both implementations, so a seed
 still replays exactly and the two can never disagree about whether to probe.
 
-For a date case, every operation the date type exposes — twelve arithmetic operations,
-seven setters across several values each, and both day boundaries — is applied to one
+For a date case, every operation the date type exposes, twelve arithmetic operations,
+seven setters across several values each, and both day boundaries, is applied to one
 starting instant, and after each the instant, its ISO rendering, its UTC offset and
 both last-day predicates are compared.
 
@@ -84,7 +84,7 @@ ranges, steps, stepped ranges, `?`, month and weekday names, `L`, `W`, `#N`, the
 malformed input. Roughly two thirds of generated expressions are rejected by both
 implementations, which is itself worth comparing: the error text has to match too.
 
-**Timezones** are chosen for the shape of their transitions rather than for coverage —
+**Timezones** are chosen for the shape of their transitions rather than for coverage:
 a two-hour gap (`Antarctica/Troll`), half- and quarter-hour offsets (`Australia/Lord_Howe`,
 `Pacific/Chatham`), transitions at midnight (`America/Santiago`, `Asia/Beirut`),
 southern-hemisphere ordering, and a zone that abolished daylight saving partway through
@@ -141,11 +141,11 @@ hour at a time produced four minimised divergences within twenty seconds.
 implementation produced divergences within seventeen seconds, correctly minimised to
 the responsible field.
 
-**Breaking year arithmetic — and the two blind spots that exposed.** This one went
+**Breaking year arithmetic, and the two blind spots that exposed.** This one went
 unnoticed through three separate attempts, and each failure improved the harness:
 
 1. The first run compared expressions only. Year arithmetic is unreachable from the
-   search loop — it never uses that unit — so nothing exercised it. **Date operations
+   search loop (it never uses that unit) so nothing exercised it. **Date operations
    became a separate case type.**
 2. The second run picked one random operation per date case. The bug only shows on a
    leap day, and the chance of drawing both that instant and that operation was under
@@ -157,7 +157,7 @@ unnoticed through three separate attempts, and each failure improved the harness
 With those in place the same sabotage is caught in seconds, with leap-day reproductions.
 
 **Breaking the cursor restoration in `HasNext`.** Deleting the line that puts the cursor
-back — so the predicate answers correctly but silently consumes an occurrence — produced
+back (so the predicate answers correctly but silently consumes an occurrence) produced
 74 divergences in 25 seconds, all reported against `afterAsking`, the instant observed
 after asking. Comparing only the boolean would have missed every one of them.
 
@@ -178,7 +178,7 @@ DIVERGENCE  "* * * * * 0,7,4,4" tz=UTC
 
 The original's duplicate check uses `Array.prototype.find`, which stops at the **first**
 duplicate and then tests it for truthiness. Day-of-week normalises `7` to `0`, so this
-field holds `[0, 0, 4, 4]` — two duplicate pairs. The `0` pair is found first and is
+field holds `[0, 0, 4, 4]`: two duplicate pairs. The `0` pair is found first and is
 falsy, so nothing is reported, and because the search already stopped the `4` pair is
 never reached either.
 

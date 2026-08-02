@@ -1,4 +1,4 @@
-# DESIGN — low-level design for the Go port of `cron-parser`
+# DESIGN, low-level design for the Go port of `cron-parser`
 
 Port Mortem · Track C (TypeScript → Go) · source: `harrisiirak/cron-parser` v5.6.2
 (`aeb2a1513fd33365a6414f4137516c9482f831ed`)
@@ -19,7 +19,7 @@ scripts and their raw output are reproducible via `scripts/probe/`.
 >   never appears in the benchmarks, which measure `./cron` directly.
 
 **Companion documents.** This file says *how* the port is built.
-[`SEMANTICS.md`](SEMANTICS.md) says *what* it must do — a line-level behavioural specification of
+[`SEMANTICS.md`](SEMANTICS.md) says *what* it must do, a line-level behavioural specification of
 v5.6.2 including the complete error catalogue and the non-obvious quirks (day-of-week `7`
 handling, field padding, PRNG threading). Read it before writing any of `cron/`.
 [`DECISIONS.md`](DECISIONS.md) records the architectural divergences.
@@ -53,21 +53,11 @@ handling, field padding, PRNG threading). Read it before writing any of `cron/`.
 
 The single most important structural decision. The port is **not** one thing:
 
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│  ARTIFACT 1 — ./cron        the real port. Pure Go. Zero unsafe.    │
-│  Idiomatic API, iter.Seq, options pattern, structured errors.       │
-│  This is what gets benchmarked, fuzzed, and reviewed for quality.   │
-└─────────────────────────────────────────────────────────────────────┘
-                                   ▲
-                                   │ imported by
-                                   │
-┌─────────────────────────────────────────────────────────────────────┐
-│  ARTIFACT 2 — ./bridge      GOOS=js GOARCH=wasm. Handle registry.   │
-│  + ./adapter                TypeScript shim mirroring src/ layout.  │
-│  Exists ONLY so the original Jest suite can execute unmodified.     │
-│  Organizers explicitly excuse unsafe/escape hatches at this seam.   │
-└─────────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart BT
+    B["Artifact 2: the test seam<br/>./bridge, GOOS=js GOARCH=wasm, handle registry<br/>./adapter, TypeScript shim mirroring src/<br/>Exists only so the original Jest suite runs unmodified.<br/>Escape hatches are acceptable here."]
+    A["Artifact 1: the port<br/>./cron, pure Go, zero unsafe<br/>Idiomatic API, iter.Seq, options, structured errors<br/>Benchmarked, fuzzed, and reviewed for code quality."]
+    B -- imports --> A
 ```
 
 **Why this split matters for scoring.** The Zero-Unsafe bonus and the Code-Quality 20% are judged
@@ -100,18 +90,18 @@ need. WASM needs nothing beyond the Go toolchain that already builds the library
 |---|---|
 | Build | `GOOS=js GOARCH=wasm go build` → 2.7 MB module |
 | Init cost | **54 ms** (×7 Jest test files ≈ 0.4 s total) |
-| Call style | **Synchronous** — `globalThis.fn(...)` callable immediately after `go.run()`, no `await` |
+| Call style | **Synchronous**: `globalThis.fn(...)` callable immediately after `go.run()`, no `await` |
 | Call cost | 46 µs/call with map marshalling. A denser encoding was considered and not built: the bridge is test-only, and the benchmarks measure `./cron` directly, so this cost appears in no reported number |
 | tzdata | Embedded via `_ "time/tzdata"`. Verified: Troll `+120`, Lord Howe `+660`, Chatham `+825` |
 
-Synchronicity is non-negotiable — the original API is 100% synchronous (`parse().next()` returns a
+Synchronicity is non-negotiable, the original API is 100% synchronous (`parse().next()` returns a
 value, not a promise) and Jest asserts on it directly. WASM satisfies this; a subprocess bridge
 would not without an `Atomics.wait` contraption.
 
 ---
 ---
 
-# 4. The time layer — the hardest part of the port
+# 4. The time layer, the hardest part of the port
 
 `CronDate.ts` wraps luxon. Go's `time` package disagrees with luxon in **five measured ways**, three
 of them severe. Getting this wrong silently corrupts every downstream result, so it is built and
@@ -121,18 +111,18 @@ tested first (M2) before anything else.
 
 | # | Operation | luxon | Go naive | Severity |
 |---|---|---|---|---|
-| 1 | `2024-02-29 + 1 year` | `2025-02-28` **clamps** | `2025-03-01` overflows | 🔴 |
-| 2 | `2024-02-29 − 1 year` | `2023-02-28` **clamps** | `2023-03-01` overflows | 🔴 |
-| 3 | `set(month=2)` on `2024-01-31` | `2024-02-29` **clamps** | `2024-03-02` overflows | 🔴 |
-| 4 | `set(year=2025)` on `2024-02-29` | `2025-02-28` **clamps** | `2025-03-01` overflows | 🔴 |
-| 5 | `set(day=31)` in February | `2024-03-02` **overflows** | `2024-03-02` overflows | ✅ agrees |
-| 6 | `startOf(day)`, `America/Santiago 2026-09-06` (midnight gap) | `09-06T01:00-03:00` | **`09-05T23:00-04:00`** — *previous day* | 🔴 |
-| 7 | `startOf(day)`, `Asia/Beirut 2026-03-29` | `01:00+03:00` | `01:00+03:00` | ✅ agrees |
-| 8 | non-existent `2026-03-08T02:30` NY | `03:30-04:00` **forward** | **`01:30-05:00` backward** | 🔴 |
-| 9 | ambiguous `2026-11-01T01:30` NY | `-04:00` (first) | `-04:00` (first) | ✅ agrees |
+| 1 | `2024-02-29 + 1 year` | `2025-02-28` **clamps** | `2025-03-01` overflows | differs |
+| 2 | `2024-02-29 − 1 year` | `2023-02-28` **clamps** | `2023-03-01` overflows | differs |
+| 3 | `set(month=2)` on `2024-01-31` | `2024-02-29` **clamps** | `2024-03-02` overflows | differs |
+| 4 | `set(year=2025)` on `2024-02-29` | `2025-02-28` **clamps** | `2025-03-01` overflows | differs |
+| 5 | `set(day=31)` in February | `2024-03-02` **overflows** | `2024-03-02` overflows | agrees |
+| 6 | `startOf(day)`, `America/Santiago 2026-09-06` (midnight gap) | `09-06T01:00-03:00` | **`09-05T23:00-04:00`**, *previous day* | differs |
+| 7 | `startOf(day)`, `Asia/Beirut 2026-03-29` | `01:00+03:00` | `01:00+03:00` | agrees |
+| 8 | non-existent `2026-03-08T02:30` NY | `03:30-04:00` **forward** | **`01:30-05:00` backward** | differs |
+| 9 | ambiguous `2026-11-01T01:30` NY | `-04:00` (first) | `-04:00` (first) | agrees |
 
 **Note the asymmetry in rows 1–5.** luxon *clamps* for year and month arithmetic but *overflows*
-for day. Any uniform strategy — clamp everything, or overflow everything — is wrong. This is the
+for day. Any uniform strategy (clamp everything, or overflow everything) is wrong. This is the
 kind of thing a rushed port gets wrong and a fuzzer finds at hour 60.
 
 **Row 6 is the nastiest.** In zones that transition at midnight, Go's `time.Date(y,m,d,0,0,0,0,loc)`
@@ -141,7 +131,7 @@ can land on the *previous calendar day*. Since `#checkDstTransition` compares `s
 
 ## 4.2 The fix: port luxon's `fixOffset` faithfully
 
-Rows 6 and 8 have a single root cause — how a wall-clock time that doesn't exist gets resolved.
+Rows 6 and 8 have a single root cause, how a wall-clock time that doesn't exist gets resolved.
 luxon centralises this in `fixOffset`:
 
 ```js
@@ -156,7 +146,7 @@ function fixOffset(localTS, o, tz) {
 }
 ```
 
-The last line is the gap case: subtracting the **minimum** offset yields the **later** instant —
+The last line is the gap case: subtracting the **minimum** offset yields the **later** instant,
 forward resolution. Go's `time.Date` resolves backward. So the Go port implements:
 
 ```go
@@ -168,7 +158,7 @@ func fromWallClock(y int, mo time.Month, d, h, mi, s, ns int, loc *time.Location
 ```
 
 Every construction and every `set*` in the time layer routes through this one function. Nothing
-calls `time.Date(..., loc)` directly outside it — enforced by a lint rule in `scripts/`.
+calls `time.Date(..., loc)` directly outside it, enforced by a lint rule in `scripts/`.
 
 ## 4.3 Arithmetic helpers
 
@@ -177,16 +167,16 @@ func (c *cronTime) addYears(n int)    // clamp day to target month length  (rows
 func (c *cronTime) addMonths(n int)   // clamp, then caller does startOfMonth
 func (c *cronTime) setMonth(m int)    // clamp                             (row 3)
 func (c *cronTime) setYear(y int)     // clamp                             (row 4)
-func (c *cronTime) setDay(d int)      // OVERFLOW — deliberately not clamped (row 5)
+func (c *cronTime) setDay(d int)      // OVERFLOW: deliberately not clamped (row 5)
 ```
 
 `setDay` carries a comment explaining that the non-clamping is a faithful reproduction of luxon,
-not an oversight — otherwise a future reader "fixes" it and breaks parity.
+not an oversight, otherwise a future reader "fixes" it and breaks parity.
 
 ## 4.4 Two Go traps to avoid
 
 **`time.Truncate` operates on absolute time, not wall time.** `t.Truncate(time.Hour)` is *wrong*
-for `startOf('hour')` in any zone with a non-hour offset — India `+05:30`, Chatham `+12:45`,
+for `startOf('hour')` in any zone with a non-hour offset, India `+05:30`, Chatham `+12:45`,
 Lord Howe `+10:30`. All `startOf*` helpers are built from wall-clock components via
 `fromWallClock`, never `Truncate`.
 
@@ -207,7 +197,7 @@ type cronTime struct {
 }
 ```
 
-`applyDateOperation` is ported **with its `diff == 2` behaviour intact in compat mode** — that is
+`applyDateOperation` is ported **with its `diff == 2` behaviour intact in compat mode**. That is
 Bug #1, and reproducing it is required for test parity. The corrected generalisation (compare UTC
 offsets directly rather than inferring the gap from the hour delta) lives behind
 `WithCorrectDST()` and is what the native Go API uses by default. See §8.
@@ -215,7 +205,7 @@ offsets directly rather than inferring the gap from the hour delta) lives behind
 ---
 ---
 
-# 5. Module map — TypeScript to Go
+# 5. Module map, TypeScript to Go
 
 | TypeScript | LOC | Go | Notes |
 |---|---:|---|---|
@@ -303,7 +293,7 @@ run does not grow the registry unboundedly.
 ---
 ---
 
-# 6. The adapter — bridging the untouched tests
+# 6. The adapter, bridging the untouched tests
 
 ## 6.1 What the tests actually demand
 
@@ -325,7 +315,7 @@ import fs from 'fs'; import fsPromises from 'fs/promises';
 ```
 
 So the adapter must reproduce the **module layout**, the **class shapes**, the **enums**, the
-**exported constants**, and the **types** — not merely the behaviour.
+**exported constants**, and the **types**, not merely the behaviour.
 
 ## 6.2 Redirecting `../src/*` without touching a test file
 
@@ -333,7 +323,7 @@ Jest's `moduleNameMapper` matches the literal specifier string, so it works rega
 test file sits on disk:
 
 ```js
-// jest.config.js  (ours — config is not a test file, editing it is allowed)
+// jest.config.js  (ours: config is not a test file, editing it is allowed)
 moduleNameMapper: {
   '^\\.\\./src$':        '<rootDir>/adapter/src/index.ts',
   '^\\.\\./src/(.*)$':   '<rootDir>/adapter/src/$1',
@@ -370,21 +360,21 @@ This is the whole trick, and it is why the tests can live at `tests/original/` w
 ```
 
 Strategy: Go defines **structured error types** carrying the field name, offending value, and
-bounds — idiomatic, and usable with `errors.Is`/`errors.As`:
+bounds, idiomatic, and usable with `errors.Is`/`errors.As`:
 
 ```go
-type ValidationError struct {
+type FieldError struct {
     Field    string   // "CronSecond"
     Kind     string   // "duplicate" | "range" | "empty" | "notArray"
     Value    Value
     Min, Max int
 }
-func (e *ValidationError) Error() string   // renders the upstream-compatible string
+func (e *FieldError) Error() string        // renders the upstream-compatible string
 ```
 
 `Error()` renders the upstream string verbatim. That keeps one source of truth: the adapter simply
 forwards the message rather than maintaining a translation table that could drift. Documented as a
-deliberate compat choice in `DECISIONS.md` — Go style would normally prefer lowercase,
+deliberate compat choice in `DECISIONS.md`, Go style would normally prefer lowercase,
 non-punctuated error strings.
 
 ## 6.5 Dual-track testing
@@ -395,10 +385,10 @@ under Rule 2. So the port runs two tracks:
 
 | Track | What | Runs with | Value |
 |---|---|---|---|
-| **A — primary** | The 280 originals, byte-unmodified, through the adapter | Node + Jest + WASM | The strongest proof. Full 40% credit. |
-| **B — insurance** | Native Go tests covering the same behaviour | `go test` alone | Accepted on its own terms; reproducible by a judge with no Node at all. |
+| **A, primary** | The 280 originals, byte-unmodified, through the adapter | Node + Jest + WASM | The strongest proof. Full 40% credit. |
+| **B, insurance** | Native Go tests covering the same behaviour | `go test` alone | Accepted on its own terms; reproducible by a judge with no Node at all. |
 
-**Why both.** Track A is worth more but has a single point of failure — the bridge. Track B is
+**Why both.** Track A is worth more but has a single point of failure, the bridge. Track B is
 built incrementally as a by-product of M2–M5 (each milestone's table tests *are* Track B), so it
 costs almost nothing, and it is what makes the Go library reviewable on its own terms for the
 Code Quality 20%. Track B is never a substitute for Track A.
@@ -415,12 +405,12 @@ method is never invoked:
 
 | Test | Assertion | Outcome if Go owns the loop |
 |---|---|---|
-| jumps to next allowed second… | `expect(spy).not.toHaveBeenCalled()` | ✅ passes (vacuously) |
-| jumps to previous allowed second… | `not.toHaveBeenCalled()` | ✅ passes |
-| jumps to next allowed minute… | `not.toHaveBeenCalled()` | ✅ passes |
-| jumps to next allowed hour… | `not.toHaveBeenCalled()` | ✅ passes |
-| **rolls to next hour then sets minute/second** | `toHaveBeenCalledTimes(1)` + `calls[0][1] === TimeUnit.Hour` | ❌ **fails** |
-| **jumps a full day first** | `filter(c => c[1]===Day).toHaveLength(1)` | ❌ **fails** |
+| jumps to next allowed second… | `expect(spy).not.toHaveBeenCalled()` | passes (vacuously) |
+| jumps to previous allowed second… | `not.toHaveBeenCalled()` | passes |
+| jumps to next allowed minute… | `not.toHaveBeenCalled()` | passes |
+| jumps to next allowed hour… | `not.toHaveBeenCalled()` | passes |
+| **rolls to next hour then sets minute/second** | `toHaveBeenCalledTimes(1)` + `calls[0][1] === TimeUnit.Hour` | **fails** |
+| **jumps a full day first** | `filter(c => c[1]===Day).toHaveLength(1)` | **fails** |
 
 **Baseline (M7): accept 278/280** and document it. These two assert an *implementation strategy*
 ("did you avoid stepping hour-by-hour?"), not observable behaviour. Both return the correct
@@ -430,7 +420,7 @@ exactly the kind of thing the rubric rewards over a suspicious 100%.
 **Stretch (M7b): make it 280/280 honestly.** The Go engine already knows every date operation it
 performs. It can emit a real operation trace, which the shim replays through
 `CronDate.prototype.applyDateOperation` so prototype spies observe the true sequence. This is
-legitimate *only* because the trace reflects what Go actually did — it makes internal behaviour
+legitimate *only* because the trace reflects what Go actually did. It makes internal behaviour
 observable across the boundary rather than fabricating it. If implementation drifts toward
 "emit whatever makes the assertion pass", abandon it and ship 278/280 with the write-up.
 That judgement call is recorded in `DECISIONS.md`.
@@ -444,19 +434,19 @@ Four real bugs exist in v5.6.2 (see `INSTRUCTIONS.md` §3). Reproducing them is 
 parity; shipping them as the Go library's default behaviour would be bad engineering. Resolution:
 
 ```go
-cron.Parse(expr)                       // corrected behaviour — the default
-cron.Parse(expr, cron.WithLuxonCompat()) // bug-compatible — what the adapter uses
+cron.Parse(expr)                       // corrected behaviour, the default
+cron.Parse(expr, cron.WithLuxonCompat()) // bug-compatible, what the adapter uses
 ```
 
 | Bug | Compat mode | Default mode |
 |---|---|---|
 | #1 DST `diff == 2` | reproduced | offsets compared directly; handles 2 h, 30 min, 45 min zones |
 | #2 in-place sort mutation | n/a (Go copies) | values are always copied on construction |
-| #3 `/([,-/])/` range | reproduced (`,` `-` `.` `/`) | `[,\-/]` — the three intended characters |
+| #3 `/([,-/])/` range | reproduced (`,` `-` `.` `/`) | `[,\-/]`, the three intended characters |
 | #4 bare `L` throws at `next()` | reproduced | rejected at parse time with a clear error |
 
 Each bug gets an upstream issue filed **inside the 72-hour window**, which is what the Bug Catcher
-bonus requires — a reproduction alone does not earn it.
+bonus requires, a reproduction alone does not earn it.
 
 ---
 ---
@@ -468,7 +458,7 @@ Requirement: ≥60 continuous seconds, zero divergences on the shared public API
 **Harness.** Node driver holds both implementations: the pristine TS original from
 `../cron-parser`, and the Go build via the WASM bridge. Same input to both, compare outputs.
 
-**Generator** — weighted toward the danger zones found in §4:
+**Generator**, weighted toward the danger zones found in §4:
 
 - random field values / lists / ranges / steps / names / `L` / `#`
 - start instants biased to within ±48 h of a real DST transition
@@ -481,7 +471,7 @@ Requirement: ≥60 continuous seconds, zero divergences on the shared public API
 
 1. `next()` sequences agree for N iterations
 2. `prev()` sequences agree
-3. `parse(stringify(parse(x))) ≡ parse(x)` — round trip
+3. `parse(stringify(parse(x))) ≡ parse(x)`, round trip
 4. `includesDate(d)` agrees with membership in the `next()` sequence
 5. errors agree: if one throws, both throw, with the same message
 
@@ -493,7 +483,7 @@ and written to `fuzz/divergences/` as a runnable repro.
 
 # 10. Benchmarks (M9)
 
-Measured on **native Go vs native TS** — never through the WASM bridge, which would measure the
+Measured on **native Go vs native TS**, never through the WASM bridge, which would measure the
 bridge.
 
 | Dimension | Method |
@@ -504,7 +494,7 @@ bridge.
 | RSS | peak resident set for a fixed workload |
 | p99 latency | per-call distribution, not just the mean |
 
-The original ships its own `benchmarks/` harness (`npm run bench`) — using the author's own terms is
+The original ships its own `benchmarks/` harness (`npm run bench`), using the author's own terms is
 far more defensible than inventing a benchmark. Report distributions, and report regressions
 honestly if any appear.
 
@@ -517,20 +507,20 @@ honestly if any appear.
 cron-parser-go/
 ├── go.mod                     module github.com/aniket-3001/cron-parser-go
 ├── README.md                  one-command build, results summary
-├── DESIGN.md                  this document — how the port is built
-├── SEMANTICS.md               what it must do — behavioural spec of v5.6.2
-├── DECISIONS.md               scored deliverable — architectural divergences
+├── DESIGN.md                  this document, how the port is built
+├── SEMANTICS.md               what it must do, behavioural spec of v5.6.2
+├── DECISIONS.md               scored deliverable, architectural divergences
 ├── LICENSE                    MIT, preserving upstream attribution
 ├── .gitattributes             * text=auto eol=lf   ← protects the kickoff hashes
 ├── upstream-issues/           Bug Catcher: 5 drafted reports + filing tracker
 │
-├── cron/                      ARTIFACT 1 — the port. zero unsafe.
+├── cron/                      ARTIFACT 1: the port. zero unsafe.
 │   ├── time.go       field.go       parse.go
 │   ├── expression.go collection.go  crontab.go   random.go
 │   └── *_test.go              native Go tests, incl. the §4.1 divergence table
 │
-├── bridge/main.go             ARTIFACT 2a — js/wasm handle registry
-├── adapter/src/               ARTIFACT 2b — TS shim mirroring src/ layout
+├── bridge/main.go             ARTIFACT 2a: js/wasm handle registry
+├── adapter/src/               ARTIFACT 2b: TS shim mirroring src/ layout
 │   ├── index.ts  CronDate.ts  CronExpression.ts  CronExpressionParser.ts
 │   ├── CronFieldCollection.ts CronFileParser.ts
 │   └── fields/   utils/
@@ -548,9 +538,9 @@ cron-parser-go/
 
 # 12. Milestones and acceptance gates
 
-| # | Milestone | Gate — objectively checkable |
+| # | Milestone | Gate, objectively checkable |
 |---|---|---|
-| **M0** | Recon, semantics probing, design | ✅ this document exists; divergence table measured |
+| **M0** | Recon, semantics probing, design | this document exists; divergence table measured |
 | **M1** | Docs consolidated, repo scaffolded and pushed | repo public; `HASHES.txt` verifies |
 | **M2** | Time layer | Go table test reproduces all 9 rows of §4.1 |
 | **M3** | Fields + parser | every expression in the original's parser tests parses to identical field sets |

@@ -11,8 +11,7 @@ alone, because the reasoning that changed is the useful part.
 
 ---
 
-## D1 — Type-level integer ranges become runtime validation 🟢
-
+## D1. Type-level integer ranges become runtime validation
 **Original.** `fields/types.ts` builds literal unions at compile time through recursive types:
 
 ```ts
@@ -24,7 +23,7 @@ type SixtyRange = IntRange<RangeFrom<0>, 59>;   // 0 | 1 | ... | 59
 `new CronMinute([99])` is rejected by `tsc` before the program runs.
 
 **Port.** Go's type system cannot express "an integer between 0 and 59". Validation moves to
-construction time, returning a `*ValidationError`.
+construction time, returning a `*FieldError`.
 
 **Why.** The alternatives are worse. Generating 60 named constants buys no safety, because Go would
 still accept any `int` where one is expected. A `type Minute uint8` distinct type prevents mixing
@@ -36,8 +35,7 @@ constructor boundary and by the fuzzer.
 
 ---
 
-## D2 — Inheritance becomes composition 🟢
-
+## D2. Inheritance becomes composition
 **Original.** `abstract class CronField` with six subclasses, each overriding `static min`,
 `static max`, `static chars`, `static validChars`. Behaviour is selected by `this.constructor`
 lookups at runtime.
@@ -46,7 +44,8 @@ lookups at runtime.
 
 ```go
 type fieldSpec struct {
-    name       string   // "CronSecond" — used in error messages
+    unit       Unit
+    name       string   // "CronSecond", as it appears in error messages
     min, max   int
     chars      []rune
     validChars *regexp.Regexp
@@ -55,7 +54,7 @@ type fieldSpec struct {
 
 **Why.** Go has embedding but no method overriding, so the TypeScript pattern has no direct
 translation. Six near-identical structs with a shared interface would be 6× the boilerplate for
-zero benefit — the subclasses differ only in *data*, never in behaviour. A table-driven descriptor
+zero benefit, the subclasses differ only in *data*, never in behaviour. A table-driven descriptor
 expresses that honestly and collapses ~277 lines of subclass boilerplate to a 6-row table.
 
 **Consequence.** `field.Spec().Name` replaces `this.constructor.name` in error messages, preserving
@@ -63,9 +62,8 @@ strings like `CronSecond Validation error, ...` exactly.
 
 ---
 
-## D3 — `number | string` becomes an explicit sum type 🟢
-
-**Original.** Field values are `(number | string)[]` — `5`, `"L"`, `"5L"` coexist in one array.
+## D3. `number | string` becomes an explicit sum type
+**Original.** Field values are `(number | string)[]`: `5`, `"L"`, `"5L"` coexist in one array.
 
 **Port.**
 
@@ -77,16 +75,15 @@ type Value struct {
 func (v Value) IsNumeric() bool { return v.Text == "" }
 ```
 
-**Why.** `any`/`interface{}` would forfeit type safety and force type switches at every use — and
-would disqualify the port from the Zero-`any` spirit of the bonus. Two parallel slices
+**Why.** `any`/`interface{}` would forfeit type safety and force a type switch at every use. Two
+parallel slices
 (`[]int` + `[]string`) would lose ordering, which matters because the original's comparator sorts
 numbers before strings. A 2-field struct is 16 bytes, needs no allocation, and keeps one ordered
 slice.
 
 ---
 
-## D4 — Defensive copy instead of in-place sort 🟢
-
+## D4. Defensive copy instead of in-place sort
 **Original.** `CronField.ts:99`
 
 ```ts
@@ -104,7 +101,7 @@ mine; // [10, 20, 30]  ← rewritten
 Reproduced against v5.6.2.
 
 **Port.** Values are copied before sorting. Go slices share backing arrays, so a naive
-`sort.Slice(values, ...)` would reproduce the bug exactly — this is a case where the *easy* Go
+`sort.Slice(values, ...)` would reproduce the bug exactly. This is a case where the *easy* Go
 translation is also the buggy one.
 
 **Why not bug-compatible.** No test depends on the mutation; it is invisible to the suite. Silent
@@ -112,8 +109,7 @@ caller-data corruption is not behaviour worth preserving. Filed upstream.
 
 ---
 
-## D5 — `[Symbol.iterator]` becomes `iter.Seq[time.Time]` 🟢
-
+## D5. `[Symbol.iterator]` becomes `iter.Seq[time.Time]`
 **Original.** Implements the ES6 iterator protocol, enabling `for (const d of interval)`.
 
 **Port.** `func (e *Expression) All() iter.Seq[time.Time]`, Go 1.23 range-over-func:
@@ -123,7 +119,7 @@ for t := range expr.All() { ... }
 ```
 
 **Why.** The obvious alternatives are worse. A channel-based iterator leaks a goroutine whenever the
-consumer `break`s early — a real bug, not a style question. A stateful `Next() (time.Time, bool)`
+consumer `break`s early, a real bug, not a style question. A stateful `Next() (time.Time, bool)`
 iterator works but reads as Java. `iter.Seq` is the idiomatic answer since 1.23, composes with the
 `slices`/`maps` iterator helpers, and handles early termination correctly by construction.
 
@@ -131,25 +127,26 @@ iterator works but reads as Java. `iter.Seq` is the idiomatic answer since 1.23,
 
 ---
 
-## D6 — Structured errors that render upstream-compatible strings 🟢
-
-**Original.** Throws `Error` with formatted messages. 42 of the 280 tests assert on the exact text.
+## D6. Structured errors that render upstream-compatible strings
+**Original.** Throws `Error` with formatted messages, and the suite asserts on the exact text in
+29 places.
 
 **Port.** Typed errors carrying structured fields, whose `Error()` renders the upstream string:
 
 ```go
-type ValidationError struct {
-    Field    string
-    Kind     string
+type FieldError struct {
+    Field    string          // "CronSecond", as it appears in the message
+    Kind     fieldErrorKind
     Value    Value
     Min, Max int
+    Chars    []rune          // permitted special characters, for range errors
 }
 ```
 
 **Why.** Two goals conflict: Go callers want `errors.As` and structured data; the test suite wants
 byte-identical strings. Rendering the compatible string from `Error()` satisfies both with **one**
-source of truth. The rejected alternative — idiomatic Go messages plus a translation table in the
-adapter — creates two places to edit and will drift.
+source of truth. The rejected alternative, idiomatic Go messages plus a translation table in the
+adapter, creates two places to edit and will drift.
 
 **Acknowledged deviation.** Go convention says error strings should be lowercase and unpunctuated.
 `CronSecond Validation error, got value 61 expected range 0-59` violates that deliberately, in
@@ -157,8 +154,7 @@ service of a stated project goal. Flagged here so a reviewer sees it as a choice
 
 ---
 
-## D7 — luxon's asymmetric date arithmetic, reproduced exactly 🟢
-
+## D7. luxon's asymmetric date arithmetic, reproduced exactly
 **The finding.** luxon *clamps* for year and month arithmetic but *overflows* for day. Measured:
 
 | Operation | luxon | Go naive |
@@ -176,8 +172,7 @@ explicit comment saying the non-clamping is intentional, so a future reader does
 
 ---
 
-## D8 — DST gaps resolve forward, matching luxon, not Go 🟢
-
+## D8. DST gaps resolve forward, matching luxon, not Go
 **The finding.** For a wall-clock time that does not exist, luxon and Go move in **opposite
 directions**:
 
@@ -198,42 +193,39 @@ Scattering ad-hoc corrections across `setHours`, `setDay`, `startOfDay` would be
 
 ---
 
-## D9 — `time.Truncate` is never used for `startOf` 🟢
-
+## D9. `time.Truncate` is never used for `startOf`
 **Original.** `startOf('hour')`, `startOf('day')` operate on **wall-clock** components.
 
 **Port.** All `startOf*` helpers rebuild the instant from components via `fromWallClock`.
 
 **Why.** Go's `Time.Truncate` rounds against absolute time since the zero instant, not local time.
-In any zone with a non-hour offset it produces the wrong result — India `+05:30`,
+In any zone with a non-hour offset it produces the wrong result, India `+05:30`,
 Australia/Lord_Howe `+10:30`, Pacific/Chatham `+12:45`. This is a trap precisely because
 `t.Truncate(time.Hour)` looks like the obvious translation and is correct in UTC, where most
 testing happens.
 
 ---
 
-## D10 — The library is split from its test bridge 🟢
-
+## D10. The library is split from its test bridge
 **Port.** Two artifacts: `./cron` (pure Go, zero `unsafe`, no JS) and `./bridge` + `./adapter`
 (js/wasm module plus a TypeScript shim), the latter existing only to run the original Jest suite.
 
 **Why.** Compatibility requirements and API quality pull in opposite directions. Handle registries,
 opaque `int32`s and upstream-shaped error strings belong at a seam, not in the library a Go
-developer imports. Organizers explicitly excuse escape hatches at the FFI boundary, so isolating
-them there protects both the Zero-Unsafe bonus and the Code-Quality score.
+developer imports. Isolating them at the seam keeps the library free of
+them entirely, which is checkable: `./cron` imports nothing outside the standard library.
 
 ---
 
-## D11 — WebAssembly, not cgo, for the bridge 🟢
-
+## D11. WebAssembly, not cgo, for the bridge
 **Decision.** `GOOS=js GOARCH=wasm`, loaded into Node via the `wasm_exec.js` that ships with Go.
 
-**Why.** cgo is unavailable on the build machine — `gcc -dumpmachine` reports `mingw32` (32-bit
+**Why.** cgo is unavailable on the build machine: `gcc -dumpmachine` reports `mingw32` (32-bit
 GCC 6.3.0) against a windows/amd64 Go, and `-buildmode=c-shared` fails with
 `cc1.exe: sorry, unimplemented: 64-bit mode not compiled in`. Installing mingw-w64 would add a
 native toolchain that judges would also need; WASM needs only the Go toolchain already required.
 
-**Measured before committing.** 2.7 MB module, 54 ms init, **synchronous** calls (mandatory — the
+**Measured before committing.** 2.7 MB module, 54 ms init, **synchronous** calls (mandatory, the
 original API is entirely synchronous and Jest asserts on return values directly), 46 µs/call with
 map marshalling, and correct embedded tzdata (Troll `+120`, Lord Howe `+660`, Chatham `+825`).
 
@@ -242,8 +234,7 @@ map marshalling, and correct embedded tzdata (Troll `+120`, Lord Howe `+660`, Ch
 
 ---
 
-## D12 — File IO stays in JavaScript 🟢
-
+## D12. File IO stays in JavaScript
 **Original.** `CronFileParser` calls `require('fs').readFileSync` internally.
 
 **Port.** Go parses crontab **content**; the adapter performs the read.
@@ -256,8 +247,7 @@ rather than a path is more testable, and the Go API exposes both
 
 ---
 
-## D13 — The original's bugs are reproduced, not corrected 🟢
-
+## D13. The original's bugs are reproduced, not corrected
 **Decision.** Where the original is wrong, the port is wrong in the same way. There is no mode
 that behaves better.
 
@@ -276,12 +266,11 @@ reasoning is worth recording rather than quietly dropping.
 
 A second behavioural mode doubles the surface every equivalence check has to cover. The
 differential fuzzer compares one implementation against one other; with two modes it would have
-to compare two, and whichever mode the original suite does not exercise would rot. Behavioural
-equivalence is worth 30% of the score and the 40% criterion is the original suite passing. Both
-reward one faithful implementation over two half-checked ones.
+to compare two, and whichever mode the original suite does not exercise would rot. One faithful
+implementation is worth more than two half-checked ones.
 
 There is a plainer argument too. Someone reaching for this library wants a drop-in replacement.
-Scheduling differently from the original, even more correctly, is the surprising outcome — and
+Scheduling differently from the original, even more correctly, is the surprising outcome, and
 silent divergence is worse than a documented bug. Each reproduced bug is pinned by a test naming
 its report in `upstream-issues/`, so the behaviour is deliberate and visible rather than inherited
 by accident.
@@ -291,20 +280,20 @@ the fix rather than keep the bug. The pinning tests are where that work would st
 
 **And it has started.** On 2026-08-01, the day they were filed, the maintainer merged fixes for two
 of the reports. The port is pinned to the kickoff commit `aeb2a151`, which is what every equivalence
-claim here is measured against, so the pin stays for the submission — but the two behaviours have
+claim here is measured against, so the pin stays for the submission, but the two behaviours have
 now moved in opposite directions relative to upstream `main`:
 
 | Behaviour | Port | Pinned `aeb2a151` | Upstream `main` |
 |---|---|---|---|
-| Constructor mutates the caller's slice | no (D4) | yes | **no** — [PR #427](https://github.com/harrisiirak/cron-parser/pull/427) |
-| `[,-/]` matches `.` | yes | yes | **no** — [PR #426](https://github.com/harrisiirak/cron-parser/pull/426) |
+| Constructor mutates the caller's slice | no (D4) | yes | **no**, [PR #427](https://github.com/harrisiirak/cron-parser/pull/427) |
+| `[,-/]` matches `.` | yes | yes | **no**, [PR #426](https://github.com/harrisiirak/cron-parser/pull/426) |
 
 The first was a deliberate divergence from the pin and has now *converged* with upstream: the fix
 merged is `[...values].sort(...)`, which is what this port has done since day one.
 
 The second is the reverse. The port faithfully reproduces a bug upstream no longer has, so
 `0 0 * * 1.2#2` is still rejected here with the old message. That case is in the CLI diff corpus,
-which means `npm run compare` against a *fresh* upstream clone would report one difference — against
+which means `npm run compare` against a *fresh* upstream clone would report one difference, against
 the pinned clone it reports none, and the pin is what `.port-mortem.toml` records.
 
 Following the fix is the right move once the submission is judged; doing it now would break the
@@ -312,8 +301,7 @@ equivalence evidence the submission rests on.
 
 ---
 
-## D14 — The engine records its date operations so the original's spies can see them 🟢
-
+## D14. The engine records its date operations so the original's spies can see them
 **The situation.** Six tests do `jest.spyOn(CronDate.prototype, 'applyDateOperation')`. With the
 search loop in Go, that JS method is never called. Four assert `not.toHaveBeenCalled()` and pass
 vacuously; **two** assert positive call counts and fail:
@@ -321,7 +309,7 @@ vacuously; **two** assert positive call counts and fail:
 - `expect(spy).toHaveBeenCalledTimes(1)` with `calls[0][1] === TimeUnit.Hour`
 - `expect(spy.mock.calls.filter(c => c[1] === TimeUnit.Day)).toHaveLength(1)`
 
-Both tests' *observable* assertions — the returned `toISOString()` — pass.
+Both tests' *observable* assertions (the returned `toISOString()`) pass.
 
 **Decision.** The engine records the operations it performs, and the adapter replays that recording
 through `CronDate.prototype.applyDateOperation`, so the spies observe the real sequence. The suite
@@ -331,7 +319,7 @@ passes **280/280**.
 method, `Expression.applyOp`, which appends to the log before delegating. What the spy sees is
 therefore what the engine did, not what the test hoped for. The property that matters is whether
 the test still fails when the implementation regresses, and it does: replacing the hour fast path
-with a loop that steps one hour at a time makes exactly these assertions fail —
+with a loop that steps one hour at a time makes exactly these assertions fail:
 
 ```
 ● CronExpression › iteration jump flows › when past the last scheduled hour for the day, jumps a full day first
@@ -361,8 +349,7 @@ revert to 278/280 and publish this write-up instead. A suspicious 280 is worth l
 
 ---
 
-## D15 — `W` is a phantom feature; the port does not resurrect it 🟢
-
+## D15. `W` is a phantom feature; the port does not resurrect it
 **The finding.** `CronChars` is `'L' | 'W'`; `CronFieldCollection.compactField()` has an explicit
 `if (item === 'L' || item === 'W')` branch; four tests exercise it. But `CronDayOfMonth.validChars`
 is
@@ -371,11 +358,11 @@ is
 /^[?,*\dLH/-]+$|^.*H\(\d+-\d+\)\/\d+.*$|^.*H\(\d+-\d+\).*$|^.*H\/\d+.*$/
 ```
 
-— **no `W`**. So `parse('0 0 15W * *')` and `parse('0 0 LW * *')` both throw
+with **no `W`**. So `parse('0 0 15W * *')` and `parse('0 0 LW * *')` both throw
 `Invalid characters, got value: 15W`. The stringify path can emit a value the parse path cannot
 produce; `W` is reachable only by hand-constructing field objects.
 
-**Port.** Reproduce exactly — `W` accepted in the compaction/stringify path, rejected by the parser.
+**Port.** Reproduce exactly: `W` accepted in the compaction/stringify path, rejected by the parser.
 
 **Why.** Four pinned tests depend on `compactField` handling `W`, so it cannot be dropped. Adding
 `W` to the parser would be a *feature addition*, diverging from the reference and breaking
@@ -383,18 +370,17 @@ differential equivalence. The dead branch is preserved with a comment pointing h
 
 ---
 
-## D16 — Two test tracks, not one 🟢
-
+## D16. Two test tracks, not one
 **Decision.** Ship both the original suite through the adapter (Track A) *and* native Go tests
 covering the same behaviour (Track B).
 
 **Why.** The organizer Q&A confirmed that native 1:1 tests are an accepted substitute, penalised
-only if the originals are edited — and Rule 2 has always left *additional* tests unrestricted.
+only if the originals are edited, and Rule 2 has always left *additional* tests unrestricted.
 Track A is worth more, but it depends entirely on the WASM bridge; a single integration failure at
 M6/M7 would leave no equivalence evidence at all. Track B removes that single point of failure and
 is the only evidence a reviewer can reproduce with nothing but `go test`.
 
-**Why it's nearly free.** Track B is a by-product of M2–M5 — the table tests those milestones need
+**Why it's nearly free.** Track B is a by-product of M2–M5, the table tests those milestones need
 in order to be correct *are* Track B. The marginal cost is organising them, not writing them.
 
 **Explicitly not a substitute.** If Track B is ever used to justify skipping Track A, this decision
@@ -402,8 +388,7 @@ has been misapplied. The original suite unchanged is the primary deliverable.
 
 ---
 
-## D17 — `Format` returns an error 🟢
-
+## D17. `Format` returns an error
 **Original.** `stringify()` throws for a field of repeated zeros, reaching an internal error its
 own source marks as unreachable.
 
@@ -419,8 +404,7 @@ callers who need to know are pointed at `Format`.
 
 ---
 
-## D18 — Benchmarks batch on both sides 🟢
-
+## D18. Benchmarks batch on both sides
 **The finding.** Go's clock on the measurement machine advances in steps of roughly 527
 microseconds. One unit of benchmark work costs tens of microseconds, so timing operations
 individually returned zero for every sample: a median of 0 ns beside a mean of 47 microseconds.
@@ -441,8 +425,7 @@ measured per-operation cost.
 
 ---
 
-## D19 — The fuzzer compares the port directly, not through the adapter 🟢
-
+## D19. The fuzzer compares the port directly, not through the adapter
 **Decision.** `fuzz/differential.js` reaches the port through the WebAssembly bridge rather than
 through `adapter/src`.
 
@@ -452,13 +435,12 @@ as the port, and would add a layer of allocation to every call. What is under co
 library's behaviour.
 
 **What this leaves uncovered.** The adapter itself. That is covered instead by the 280 original
-tests, which exercise nothing but the adapter's surface — so between the two, both layers are
+tests, which exercise nothing but the adapter's surface, so between the two, both layers are
 checked, each by the harness suited to it.
 
 ---
 
-## D20 — Deleting unreachable code rather than testing it 🟢
-
+## D20. Deleting unreachable code rather than testing it
 **Decision.** Where a branch translated from the original cannot be reached in Go, it is removed
 and a comment explains why, instead of being kept and covered by a contrived test.
 
@@ -479,13 +461,12 @@ are only as good as the entry points they consider.
 
 ---
 
-## D21 — npm is the one-command build, not make 🟢
-
+## D21. npm is the one-command build, not make
 **Decision.** `npm run build` is the documented entry point. The `Makefile` remains for anyone who
 prefers it.
 
 **Why.** The rule is that one command produces a runnable artifact, and `make` is absent from a
-stock Windows install — it was absent from the machine this was built on. Node is already required
+stock Windows install. It was absent from the machine this was built on. Node is already required
 to run the original suite, so driving the build through it adds no dependency.
 
 **What writing it caught.** Passing an absolute path to a command run through a shell breaks on

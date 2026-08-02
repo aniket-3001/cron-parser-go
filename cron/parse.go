@@ -13,7 +13,7 @@ import (
 //
 // Treat this as read-only. It is exported because the original exports its
 // equivalent, and Parse consults it on every call, so mutating it changes how
-// every later parse behaves — process-wide, including from other packages.
+// every later parse behaves, process-wide, including from other packages.
 // There is no lock around it either: writing to it while another goroutine
 // parses is a data race. If you need different shorthands, expand them in your
 // own code before calling Parse rather than editing this map.
@@ -49,7 +49,7 @@ var (
 	hashedRe     = regexp.MustCompile(`H(?:\((\d+)-(\d+)\))?(?:/(\d+))?`)
 
 	// nthIncompatibleRe reproduces the original's /([,-/])/. Inside a character
-	// class `,-/` is a RANGE from 0x2C to 0x2F, which covers , - . and / — the
+	// class `,-/` is a RANGE from 0x2C to 0x2F, which covers , - . and /, the
 	// dot is unintended. Written out here so the four characters are visible;
 	// reported upstream as bug 3.
 	nthIncompatibleRe = regexp.MustCompile(`[,\-./]`)
@@ -176,7 +176,7 @@ func parseFields(expression string, opts parseOptions) (*Fields, error) {
 // CronFieldCollection's constructor.
 //
 // Only an explicit day of month that can never occur is rejected, and only when
-// exactly one month is named and day of week is unrestricted — a restricted day
+// exactly one month is named and day of week is unrestricted, a restricted day
 // of week rescues the expression, since the two combine with OR. Note that just
 // the FIRST day-of-month value is inspected, so "0 0 30,31 2 *" is rejected
 // while "0 0 1,31 2 *" is accepted and simply never matches.
@@ -224,8 +224,8 @@ func getRawFields(expression string, strict bool) (rawFields, error) {
 
 	// Defaults are taken from the END of this list and prepended, so a
 	// five-field expression gains a "0" seconds field. Shorter forms take more
-	// defaults and end up misaligned — a one-atom expression puts that atom in
-	// dayOfWeek and "0" in month — which is faithful to the original.
+	// defaults and end up misaligned, a one-atom expression puts that atom in
+	// dayOfWeek and "0" in month, which is faithful to the original.
 	defaults := []string{"*", "*", "*", "*", "*", "0"}
 	if len(atoms) < len(defaults) {
 		atoms = append(slices.Clone(defaults[len(atoms):]), atoms...)
@@ -277,7 +277,7 @@ func parseField(u Unit, value string, rand prng) ([]Value, error) {
 // parseHashed resolves H tokens into concrete values.
 //
 // The generator is advanced exactly once per field, before any replacement, and
-// unconditionally — the original draws its random value at the top of the
+// unconditionally, the original draws its random value at the top of the
 // function, whether or not the field contains an H. Skipping the draw for fields
 // without an H would desynchronise the shared generator and change the values
 // every later field resolves to.

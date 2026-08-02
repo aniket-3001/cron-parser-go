@@ -4,7 +4,7 @@
  * The page is the one artifact whose correctness cannot be checked by any of
  * the other suites: it loads two implementations into a browser and compares
  * them there. A page that deploys but answers wrongly, or silently fails to
- * start the WebAssembly module, is worse than one that fails to deploy — so
+ * start the WebAssembly module, is worse than one that fails to deploy, so
  * this runs before publishing and exits non-zero on any of:
  *
  *   - either implementation failing to load
@@ -109,7 +109,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
       await page.evaluate((i) => document.querySelectorAll('#presets .chip')[i].click(), i);
       await sleep(200);
       const v = await state();
-      if (!acceptable.has(v.s)) failures.push(`preset ${i}: ${v.s} — ${v.t}`);
+      if (!acceptable.has(v.s)) failures.push(`preset ${i}: ${v.s}, ${v.t}`);
       if (v.ts === 0 || v.go === 0) failures.push(`preset ${i}: a column rendered nothing`);
     }
     console.log(`  ${presets} presets checked`);
