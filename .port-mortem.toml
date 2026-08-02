@@ -90,6 +90,6 @@ enforces = [
 # the outcome, and an account of the one duplicate the pre-filing check missed.
 issues_filed = 7
 original_findings = 6         # #423 duplicates PR #418, opened before kickoff
-merged = 4                    # #420/PR427, #421/PR426, #422/PR428, #425/PR433
-triaged_open = 2              # #423, #424 assigned to the maintainer
-patch_offered = 1             # #419, offered on the issue rather than pushed
+merged = 5                    # #420/PR427 #421/PR426 #422/PR428 #424/PR434 #425/PR433
+triaged_open = 1              # #423, assigned, duplicates PR #418
+pr_open = 1                   # #419 -> PR #435, invited by the maintainer

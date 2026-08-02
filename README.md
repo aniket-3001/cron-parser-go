@@ -264,14 +264,17 @@ The measured tables and the reasoning: [`DECISIONS.md`](DECISIONS.md) D7–D9,
 
 ## Bugs found in the original
 
-Seven filed upstream on 2026-08-01. **Four have been fixed and merged**, two more are triaged and
-assigned to the maintainer, and one of those duplicates a pull request that was already open. Three
-were found by differential and property-based testing rather than by reading. See
-[`upstream-issues/`](upstream-issues/) for the reproductions, the outcome and the duplicate check.
+Seven filed upstream on 2026-08-01. **Five have been fixed and merged.** Of the two still open, one
+duplicates a pull request that was already open, and the other is the daylight-saving bug, for which
+the maintainer invited a pull request; it is open as
+[PR #435](https://github.com/harrisiirak/cron-parser/pull/435). Three were found by differential and
+property-based testing rather than by reading. See [`upstream-issues/`](upstream-issues/) for the
+reproductions, the outcome and the duplicate check.
 
-The sharpest is [#424](https://github.com/harrisiirak/cron-parser/issues/424): `0 0 16 * 0-6`
+The sharpest was [#424](https://github.com/harrisiirak/cron-parser/issues/424): `0 0 16 * 0-6`
 renders via the library's own `stringify()` to `0 0 16 * *`. The first fires **daily**, the second
-**monthly**, a schedule silently changed by round-tripping it through its own output.
+**monthly**, a schedule silently changed by round-tripping it through its own output. Fixed upstream
+by [PR #434](https://github.com/harrisiirak/cron-parser/pull/434).
 
 ### Why the port keeps these bugs
 
