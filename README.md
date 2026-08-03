@@ -33,7 +33,7 @@ Each row is a submission requirement and the one place to look for it.
 | | Submission manifest | [`.port-mortem.toml`](.port-mortem.toml) |
 
 Beyond the requirements: [`compare/CLI-DIFF.md`](compare/CLI-DIFF.md) diffs the two as command-line
-programs, and [`upstream-issues/`](upstream-issues/) records seven bugs found in the original, four
+programs, and [`upstream-issues/`](upstream-issues/) records seven bugs found in the original, five
 of which are now fixed and merged upstream.
 
 For how the port is built and why: [`DESIGN.md`](DESIGN.md) (how), [`SEMANTICS.md`](SEMANTICS.md)
